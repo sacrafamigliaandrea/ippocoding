@@ -1466,7 +1466,7 @@ window.addEventListener('pointerdown', () => { Suoni.sveglia(); Musica.sblocca()
 /* Stesso impianto di CyberStudent (13/11/2026). Lo studente tocca la classe e il Mac che usa; i traguardi stanno in un
    foglio Google della scuola (_lavoro/apps-script/ippo.gs). Si salvano solo classe, Mac e traguardi: mai un nome.
    Chi torna allo stesso Mac ritrova le sue stelle; chi lo cambia usa il codice gara. Se la rete non risponde si gioca lo stesso. */
-const REGISTRO_URL = '';   // indirizzo /exec dell'app web di Apps Script. Vuoto: niente foglio, restano sessionStorage e codici gara
+const REGISTRO_URL = 'https://script.google.com/macros/s/AKfycbxGgW4_XSZxsNv8MVrLSFKIjZt0Tgx_4OuIN1YBBeX7jF7DjyboyIVHLGqYvm4Wuzrp/exec';   // indirizzo /exec dell'app web di Apps Script. Vuoto: niente foglio, restano sessionStorage e codici gara
 const Registro = {
   url: PAR.get('registro') === '0' ? '' : REGISTRO_URL, stato: '',
   attivo() { return !!this.url; },
