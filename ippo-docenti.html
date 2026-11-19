@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#123E90">
+<title>Ippo Coding — scheda per i docenti</title>
+<!-- Scheda docenti di Ippo Coding, stampabile. Stessa struttura delle schede di Coach! e del Fontaniere.
+     I codici gara sono calcolati qui con la stessa formula del gioco (IPPO.codice in index.html). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--blu:#123E90;--blu-notte:#0B2559;--blu-chiaro:#DCE7FA;--oro:#E0A91B;--oro-chiaro:#FFF1C2;--ambra:#C77B27;--verde:#2F8F4E;--verde-chiaro:#DDF1E3;--carta:#FBF7EC;--bordo:#DCCFAE;--ink:#2B2118;--ink-soft:#5E4E3C}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Atkinson Hyperlegible',system-ui,sans-serif;color:var(--ink);background:var(--carta);line-height:1.5;font-size:17px}
+h1,h2,h3,.et{font-family:'Baloo 2',system-ui,sans-serif;line-height:1.15}
+header{background:linear-gradient(var(--blu),var(--blu-notte));color:#fff;padding:1.6rem 1.5rem 1.8rem;border-bottom:.35rem solid var(--oro)}
+.dentro{max-width:62rem;margin:0 auto}
+header a{color:#fff;font-weight:700;text-decoration:none;opacity:.9}
+header h1{font-size:2.5rem;margin:.5rem 0 .3rem}
+header p{font-size:1.15rem;max-width:46rem;opacity:.95}
+.chip{display:inline-block;margin:.7rem .4rem 0 0;padding:.15rem .8rem;border-radius:2rem;background:rgba(255,255,255,.16);font-weight:700;font-size:.95rem}
+.numeri{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-top:1.2rem}
+.numeri div{background:rgba(255,255,255,.12);border-radius:.8rem;padding:.6rem .8rem}
+.numeri b{display:block;font:800 2rem 'Baloo 2'}
+main{padding:1.5rem}
+section{margin:0 auto 1.8rem;max-width:62rem}
+.et{display:inline-block;font-weight:800;font-size:.85rem;letter-spacing:.1em;color:var(--blu);background:var(--blu-chiaro);padding:.05rem .7rem;border-radius:.5rem;text-transform:uppercase}
+h2{font-size:1.7rem;color:var(--blu-notte);margin:.35rem 0 .5rem}
+h3{font-size:1.15rem;margin:.9rem 0 .25rem;color:var(--blu-notte)}
+p{margin:.4rem 0}
+ul,ol{margin:.3rem 0 .6rem 1.3rem}
+li{margin:.15rem 0}
+table{width:100%;border-collapse:collapse;margin:.6rem 0;font-size:.95rem;background:#fff}
+th,td{border:1px solid var(--bordo);padding:.4rem .55rem;text-align:left;vertical-align:top}
+th{background:var(--blu-chiaro);font-family:'Baloo 2';color:var(--blu-notte)}
+code,.mono{font-family:'JetBrains Mono',monospace;font-size:.92em;background:#F0EADB;padding:.05em .35em;border-radius:.3em}
+pre{font-family:'JetBrains Mono',monospace;font-size:.9rem;background:#fff;border:1px solid var(--bordo);border-radius:.6rem;padding:.7rem 1rem;overflow:auto;line-height:1.5}
+.riquadro{background:#fff;border:1px solid var(--bordo);border-left:.4rem solid var(--oro);border-radius:.6rem;padding:.7rem 1rem;margin:.7rem 0}
+.riquadro.blu{border-left-color:var(--blu)}
+.riquadro.verde{border-left-color:var(--verde)}
+.codici{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem}
+.codici div{background:#fff;border:1px solid var(--bordo);border-radius:.6rem;padding:.5rem .7rem;font-size:.9rem}
+.codici b{font-family:'Baloo 2';color:var(--blu-notte)}
+.azioni{display:flex;gap:.8rem;flex-wrap:wrap;margin:1rem 0}
+.btn{display:inline-block;padding:.5rem 1.2rem;border-radius:.7rem;background:var(--blu);color:#fff;font:700 1.05rem 'Baloo 2';text-decoration:none;border:none;cursor:pointer}
+.btn.carta{background:#fff;color:var(--blu-notte);border:2px solid var(--bordo)}
+footer{text-align:center;color:var(--ink-soft);font-size:.9rem;padding:1rem 1.5rem 2rem}
+@media (max-width:760px){.numeri,.codici{grid-template-columns:repeat(2,1fr)}}
+@media print{header{background:none;color:var(--ink);border-bottom:2px solid var(--blu)}header a,.azioni{display:none}.chip{background:none;border:1px solid var(--bordo)}.numeri div{background:none;border:1px solid var(--bordo)}body{font-size:11.5pt;background:#fff}section{break-inside:avoid-page}table{font-size:9.5pt}}
+</style>
+</head>
+<body>
+<header><div class="dentro">
+  <a href="index.html">← Torna al gioco</a>
+  <h1>Ippo Coding — scheda per i docenti</h1>
+  <p>Un gioco di coding ambientato nel Grande Torneo delle Quattro Casate: lo studente scrive il programma che guida cavallo e cavaliere su una pista a ostacoli. Otto percorsi, uno per classe.</p>
+  <span class="chip">Primaria · Secondaria di I grado</span><span class="chip">Tecnologia · coding · pensiero computazionale</span><span class="chip">Serie del coding · gioco 5</span>
+  <div class="numeri"><div><b>8</b>percorsi, dalla 1ª primaria alla 3ª secondaria</div><div><b>80</b>livelli, dieci per percorso</div><div><b>3</b>forme del codice: tessere, mattoncini, Python</div><div><b>0</b>dati personali: solo classe e Mac</div></div>
+</div></header>
+<main>
+
+<section><span class="et">In una frase</span>
+<h2>Che cos'è</h2>
+<p>Lo studente non guida il cavallo: scrive il programma che lo guiderà, poi lo esegue e osserva. La pista è una fila di caselle numerate con tronchi, barriere e muri da saltare con la potenza giusta. Dalla 4ª in poi lo stesso programma deve funzionare su più piste (le «manche»), e dalla 5ª una manche è «a sorpresa»: il giudice la svela solo alla partenza.</p>
+</section>
+
+<section><span class="et">Perché</span>
+<h2>Obiettivi</h2>
+<ul>
+  <li><b>Sequenza, parametri, cicli, condizioni, variabili, funzioni</b>: un concetto nuovo per volta, sempre dentro un problema che lo rende necessario.</li>
+  <li><b>Generalizzare un algoritmo</b>: passare da «conto le caselle di questa pista» a «scrivo un programma che funziona su qualunque pista».</li>
+  <li><b>Leggere il codice prima di scriverlo</b>: i livelli «Prevedi» chiedono di dire che cosa farà un programma prima di eseguirlo.</li>
+  <li><b>Trattare l'errore come informazione</b>: ogni corsa fallita dice in quale casella e per quale istruzione, e chiude con una domanda.</li>
+  <li><b>Arrivare a un linguaggio vero</b>: i percorsi della secondaria usano un sottoinsieme di Python, con le funzioni in italiano.</li>
+</ul>
+</section>
+
+<section><span class="et">Cosa</span>
+<h2>Gli otto percorsi</h2>
+<p>Ogni percorso corrisponde a un grado della storia. Tutti i percorsi restano sempre aperti: i primi due livelli di ciascuno riprendono il concetto chiave del precedente, così si entra dalla propria classe.</p>
+<table>
+<tr><th>Classe</th><th>Grado</th><th>Forma del codice</th><th>Concetti nuovi</th><th>Nel mondo di gioco</th></tr>
+<tr><td>1ª primaria</td><td>Stalliere</td><td>tessere-icona, senza testo</td><td>sequenza: passo, salto</td><td>solo tronchi, piste corte</td></tr>
+<tr><td>2ª primaria</td><td>Paggio</td><td>tessere-icona con numeri</td><td>parametri (quanti passi, che salto), primo «ripeti»</td><td>tre ostacoli, energia come carote</td></tr>
+<tr><td>3ª primaria</td><td>Scudiero</td><td>mattoncini con icona e parola</td><td>cicli, anche uno dentro l'altro</td><td>piste lunghe a ritmi</td></tr>
+<tr><td>4ª primaria</td><td>Cavaliere apprendista</td><td>mattoncini</td><td>se… allora, se… altrimenti</td><td>due manche, A e B</td></tr>
+<tr><td>5ª primaria</td><td>Cavaliere</td><td>mattoncini</td><td>ripeti fino al traguardo</td><td>manche a sorpresa</td></tr>
+<tr><td>1ª secondaria</td><td>Alfiere</td><td>mattoncini con Python accanto, poi prime righe</td><td>valore di un sensore come parametro; lettura del codice</td><td>pannello del codice</td></tr>
+<tr><td>2ª secondaria</td><td>Capitano</td><td>Python con tessere di aiuto</td><td><code>for</code>, <code>while</code>, <code>if/elif/else</code>, variabili e contatori</td><td>annuncio al giudice</td></tr>
+<tr><td>3ª secondaria</td><td>Campione</td><td>Python libero</td><td>confronti, <code>and</code>, <code>while</code> annidato, funzioni <code>def</code></td><td>energia, riposo, tempo massimo</td></tr>
+</table>
+<h3>Le regole, in breve</h3>
+<ul>
+  <li><b>Avanzare</b> contro un ostacolo ferma il cavallo (rifiuto). <b>Saltare</b> senza un ostacolo davanti lo fa impuntare.</li>
+  <li>Un salto con <b>potenza troppo bassa</b> abbatte l'ostacolo: 4 penalità, ma la corsa continua. Ogni salto <b>costa energia</b> quanto la sua potenza: saltare sempre alto non basta.</li>
+  <li>Ci si ferma <b>esattamente al traguardo</b>: un passo in più è fuori pista. È ciò che rende necessario contare (in 1ª) e «ripeti fino al traguardo» (in 5ª).</li>
+  <li><b>La manche a sorpresa</b>: il gioco genera 24 piste secondo le regole dichiarate, prova il programma su tutte e mostra la peggiore per quel programma. Un programma che funziona «per fortuna» non passa; quello sbagliato riceve sempre un controesempio da studiare.</li>
+</ul>
+<h3>Il linguaggio dei percorsi 6-8</h3>
+<pre>conta = 0
+while not traguardo():
+    if ostacolo_davanti():
+        salta(altezza())
+        conta = conta + 1
+    else:
+        avanza(1)
+annuncia(conta)</pre>
+<p>Azioni: <code>avanza(n)</code>, <code>salta(potenza)</code>, <code>riposa()</code>, <code>annuncia(x)</code>. Sensori: <code>ostacolo_davanti()</code>, <code>altezza()</code>, <code>traguardo()</code>, <code>energia()</code>. Costanti: <code>BASSA</code>, <code>MEDIA</code>, <code>ALTA</code>. È Python vero: lo stesso codice, con queste funzioni definite, girerebbe in un interprete Python.</p>
+</section>
+
+<section><span class="et">Come</span>
+<h2>Scaffolding: Usa, Modifica, Crea</h2>
+<p>Dentro ogni percorso la guida si dissolve in tre fasi.</p>
+<table>
+<tr><th>Livelli</th><th>Fase</th><th>Tipi di livello</th></tr>
+<tr><td>1-2</td><td>Usa</td><td><b>Osserva</b> (il programma è dato: si esegue e si guarda) · <b>Completa</b> (manca un pezzo)</td></tr>
+<tr><td>3-6</td><td>Modifica</td><td><b>Completa</b> · <b>Correggi</b> (c'è un errore) · <b>Accorcia</b> (funziona, ma è troppo lungo) · <b>Prevedi</b> (che cosa farà?)</td></tr>
+<tr><td>7-10</td><td>Crea</td><td><b>Crea</b> da zero; il livello 10 è la prova di grado</td></tr>
+</table>
+<ul>
+  <li>Ogni concetto nuovo arriva con una scheda «novità», poi un Osserva, poi un Completa, poi da soli.</li>
+  <li><b>Due aiuti a richiesta</b> per livello (il punto interrogativo in alto), graduati e senza costo in stelle. Il gioco non suggerisce mai la mossa senza che venga chiesta.</li>
+  <li><b>Chi non legge ancora</b> (1ª, in parte 2ª): consegna di poche parole in maiuscolo con il pulsante «ascolta»; aiuti ed errori sono visivi (la tessera che pulsa, la casella evidenziata, il pezzo giusto in trasparenza).</li>
+  <li><b>Tre traguardi, tre stelle</b>: traguardo in tutte le manche · percorso netto · programma entro una lunghezza massima. Basta la prima stella per proseguire: le altre sono una sfida in più, mai un blocco.</li>
+</ul>
+<div class="riquadro blu"><b>Durata indicativa.</b> Percorsi 1-4: circa una lezione. Percorsi 5-8: circa due lezioni. I progressi si ritrovano con classe e Mac, oppure con il codice gara.</div>
+</section>
+
+<section><span class="et">Valutare</span>
+<h2>Indicatori e rubrica</h2>
+<p>Il gioco non dà voti. Le stelle descrivono il programma, non la persona. Per l'osservazione in classe:</p>
+<table>
+<tr><th>Dimensione</th><th>In via di prima acquisizione</th><th>Base</th><th>Intermedio</th><th>Avanzato</th></tr>
+<tr><td><b>Costruire una sequenza</b></td><td>Aggiunge comandi per tentativi, senza seguire la pista</td><td>Costruisce la sequenza contando le caselle, con qualche errore di conteggio</td><td>Costruisce sequenze corrette e le controlla prima di eseguire</td><td>Prevede l'esito a mente e spiega a un compagno perché funziona</td></tr>
+<tr><td><b>Riconoscere ciò che si ripete</b></td><td>Riscrive ogni volta gli stessi comandi</td><td>Usa un ciclo quando gli viene indicato</td><td>Riconosce da solo il ritmo e sceglie il numero di giri</td><td>Annida cicli e accorcia un programma senza cambiarne l'effetto</td></tr>
+<tr><td><b>Generalizzare</b></td><td>Scrive un programma per una sola pista</td><td>Usa una condizione per due piste note</td><td>Scrive un programma che supera la manche a sorpresa</td><td>Spiega per quali piste il programma funziona e per quali no</td></tr>
+<tr><td><b>Usare l'errore</b></td><td>Cancella tutto e ricomincia</td><td>Legge il messaggio e corregge il punto indicato</td><td>Ricostruisce che cosa è successo prima dell'errore</td><td>Formula un'ipotesi, la verifica con «Passo» e la corregge</td></tr>
+<tr><td><b>Leggere e scrivere codice</b> (secondaria)</td><td>Riconosce i comandi ma non il ruolo dei rientri</td><td>Completa codice già impostato</td><td>Scrive programmi con cicli, condizioni e variabili</td><td>Organizza il codice con funzioni e lo rende leggibile</td></tr>
+</table>
+<h3>Domande di debrief</h3>
+<p>Alla fine di ogni percorso il gioco propone una domanda da discutere a voce o sul quaderno. In 1ª e 2ª la pone l'insegnante.</p>
+<ol>
+  <li>Come hai capito quante tessere servivano per arrivare alla bandiera?</li>
+  <li>Quando hai usato RIPETI, come hai capito che cosa si ripeteva?</li>
+  <li>Che cosa hai guardato nella pista per decidere dove mettere un ciclo?</li>
+  <li>Che cosa cambia tra un programma che conta le caselle e uno che guarda gli ostacoli?</li>
+  <li>Quando il giudice ha battuto il tuo programma, che cosa hai imparato da quella pista?</li>
+  <li>Che cosa ti ha aiutato di più a leggere il codice scritto: i mattoncini accanto, i rientri o provare?</li>
+  <li>Qual è l'errore che hai fatto più spesso scrivendo? Come lo riconosci adesso?</li>
+  <li>Tra le tue soluzioni, quale spiegheresti a un compagno come esempio di codice chiaro? Perché?</li>
+</ol>
+</section>
+
+<section><span class="et">In classe</span>
+<h2>Strumenti del docente</h2>
+<ul>
+  <li><b>Modalità docente</b>: cinque tocchi rapidi sul logo (nella schermata del titolo o nella barra in alto). Apre tutti i livelli e mostra il pulsante «Soluzione».</li>
+  <li><b>Link diretto</b> a un livello, per la LIM: <code>index.html?percorso=4&amp;livello=7</code>.</li>
+  <li><b>Stesse manche a sorpresa per tutta la classe</b>: <code>?seed=4A-martedi</code>. Con lo stesso seme le piste generate sono le stesse su ogni Mac, e si possono discutere insieme. Il seme in uso è scritto in piccolo sotto il campo di gara.</li>
+  <li><b>Pulsante «Passo»</b>: esegue un'istruzione alla volta. È lo strumento migliore per il debug guidato alla LIM.</li>
+  <li>Altri parametri: <code>?musica=0</code>, <code>?suoni=0</code>, <code>?classe=P4A</code> (preimposta la classe nella schermata «Chi sei?»).</li>
+</ul>
+<h3>Progressi: classe e Mac</h3>
+<p>All'inizio lo studente tocca la sua classe e il Mac che sta usando (1-28). Il numero del Mac decide la casata e il cavaliere: 1-7 AquilaBlu, 8-14 TassoRosso, 15-21 QuerciaVerde, 22-28 CeroGiallo. Chi torna allo stesso Mac ritrova le sue stelle; chi lo cambia, o gioca fuori dal laboratorio, usa il <b>codice gara</b> che compare a ogni vittoria.</p>
+<div class="riquadro verde"><b>Che cosa si salva.</b> Classe, numero del Mac e stelle. Mai un nome, mai un dato personale. Sui Mac non resta nulla: il gioco non usa la memoria permanente del browser.</div>
+<h3>Collegare il foglio dei progressi</h3>
+<p>Finché il foglio non è collegato il gioco funziona lo stesso, con i soli codici gara. Per collegarlo: aprire <span class="mono">_lavoro/apps-script/ippo.gs</span>, seguire le istruzioni in testa al file (foglio Google della scuola, Apps Script, deployment come app web con «Esegui come: Me» e «Accesso: Chiunque») e incollare l'indirizzo che finisce con <span class="mono">/exec</span> nella costante <span class="mono">REGISTRO_URL</span> di <span class="mono">index.html</span>. A ogni modifica dello script va pubblicata una nuova versione.</p>
+<h3>Codici gara</h3>
+<p>Ogni codice apre il livello indicato del suo percorso. Si inserisce nella schermata del Castello.</p>
+<div class="codici" id="codici"></div>
+</section>
+
+<section><span class="et">Crediti</span>
+<h2>Immagini, musiche, strumenti</h2>
+<ul>
+  <li><b>Illustrazioni</b> di personaggi, ostacoli e ambienti fornite da Andrea Cerioli; scontorno eseguito in locale.</li>
+  <li><b>Musiche</b>: «Medieval: The Old Tower Inn», «The Bard's Tale», «Minstrel Dance», «Market Day», «Victory Theme» di RandomMind, da OpenGameArt.org, licenza CC0 (pubblico dominio). Ricodificate e, la fanfara, accorciata.</li>
+  <li><b>Effetti sonori</b> sintetizzati nel browser. <b>Lettura della consegna</b> con la sintesi vocale del dispositivo.</li>
+  <li><b>Caratteri</b>: Baloo 2, Atkinson Hyperlegible, JetBrains Mono (Google Fonts).</li>
+</ul>
+<div class="azioni"><a class="btn" href="index.html">Apri il gioco</a><button class="btn carta" onclick="print()">Stampa questa scheda</button></div>
+</section>
+</main>
+<footer>Scuola Sacra Famiglia · Orzinuovi (BS) · sacrafamiglia.edu.it<br>© 2026 Andrea Cerioli — Animatore Digitale · serie del coding · gioco 5</footer>
+<script>
+// stessa formula di IPPO.codice() in index.html
+const PAROLE = ['FIENO', 'SELLA', 'TROTTO', 'STAFFA', 'GALOPPO', 'STEMMA', 'PERGAMENA', 'TORNEO'];
+const GRADI = ['1ª primaria · Stalliere', '2ª primaria · Paggio', '3ª primaria · Scudiero', '4ª primaria · Cavaliere apprendista', '5ª primaria · Cavaliere', '1ª secondaria · Alfiere', '2ª secondaria · Capitano', '3ª secondaria · Campione'];
+const codice = (p, l) => PAROLE[p - 1] + '-' + ((p * 37 + l * 53 + 11) % 90 + 10);
+document.getElementById('codici').innerHTML = GRADI.map((g, i) => '<div><b>' + g + '</b><br>' + Array.from({ length: 9 }, (_, k) => 'liv. ' + (k + 2) + ': <span class="mono">' + codice(i + 1, k + 2) + '</span>').join('<br>') + '</div>').join('');
+</script>
+</body>
+</html>
