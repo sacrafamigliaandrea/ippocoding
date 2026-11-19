@@ -2498,7 +2498,7 @@ function avvia() {
   $('#b-indietro').onclick = () => { Suoni.click(); Voce.taci(); if (schermo === 's-gara') { Gioco.stop(false); vaiStalla(STATO.percorso); } else if (schermo === 's-stalla') vaiCastello(); else mostra('s-titolo'); };
   $('#chi-chip').onclick = () => { if (schermo === 's-gara') return; mostra('s-titolo'); chiediChi(vaiCastello); };
   $('#chi-chip').style.cursor = 'pointer'; $('#chi-chip').title = 'Cambia classe e Mac';
-  $('#b-gioca').innerHTML = ico('ferro') + 'GIOCA';
+  $('#b-gioca').textContent = 'GIOCA';
   $('#b-gioca').onclick = () => { Suoni.pop(); if (STATO.chi || STATO.senza) vaiCastello(); else chiediChi(vaiCastello); };
   cinqueTocchi($('#zona-logo')); cinqueTocchi($('#marchio'));
   window.addEventListener('keydown', e => { if (e.key === 'Escape') ['ov-aiuto', 'ov-docente'].forEach(chiudiOv); });
