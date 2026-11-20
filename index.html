@@ -506,6 +506,41 @@ svg{display:block}
 #ov-scena{padding:0;background:#000}
 #ov-scena .fondo{animation:zoom 14s ease-out both}
 @keyframes zoom{from{transform:scale(1.08)}}
+/* ---------- la crescita del cavallo: effetto speciale (carte da _lavoro/asset/prepara_carte.py) */
+.crescita{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.1rem;padding:1.2rem;overflow:hidden;background:radial-gradient(circle at 50% 40%,#3B2A5E,#120A24 70%)}
+.cr-raggi{position:absolute;left:50%;top:40%;width:150vmax;height:150vmax;margin:-75vmax 0 0 -75vmax;background:repeating-conic-gradient(rgba(255,214,110,.16) 0 7deg,transparent 7deg 18deg);animation:cr-gira 14s linear infinite;opacity:0;transition:opacity 1s}
+.crescita.carica .cr-raggi{opacity:.6}.crescita.nuova .cr-raggi{opacity:1}
+@keyframes cr-gira{to{transform:rotate(360deg)}}
+.cr-titolo{position:relative;font-family:var(--f-display);font-weight:800;font-size:2.4rem;color:#FFE7A3;text-shadow:0 .2rem .8rem rgba(0,0,0,.6);letter-spacing:.02em;opacity:0;transform:translateY(-.6rem);transition:all .6s var(--molla)}
+.crescita.nuova .cr-titolo{opacity:1;transform:none}
+.cr-carta{position:relative;width:min(58vw,46rem);aspect-ratio:900/490;border-radius:1.2rem;box-shadow:0 0 0 .35rem #E9C77A,0 0 0 .55rem #8A5A16,0 1.5rem 3rem rgba(0,0,0,.6)}
+.cr-carta img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:1.2rem}
+.cr-carta .nuova{opacity:0}
+.crescita.carica .cr-carta{animation:cr-trema .12s linear infinite}
+@keyframes cr-trema{25%{transform:translate(-.15rem,.1rem) rotate(-.4deg)}75%{transform:translate(.15rem,-.1rem) rotate(.4deg)}}
+.crescita.nuova .cr-carta{animation:cr-esplode .9s var(--molla)}
+.crescita.nuova .cr-carta .vecchia{opacity:0}.crescita.nuova .cr-carta .nuova{opacity:1}
+@keyframes cr-esplode{0%{transform:scale(.8)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+.cr-lampo{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.crescita.lampo .cr-lampo{animation:cr-lampo .7s ease-out}
+@keyframes cr-lampo{0%{opacity:0}15%{opacity:.95}100%{opacity:0}}
+.cr-stella{position:absolute;left:50%;top:40%;width:1.4rem;height:1.4rem;background:var(--c,#FFD45C);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:cr-vola 1.6s cubic-bezier(.15,.7,.3,1) forwards;pointer-events:none}
+@keyframes cr-vola{to{transform:translate(var(--dx),var(--dy)) rotate(var(--r)) scale(.4);opacity:0}}
+.cr-scintilla{position:absolute;width:.5rem;height:.5rem;border-radius:50%;background:#FFE7A3;box-shadow:0 0 .6rem #FFD45C;animation:cr-entra .9s ease-in forwards;pointer-events:none}
+@keyframes cr-entra{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+.cr-fila{position:relative;display:flex;gap:.9rem;opacity:0;transition:opacity .6s .3s}
+.crescita.nuova .cr-fila{opacity:1}
+.cr-fila figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:.25rem;color:#E8DCC0;font-size:.85rem;font-weight:700;text-align:center}
+.cr-fila .mini{position:relative;width:8.5rem;aspect-ratio:900/490;border-radius:.5rem;overflow:hidden;border:.18rem solid #8A6A3A}
+.cr-fila .mini img{width:100%;height:100%;object-fit:cover}
+.cr-fila .chiusa img{filter:grayscale(1) brightness(.35)}
+.cr-fila .chiusa .ico{position:absolute;left:50%;top:50%;width:1.8rem;height:1.8rem;margin:-.9rem 0 0 -.9rem;color:#E8DCC0}
+.cr-fila .qui .mini{border-color:#FFD45C;box-shadow:0 0 0 .2rem rgba(255,212,92,.5),0 0 1.2rem rgba(255,212,92,.6)}
+.cr-fila .qui{color:#FFE7A3}
+.cr-fila small{font-weight:500;opacity:.8}
+.cr-testo{position:relative;display:flex;align-items:center;gap:1rem;width:min(92vw,52rem);padding:.9rem 1.2rem;opacity:0;transition:opacity .6s .6s}
+.crescita.nuova .cr-testo{opacity:1}
+.cr-testo .t{flex:1}.cr-testo h2{font-size:1.5rem;color:var(--blu)}.cr-testo p{margin:.15rem 0 0;font-size:1.15rem;line-height:1.35}
 .scena-alone{position:absolute;left:50%;top:40%;width:min(70vh,46rem);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,226,140,.75),rgba(224,169,27,.25) 45%,transparent 70%);animation:appare 1s ease-out both}
 .scena-figura{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);height:min(50vh,32rem);width:auto;filter:drop-shadow(0 1rem 1.2rem rgba(0,0,0,.45));animation:cresce .9s var(--molla) both}
 @keyframes cresce{from{transform:translate(-50%,-50%) scale(.7);opacity:0}}
@@ -884,7 +919,8 @@ const IPPO = (() => {
 
   // ============================================================ PISTE
   // Una pista è una stringa: un carattere per casella da 1 a N. «.» libera, «b» «m» «a» ostacolo basso, medio, alto.
-  // La casella 0 è la partenza, la N il traguardo. Mai due ostacoli vicini; l'ultimo al più in N-2 (si atterra a +2).
+  // La casella 0 è la partenza, la N il traguardo. Il salto si fa nella casella dell'ostacolo (20/11/2026): ostacoli
+  // vicini ammessi, l'ultimo al più in N-1.
   const ALTEZZE = { b: 1, m: 2, a: 3 };
   function pista(str, opz) {
     opz = opz || {};
@@ -893,15 +929,16 @@ const IPPO = (() => {
       const c = str[k - 1];
       if (c === '.') continue;
       if (!(c in ALTEZZE)) throw new Error(`pista «${str}»: carattere non valido «${c}»`);
-      if (k - prima < 2) throw new Error(`pista «${str}»: due ostacoli vicini alle caselle ${prima} e ${k}`);
-      if (k > str.length - 2) throw new Error(`pista «${str}»: ostacolo troppo in fondo alla casella ${k} (al massimo in N-2)`);
+      // dal 20/11/2026 il salto si fa nella casella dell'ostacolo: due ostacoli vicini si saltano uno dopo l'altro,
+      // e l'ultimo può stare nella penultima casella (dopo il salto resta almeno un passo fino al traguardo)
+      if (k > str.length - 1) throw new Error(`pista «${str}»: ostacolo troppo in fondo alla casella ${k} (al massimo in N-1)`);
       ost[k] = ALTEZZE[c]; somma += ALTEZZE[c]; n++; if (ALTEZZE[c] === 3) alti++; prima = k;
     }
     let e0 = null, emax = null, tmax = null;
     if (opz.e0 != null) { e0 = opz.e0; emax = opz.emax != null ? opz.emax : opz.e0; }
     else if (opz.e != null) { e0 = somma + opz.e; emax = e0; }      // energia = somma delle altezze + margine
-    // tempo minimo = passi + salti + riposi indispensabili; il margine t si aggiunge
-    if (opz.t != null) tmax = str.length - n + (e0 == null ? 0 : Math.max(0, somma - e0)) + opz.t;
+    // tempo minimo = una mossa per casella (passo o salto) + riposi indispensabili; il margine t si aggiunge
+    if (opz.t != null) tmax = str.length + (e0 == null ? 0 : Math.max(0, somma - e0)) + opz.t;
     return { str, len: str.length, ost, e0, emax, tmax, somma, n, alti };
   }
 
@@ -971,7 +1008,7 @@ const IPPO = (() => {
           if (S.energia != null) S.energia -= pot;
           const da = S.pos, netto = pot >= h;
           if (!netto) S.pen += 4;
-          S.pos += 2; S.tempo++;
+          S.pos += 1; S.tempo++;                                      // il salto si fa nella casella dell'ostacolo: una casella, come il passo (20/11/2026)
           if (S.pos === p.len) S.arrivato = true;
           const f = foto(n, 'salto', { da, a: S.pos, cella: da + 1, p: pot, h, esito: netto ? 'netto' : 'abbattuto', arrivo: S.arrivato });
           if (!netto) { f.breve = 'SALTO TROPPO BASSO'; f.msg = `Alla casella ${da + 1} c'era ${NOME_OST[h]}: il salto ${NOME_POT[pot]} l'ha abbattuto (4 penalità). Che potenza serve per superarlo?`; }
@@ -1144,181 +1181,181 @@ const PERCORSI = [null,
   { n: 'Due passi', k: 'osserva', c: 'PREMI VIA E GUARDA', m: ['..'], ini: 'avanza(1)|avanza(1)', nov: 'passo' },
   { n: 'Manca un passo', k: 'completa', c: 'MANCA UN PASSO', m: ['...'], ini: 'avanza(1)|avanza(1)|___', sol: 'avanza(1)|avanza(1)|avanza(1)' },
   { n: 'Fino alla bandiera', k: 'crea', c: 'PORTA IL CAVALLO ALLA BANDIERA', m: ['....'], sol: 'avanza(1)|avanza(1)|avanza(1)|avanza(1)' },
-  { n: 'Il primo salto', k: 'osserva', c: 'GUARDA IL SALTO', m: ['.b..'], ini: 'avanza(1)|salta(BASSA)|avanza(1)', nov: 'salto' },
-  { n: 'Manca il salto', k: 'completa', c: 'MANCA IL SALTO', m: ['..b..'], ini: 'avanza(1)|avanza(1)|___|avanza(1)', sol: 'avanza(1)|avanza(1)|salta(BASSA)|avanza(1)' },
-  { n: 'Il tronco', k: 'crea', c: 'SALTA IL TRONCO', m: ['.b...'], sol: 'avanza(1)|salta(BASSA)|avanza(1)|avanza(1)' },
-  { n: 'Tessera sbagliata', k: 'correggi', c: 'TROVA LA TESSERA SBAGLIATA', m: ['..b..'], ini: 'avanza(1)|avanza(1)|avanza(1)|avanza(1)', sol: 'avanza(1)|avanza(1)|salta(BASSA)|avanza(1)' },
-  { n: 'Due tronchi', k: 'crea', c: 'DUE TRONCHI DA SALTARE', m: ['.b..b..'], sol: 'avanza(1)|salta(BASSA)|avanza(1)|salta(BASSA)|avanza(1)' },
-  { n: 'Pista lunga', k: 'crea', c: 'PISTA LUNGA: CONTA BENE', m: ['..b...b..'], sol: 'avanza(1)|avanza(1)|salta(BASSA)|avanza(1)|avanza(1)|salta(BASSA)|avanza(1)' },
-  { n: 'La prova dello Stalliere', k: 'crea', c: 'LA PROVA DELLO STALLIERE', m: ['.b..b...b..'], sol: 'avanza(1)|salta(BASSA)|avanza(1)|salta(BASSA)|avanza(1)|avanza(1)|salta(BASSA)|avanza(1)' }
+  { n: 'Il primo salto', k: 'osserva', c: 'GUARDA IL SALTO', m: ['.b.'], ini: 'avanza(1)|salta(BASSA)|avanza(1)', nov: 'salto' },
+  { n: 'Manca il salto', k: 'completa', c: 'MANCA IL SALTO', m: ['..b.'], ini: 'avanza(1)|avanza(1)|___|avanza(1)', sol: 'avanza(1)|avanza(1)|salta(BASSA)|avanza(1)' },
+  { n: 'Il tronco', k: 'crea', c: 'SALTA IL TRONCO', m: ['.b..'], sol: 'avanza(1)|salta(BASSA)|avanza(1)|avanza(1)' },
+  { n: 'Tessera sbagliata', k: 'correggi', c: 'TROVA LA TESSERA SBAGLIATA', m: ['..b.'], ini: 'avanza(1)|avanza(1)|avanza(1)|avanza(1)', sol: 'avanza(1)|avanza(1)|salta(BASSA)|avanza(1)' },
+  { n: 'Due tronchi', k: 'crea', c: 'DUE TRONCHI DA SALTARE', m: ['.b.b.'], sol: 'avanza(1)|salta(BASSA)|avanza(1)|salta(BASSA)|avanza(1)' },
+  { n: 'Pista lunga', k: 'crea', c: 'PISTA LUNGA: CONTA BENE', m: ['..b..b.'], sol: 'avanza(1)|avanza(1)|salta(BASSA)|avanza(1)|avanza(1)|salta(BASSA)|avanza(1)' },
+  { n: 'La prova dello Stalliere', k: 'crea', c: 'LA PROVA DELLO STALLIERE', m: ['.b.b..b.'], sol: 'avanza(1)|salta(BASSA)|avanza(1)|salta(BASSA)|avanza(1)|avanza(1)|salta(BASSA)|avanza(1)' }
 ] },
 { grado: 'Paggio', titolo: 'Passi contati', forma: 'tessere', cmd: ['avanza', 'salta'], livelli: [
   { n: 'Un numero', k: 'osserva', c: 'UN NUMERO, TANTI PASSI', m: ['...'], cmd: ['avanza'], ini: 'avanza(3)', nov: 'numero' },
   { n: 'Quanti passi?', k: 'completa', c: 'QUANTI PASSI SERVONO?', m: ['......'], cmd: ['avanza'], ini: 'avanza(___)', sol: 'avanza(6)' },
-  { n: 'Passi e tronco', k: 'crea', c: 'PASSI, SALTO, PASSI', m: ['...b...'], pot: 'b', sol: 'avanza(3)|salta(BASSA)|avanza(2)' },
-  { n: 'Salto troppo basso', k: 'osserva', c: 'GUARDA: SALTO TROPPO BASSO', m: ['..m..'], e: 0, ini: 'avanza(2)|salta(BASSA)|avanza(1)', nov: 'altezze' },
-  { n: 'Il salto giusto', k: 'completa', c: 'SCEGLI IL SALTO GIUSTO', m: ['..b..m..a..'], e: 0, ini: 'avanza(2)|salta(___)|avanza(1)|salta(___)|avanza(1)|salta(___)|avanza(1)', sol: 'avanza(2)|salta(BASSA)|avanza(1)|salta(MEDIA)|avanza(1)|salta(ALTA)|avanza(1)' },
-  { n: 'Tre ostacoli', k: 'crea', c: 'TRE OSTACOLI, TRE SALTI', m: ['.m..a.b..'], e: 0, sol: 'avanza(1)|salta(MEDIA)|avanza(1)|salta(ALTA)|salta(BASSA)|avanza(1)' },
-  { n: 'Due errori', k: 'correggi', c: 'UN NUMERO E UN SALTO SBAGLIATI', m: ['...m..b...'], e: 0, ini: 'avanza(2)|salta(BASSA)|avanza(1)|salta(BASSA)|avanza(2)', sol: 'avanza(3)|salta(MEDIA)|avanza(1)|salta(BASSA)|avanza(2)' },
-  { n: 'Ripeti', k: 'osserva', c: 'GUARDA: RIPETI TRE VOLTE', m: ['.b..b..b..'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], ini: 'for i in range(3):|>avanza(1)|>salta(BASSA)|avanza(1)', nov: 'ripeti' },
-  { n: 'Quante volte?', k: 'completa', c: 'QUANTE VOLTE SI RIPETE?', m: ['.m..m..m..m..'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], ini: 'for i in range(___):|>avanza(1)|>salta(MEDIA)|avanza(1)', sol: 'for i in range(4):|>avanza(1)|>salta(MEDIA)|avanza(1)' },
-  { n: 'La prova del Paggio', k: 'crea', c: 'LA PROVA DEL PAGGIO', m: ['..m...m...m...'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], sol: 'for i in range(3):|>avanza(2)|>salta(MEDIA)|avanza(2)' }
+  { n: 'Passi e tronco', k: 'crea', c: 'PASSI, SALTO, PASSI', m: ['...b..'], pot: 'b', sol: 'avanza(3)|salta(BASSA)|avanza(2)' },
+  { n: 'Salto troppo basso', k: 'osserva', c: 'GUARDA: SALTO TROPPO BASSO', m: ['..m.'], e: 0, ini: 'avanza(2)|salta(BASSA)|avanza(1)', nov: 'altezze' },
+  { n: 'Il salto giusto', k: 'completa', c: 'SCEGLI IL SALTO GIUSTO', m: ['..b.m.a.'], e: 0, ini: 'avanza(2)|salta(___)|avanza(1)|salta(___)|avanza(1)|salta(___)|avanza(1)', sol: 'avanza(2)|salta(BASSA)|avanza(1)|salta(MEDIA)|avanza(1)|salta(ALTA)|avanza(1)' },
+  { n: 'Tre ostacoli', k: 'crea', c: 'TRE OSTACOLI, TRE SALTI', m: ['.m.ab.'], e: 0, sol: 'avanza(1)|salta(MEDIA)|avanza(1)|salta(ALTA)|salta(BASSA)|avanza(1)' },
+  { n: 'Due errori', k: 'correggi', c: 'UN NUMERO E UN SALTO SBAGLIATI', m: ['...m.b..'], e: 0, ini: 'avanza(2)|salta(BASSA)|avanza(1)|salta(BASSA)|avanza(2)', sol: 'avanza(3)|salta(MEDIA)|avanza(1)|salta(BASSA)|avanza(2)' },
+  { n: 'Ripeti', k: 'osserva', c: 'GUARDA: RIPETI TRE VOLTE', m: ['.b.b.b.'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], ini: 'for i in range(3):|>avanza(1)|>salta(BASSA)|avanza(1)', nov: 'ripeti' },
+  { n: 'Quante volte?', k: 'completa', c: 'QUANTE VOLTE SI RIPETE?', m: ['.m.m.m.m.'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], ini: 'for i in range(___):|>avanza(1)|>salta(MEDIA)|avanza(1)', sol: 'for i in range(4):|>avanza(1)|>salta(MEDIA)|avanza(1)' },
+  { n: 'La prova del Paggio', k: 'crea', c: 'LA PROVA DEL PAGGIO', m: ['..m..m..m..'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], sol: 'for i in range(3):|>avanza(2)|>salta(MEDIA)|avanza(2)' }
 ] },
 { grado: 'Scudiero', titolo: 'Il ritmo del trotto', forma: 'mattoncini', cmd: ['avanza', 'salta', 'ripeti'], livelli: [
-  { n: 'Tessere con le parole', k: 'osserva', c: 'Le tessere ora hanno le parole: premi ESEGUI e osserva.', m: ['..b..m..'], e: 0, ini: 'avanza(2)|salta(BASSA)|avanza(1)|salta(MEDIA)|avanza(1)', nov: 'mattoncini',
+  { n: 'Tessere con le parole', k: 'osserva', c: 'Le tessere ora hanno le parole: premi ESEGUI e osserva.', m: ['..b.m.'], e: 0, ini: 'avanza(2)|salta(BASSA)|avanza(1)|salta(MEDIA)|avanza(1)', nov: 'mattoncini',
     dopo: 'Ogni mattoncino è una tessera che conosci già: AVANZA con il numero dei passi, SALTA con la sua potenza.' },
-  { n: 'Pezzi mancanti', k: 'completa', c: 'Completa i pezzi mancanti per arrivare al traguardo.', m: ['...a..b...'], e: 0, ini: 'avanza(3)|salta(___)|___|salta(BASSA)|avanza(___)', sol: 'avanza(3)|salta(ALTA)|avanza(1)|salta(BASSA)|avanza(2)',
-    a: ['Guarda gli ostacoli: il primo è un muro. Che potenza serve per un muro?', 'Dopo il muro sei alla casella 5: per arrivare davanti al tronco manca un passo. Alla fine servono 2 passi.'] },
-  { n: 'Troppo lungo', k: 'accorcia', c: 'Funziona, ma è lungo: accorcialo con RIPETI (4 mattoncini).', m: ['.b..b..b..b..'], e: 0, nov: 'ripeti-m',
+  { n: 'Pezzi mancanti', k: 'completa', c: 'Completa i pezzi mancanti per arrivare al traguardo.', m: ['...a.b..'], e: 0, ini: 'avanza(3)|salta(___)|___|salta(BASSA)|avanza(___)', sol: 'avanza(3)|salta(ALTA)|avanza(1)|salta(BASSA)|avanza(2)',
+    a: ['Guarda gli ostacoli: il primo è un muro. Che potenza serve per un muro?', 'Dopo il muro sei alla casella 4: per arrivare davanti al tronco manca un passo. Alla fine servono 2 passi.'] },
+  { n: 'Troppo lungo', k: 'accorcia', c: 'Funziona, ma è lungo: accorcialo con RIPETI (4 mattoncini).', m: ['.b.b.b.b.'], e: 0, nov: 'ripeti-m',
     ini: 'avanza(1)|salta(BASSA)|avanza(1)|salta(BASSA)|avanza(1)|salta(BASSA)|avanza(1)|salta(BASSA)|avanza(1)', sol: 'for i in range(4):|>avanza(1)|>salta(BASSA)|avanza(1)',
     a: ['Cerca i mattoncini che si ripetono uguali: AVANZA 1 e SALTA basso tornano quattro volte.', 'Metti AVANZA 1 e SALTA basso dentro un RIPETI 4 VOLTE; l\'ultimo passo resta fuori dal ciclo.'] },
-  { n: 'Dentro il ciclo', k: 'completa', c: 'Nel ciclo manca un mattoncino: quale?', m: ['..m...m...m..'], e: 0, ini: 'for i in range(3):|>avanza(2)|>___|avanza(1)', sol: 'for i in range(3):|>avanza(2)|>salta(MEDIA)|avanza(1)',
+  { n: 'Dentro il ciclo', k: 'completa', c: 'Nel ciclo manca un mattoncino: quale?', m: ['..m..m..m.'], e: 0, ini: 'for i in range(3):|>avanza(2)|>___|avanza(1)', sol: 'for i in range(3):|>avanza(2)|>salta(MEDIA)|avanza(1)',
     a: ['Guarda che cosa c\'è dopo due passi: una barriera.', 'Dentro il ciclo, dopo AVANZA 2, serve SALTA a potenza media.'] },
-  { n: 'Ciclo e rettilineo', k: 'crea', c: 'Tre muri in fila, poi un rettilineo: usa RIPETI.', m: ['.a..a..a.....'], e: 0, sol: 'for i in range(3):|>avanza(1)|>salta(ALTA)|avanza(4)',
+  { n: 'Ciclo e rettilineo', k: 'crea', c: 'Tre muri in fila, poi un rettilineo: usa RIPETI.', m: ['.a.a.a....'], e: 0, sol: 'for i in range(3):|>avanza(1)|>salta(ALTA)|avanza(4)',
     a: ['I tre muri hanno lo stesso ritmo: un passo e un salto. Quante volte si ripete?', 'RIPETI 3 VOLTE con AVANZA 1 e SALTA alto; poi, fuori dal ciclo, AVANZA 4.'] },
-  { n: 'Cavallo stanco', k: 'correggi', c: 'Il cavallo si stanca: scegli per ogni salto la potenza giusta.', m: ['..b..m..b..'], e: 0,
+  { n: 'Cavallo stanco', k: 'correggi', c: 'Il cavallo si stanca: scegli per ogni salto la potenza giusta.', m: ['..b.m.b.'], e: 0,
     ini: 'avanza(2)|salta(ALTA)|avanza(1)|salta(ALTA)|avanza(1)|salta(ALTA)|avanza(1)', sol: 'avanza(2)|salta(BASSA)|avanza(1)|salta(MEDIA)|avanza(1)|salta(BASSA)|avanza(1)',
     a: ['Guarda le carote: bastano appena per i salti giusti. Tronco 1, barriera 2, muro 3.', 'Il primo e il terzo ostacolo sono tronchi (potenza bassa), il secondo è una barriera (media).'] },
-  { n: 'Due ritmi', k: 'crea', c: 'Due ritmi diversi: servono due cicli, uno dopo l\'altro.', m: ['.b..b...m...m..'], e: 0, sol: 'for i in range(2):|>avanza(1)|>salta(BASSA)|for i in range(2):|>avanza(2)|>salta(MEDIA)|avanza(1)',
+  { n: 'Due ritmi', k: 'crea', c: 'Due ritmi diversi: servono due cicli, uno dopo l\'altro.', m: ['.b.b..m..m.'], e: 0, sol: 'for i in range(2):|>avanza(1)|>salta(BASSA)|for i in range(2):|>avanza(2)|>salta(MEDIA)|avanza(1)',
     a: ['La pista ha due ritmi: prima due tronchi vicini, poi due barriere più distanti.', 'Primo ciclo: 2 volte AVANZA 1 e SALTA basso. Secondo ciclo: 2 volte AVANZA 2 e SALTA medio. Poi un passo.'] },
-  { n: 'Ciclo dentro ciclo', k: 'completa', c: 'Un ciclo dentro un altro ciclo: completa quello interno.', m: ['.b.b.b...b.b.b..'], e: 0, ini: 'for i in range(2):|>avanza(1)|>for j in range(___):|>>___|>avanza(1)', sol: 'for i in range(2):|>avanza(1)|>for j in range(3):|>>salta(BASSA)|>avanza(1)',
+  { n: 'Ciclo dentro ciclo', k: 'completa', c: 'Un ciclo dentro un altro ciclo: completa quello interno.', m: ['.bbb..bbb.'], e: 0, ini: 'for i in range(2):|>avanza(1)|>for j in range(___):|>>___|>avanza(1)', sol: 'for i in range(2):|>avanza(1)|>for j in range(3):|>>salta(BASSA)|>avanza(1)',
     a: ['Conta i tronchi in fila dopo il primo passo: sono tre, uno dopo l\'altro.', 'Il ciclo interno ripete 3 volte un solo mattoncino: SALTA basso.'] },
-  { n: 'Un giro di meno', k: 'correggi', c: 'Il ciclo fa un giro di meno: trova il numero giusto.', m: ['.m..m..m..m...'], e: 0, ini: 'for i in range(3):|>avanza(1)|>salta(MEDIA)|avanza(2)', sol: 'for i in range(4):|>avanza(1)|>salta(MEDIA)|avanza(2)',
-    a: ['Segui il cavallo: dopo tre giri è alla casella 9. Quante barriere restano?', 'Le barriere sono quattro: il ciclo deve fare 4 giri.'] },
-  { n: 'La prova dello Scudiero', k: 'crea', c: 'La prova dello Scudiero: ritmo, energia giusta, pochi mattoncini.', m: ['.b.b..a..b.b..a..'], e: 0, sol: 'for i in range(2):|>avanza(1)|>for j in range(2):|>>salta(BASSA)|>avanza(1)|>salta(ALTA)|avanza(1)',
+  { n: 'Un giro di meno', k: 'correggi', c: 'Il ciclo fa un giro di meno: trova il numero giusto.', m: ['.m.m.m.m..'], e: 0, ini: 'for i in range(3):|>avanza(1)|>salta(MEDIA)|avanza(2)', sol: 'for i in range(4):|>avanza(1)|>salta(MEDIA)|avanza(2)',
+    a: ['Segui il cavallo: dopo tre giri è alla casella 6. Quante barriere restano?', 'Le barriere sono quattro: il ciclo deve fare 4 giri.'] },
+  { n: 'La prova dello Scudiero', k: 'crea', c: 'La prova dello Scudiero: ritmo, energia giusta, pochi mattoncini.', m: ['.bb.a.bb.a.'], e: 0, sol: 'for i in range(2):|>avanza(1)|>for j in range(2):|>>salta(BASSA)|>avanza(1)|>salta(ALTA)|avanza(1)',
     a: ['La pista è fatta di due metà uguali. Che cosa si ripete dentro ogni metà?', 'RIPETI 2 VOLTE: AVANZA 1, due SALTA basso, AVANZA 1, SALTA alto. Alla fine, fuori dal ciclo, un passo.'] }
 ] },
 { grado: 'Cavaliere apprendista', titolo: 'Occhi aperti', forma: 'mattoncini', cmd: ['avanza', 'salta', 'ripeti', 'se', 'sealt'], livelli: [
-  { n: 'Ripasso: il ritmo', k: 'osserva', c: 'Ripasso: il ciclo ripete lo stesso ritmo. Premi ESEGUI.', m: ['.b..b..b..'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], ini: 'for i in range(3):|>avanza(1)|>salta(BASSA)|avanza(1)',
+  { n: 'Ripasso: il ritmo', k: 'osserva', c: 'Ripasso: il ciclo ripete lo stesso ritmo. Premi ESEGUI.', m: ['.b.b.b.'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], ini: 'for i in range(3):|>avanza(1)|>salta(BASSA)|avanza(1)',
     dopo: 'Un ciclo funziona quando la pista ha un ritmo regolare. E se gli ostacoli cambiano posto da una manche all\'altra?' },
-  { n: 'Due manche', k: 'osserva', c: 'Due manche, un solo programma: che cosa succede in B?', m: ['..b....', '....b..'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], ini: 'avanza(2)|salta(BASSA)|avanza(3)', nov: 'manche',
+  { n: 'Due manche', k: 'osserva', c: 'Due manche, un solo programma: che cosa succede in B?', m: ['..b...', '....b.'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], ini: 'avanza(2)|salta(BASSA)|avanza(3)', nov: 'manche',
     dopo: 'In A il tronco è alla casella 3, in B alla 5: contare le caselle non basta più. Serve un programma che guardi dove sono gli ostacoli.' },
-  { n: 'Se ostacolo davanti', k: 'completa', c: 'Completa il SE: quando deve saltare il cavallo?', m: ['..b....', '....b..'], e: 0, cmd: ['avanza', 'salta', 'ripeti', 'se'], nov: 'se',
+  { n: 'Se ostacolo davanti', k: 'completa', c: 'Completa il SE: quando deve saltare il cavallo?', m: ['..b...', '....b.'], e: 0, cmd: ['avanza', 'salta', 'ripeti', 'se'], nov: 'se',
     ini: 'for i in range(5):|>if ___:|>>salta(BASSA)|>avanza(1)', sol: 'for i in range(5):|>if ostacolo_davanti():|>>salta(BASSA)|>avanza(1)',
     a: ['Il SE fa saltare il cavallo solo quando serve. Che cosa deve vedere davanti a sé?', 'Tocca il punto di domanda nel SE finché compare «ostacolo davanti».'] },
-  { n: 'Un programma, due piste', k: 'crea', c: 'Scrivi un solo programma che superi tutte e due le manche.', m: ['.b....b..', '...b..b..'], e: 0, cmd: ['avanza', 'salta', 'ripeti', 'se'], sol: 'for i in range(5):|>if ostacolo_davanti():|>>salta(BASSA)|>avanza(1)',
+  { n: 'Un programma, due piste', k: 'crea', c: 'Scrivi un solo programma che superi tutte e due le manche.', m: ['.b...b.', '...b.b.'], e: 0, cmd: ['avanza', 'salta', 'ripeti', 'se'], sol: 'for i in range(5):|>if ostacolo_davanti():|>>salta(BASSA)|>avanza(1)',
     a: ['Usa un RIPETI con dentro un SE: se c\'è un ostacolo davanti salta, poi fai sempre un passo.', 'RIPETI 5 VOLTE: SE ostacolo davanti, SALTA basso; sotto il SE, sempre AVANZA 1.'] },
-  { n: 'Altrimenti', k: 'completa', c: 'Ostacoli vicini: completa il ramo ALTRIMENTI.', m: ['.b.b...', '..b.b..'], e: 0, nov: 'altrimenti',
+  { n: 'Altrimenti', k: 'completa', c: 'Ostacoli vicini: completa il ramo ALTRIMENTI.', m: ['.bb..', '..bb.'], e: 0, nov: 'altrimenti',
     ini: 'for i in range(5):|>if ostacolo_davanti():|>>salta(BASSA)|>else:|>>___', sol: 'for i in range(5):|>if ostacolo_davanti():|>>salta(BASSA)|>else:|>>avanza(1)',
     a: ['Dopo un salto potrebbe esserci subito un altro tronco: il passo va fatto solo se la via è libera.', 'Nel ramo ALTRIMENTI metti AVANZA 1.'] },
-  { n: 'Barriere sparse', k: 'crea', c: 'Stesso programma per A e B: usa SE e ALTRIMENTI.', m: ['..m.m...m..', '.m...m.m...'], e: 0, sol: 'for i in range(8):|>if ostacolo_davanti():|>>salta(MEDIA)|>else:|>>avanza(1)',
+  { n: 'Barriere sparse', k: 'crea', c: 'Stesso programma per A e B: usa SE e ALTRIMENTI.', m: ['..mm..m.', '.m..mm..'], e: 0, sol: 'for i in range(8):|>if ostacolo_davanti():|>>salta(MEDIA)|>else:|>>avanza(1)',
     a: ['A ogni giro il cavallo fa una cosa sola: salta oppure avanza di un passo.', 'RIPETI 8 VOLTE: SE ostacolo davanti, SALTA medio; ALTRIMENTI AVANZA 1.'] },
-  { n: 'Tronco o muro?', k: 'completa', c: 'Tronchi e muri: completa il SE che sceglie la potenza.', m: ['..b..a...', '..a..b...'], e: 0, cond: ['ost', 'a', 'b'],
+  { n: 'Tronco o muro?', k: 'completa', c: 'Tronchi e muri: completa il SE che sceglie la potenza.', m: ['..b.a..', '..a.b..'], e: 0, cond: ['ost', 'a', 'b'],
     ini: 'for i in range(7):|>if ostacolo_davanti():|>>if ___:|>>>salta(ALTA)|>>else:|>>>salta(BASSA)|>else:|>>avanza(1)', sol: 'for i in range(7):|>if ostacolo_davanti():|>>if altezza() == ALTA:|>>>salta(ALTA)|>>else:|>>>salta(BASSA)|>else:|>>avanza(1)',
     a: ['Il SE interno deve riconoscere il muro: per lui serve il salto alto.', 'Tocca il punto di domanda finché compare «ostacolo ALTO davanti».'] },
-  { n: 'Condizione sbagliata', k: 'correggi', c: 'Il programma abbatte i muri: che cosa non va nel SE?', m: ['.a...b...', '...b..a..'], e: 0, cond: ['ost', 'a', 'b'],
+  { n: 'Condizione sbagliata', k: 'correggi', c: 'Il programma abbatte i muri: che cosa non va nel SE?', m: ['.a..b..', '...b.a.'], e: 0, cond: ['ost', 'a', 'b'],
     ini: 'for i in range(7):|>if ostacolo_davanti():|>>if altezza() == BASSA:|>>>salta(ALTA)|>>else:|>>>salta(BASSA)|>else:|>>avanza(1)', sol: 'for i in range(7):|>if ostacolo_davanti():|>>if altezza() == ALTA:|>>>salta(ALTA)|>>else:|>>>salta(BASSA)|>else:|>>avanza(1)',
     a: ['Leggi il SE interno: quando l\'ostacolo è basso, che salto fa il cavallo? E quando è alto?', 'Le potenze sono scambiate: cambia la condizione in «ostacolo ALTO davanti», oppure scambia i due SALTA.'] },
-  { n: 'Barriere e muri', k: 'crea', c: 'Barriere e muri in ordine diverso: un programma per A e B.', m: ['.m..a...m..', '..a.m...a..'], e: 0, cond: ['ost', 'a', 'm'],
+  { n: 'Barriere e muri', k: 'crea', c: 'Barriere e muri in ordine diverso: un programma per A e B.', m: ['.m.a..m.', '..am..a.'], e: 0, cond: ['ost', 'a', 'm'],
     sol: 'for i in range(8):|>if ostacolo_davanti():|>>if altezza() == ALTA:|>>>salta(ALTA)|>>else:|>>>salta(MEDIA)|>else:|>>avanza(1)',
     a: ['Serve un SE dentro l\'altro: quello fuori chiede se c\'è un ostacolo, quello dentro quale.', 'RIPETI 8: SE ostacolo davanti (SE ostacolo alto, SALTA alto; ALTRIMENTI SALTA medio); ALTRIMENTI AVANZA 1.'] },
-  { n: 'La prova del Cavaliere apprendista', k: 'crea', c: 'La prova: tre manche, due altezze, energia contata.', m: ['..b.a....b..', '.a...b..a...', '...b.b.a....'], e: 0, cond: ['ost', 'a', 'b'],
+  { n: 'La prova del Cavaliere apprendista', k: 'crea', c: 'La prova: tre manche, due altezze, energia contata.', m: ['..ba...b.', '.a..b.a..', '...bba...'], e: 0, cond: ['ost', 'a', 'b'],
     sol: 'for i in range(9):|>if ostacolo_davanti():|>>if altezza() == ALTA:|>>>salta(ALTA)|>>else:|>>>salta(BASSA)|>else:|>>avanza(1)',
-    a: ['Tre manche da 12 caselle con 3 ostacoli: quanti giri servono a un cavallo che fa una mossa per giro?', 'RIPETI 9: SE ostacolo davanti (SE ostacolo alto, SALTA alto; ALTRIMENTI SALTA basso); ALTRIMENTI AVANZA 1.'] }
+    a: ['Tre manche da 9 caselle: quanti giri servono a un cavallo che fa una mossa, passo o salto, per ogni casella?', 'RIPETI 9: SE ostacolo davanti (SE ostacolo alto, SALTA alto; ALTRIMENTI SALTA basso); ALTRIMENTI AVANZA 1.'] }
 ] },
 { grado: 'Cavaliere', titolo: 'Percorso a sorpresa', forma: 'mattoncini', cmd: ['avanza', 'salta', 'ripeti', 'finche', 'se', 'sealt'], livelli: [
-  { n: 'Ripasso: i due rami', k: 'completa', c: 'Ripasso: completa i due rami del SE.', m: ['..m.m...', '.m...m..'], e: 0, cmd: ['avanza', 'salta', 'ripeti', 'se', 'sealt'],
+  { n: 'Ripasso: i due rami', k: 'completa', c: 'Ripasso: completa i due rami del SE.', m: ['..mm..', '.m..m.'], e: 0, cmd: ['avanza', 'salta', 'ripeti', 'se', 'sealt'],
     ini: 'for i in range(6):|>if ostacolo_davanti():|>>___|>else:|>>___', sol: 'for i in range(6):|>if ostacolo_davanti():|>>salta(MEDIA)|>else:|>>avanza(1)',
     a: ['Un ramo per quando c\'è la barriera, uno per quando la via è libera.', 'Nel primo ramo SALTA medio, nel ramo ALTRIMENTI AVANZA 1.'] },
-  { n: 'Piste lunghe e corte', k: 'osserva', c: 'La manche B è più lunga: che cosa succede al programma?', m: ['..b...', '..b.......'], e: 0, cmd: ['avanza', 'salta', 'ripeti', 'se', 'sealt'], ini: 'for i in range(5):|>if ostacolo_davanti():|>>salta(BASSA)|>else:|>>avanza(1)',
+  { n: 'Piste lunghe e corte', k: 'osserva', c: 'La manche B è più lunga: che cosa succede al programma?', m: ['..b..', '..b......'], e: 0, cmd: ['avanza', 'salta', 'ripeti', 'se', 'sealt'], ini: 'for i in range(5):|>if ostacolo_davanti():|>>salta(BASSA)|>else:|>>avanza(1)',
     dopo: 'In A bastano 5 giri, in B ne servono 9. Con piste di lunghezza diversa nessun numero va bene per tutte: serve un ciclo che si fermi da solo al traguardo.' },
-  { n: 'Fino al traguardo', k: 'completa', c: 'RIPETI FINO AL TRAGUARDO si ferma da solo: completa i rami.', m: ['..b...', '..b.......'], e: 0, nov: 'finche',
+  { n: 'Fino al traguardo', k: 'completa', c: 'RIPETI FINO AL TRAGUARDO si ferma da solo: completa i rami.', m: ['..b..', '..b......'], e: 0, nov: 'finche',
     ini: 'while not traguardo():|>if ostacolo_davanti():|>>___|>else:|>>___', sol: GEN('BASSA'),
     a: ['I due rami sono quelli che conosci: salto se c\'è un ostacolo, passo se non c\'è.', 'Primo ramo SALTA basso, ramo ALTRIMENTI AVANZA 1: il ciclo si ferma da solo al traguardo.'] },
-  { n: 'Una pista qualunque', k: 'crea', c: 'Piste lunghe e corte: un solo programma per tutte.', m: ['.m....', '...m..m....', '..m.m...m.....'], e: 0, sol: GEN('MEDIA'),
+  { n: 'Una pista qualunque', k: 'crea', c: 'Piste lunghe e corte: un solo programma per tutte.', m: ['.m...', '...m.m...', '..mm..m....'], e: 0, sol: GEN('MEDIA'),
     a: ['Non contare le caselle: usa RIPETI FINO AL TRAGUARDO con dentro un SE e il suo ALTRIMENTI.', 'RIPETI FINO AL TRAGUARDO: SE ostacolo davanti, SALTA medio; ALTRIMENTI AVANZA 1.'] },
-  { n: 'La manche a sorpresa', k: 'correggi', c: 'Manche a sorpresa: sistema il programma che conta le caselle.', m: ['..b...'], s: 1, fam: { len: [7, 12], ost: [1, 2], alt: 'b', e: 0 }, e: 0, nov: 'sorpresa',
+  { n: 'La manche a sorpresa', k: 'correggi', c: 'Manche a sorpresa: sistema il programma che conta le caselle.', m: ['..b..'], s: 1, fam: { len: [7, 12], ost: [1, 2], alt: 'b', e: 0 }, e: 0, nov: 'sorpresa',
     ini: 'avanza(2)|salta(BASSA)|avanza(2)', sol: GEN('BASSA'),
     a: ['Questo programma conta le caselle della manche A. Nella sorpresa i tronchi sono altrove.', 'Sostituiscilo con RIPETI FINO AL TRAGUARDO: SE ostacolo davanti, SALTA basso; ALTRIMENTI AVANZA 1.'] },
-  { n: 'Solo barriere', k: 'crea', c: 'Solo barriere, ma dove? Niente caselle contate.', m: ['..m..m...'], s: 1, fam: { len: [8, 14], ost: [2, 4], alt: 'm', e: 0 }, e: 0, sol: GEN('MEDIA'),
+  { n: 'Solo barriere', k: 'crea', c: 'Solo barriere, ma dove? Niente caselle contate.', m: ['..m.m..'], s: 1, fam: { len: [8, 14], ost: [2, 4], alt: 'm', e: 0 }, e: 0, sol: GEN('MEDIA'),
     a: ['La sorpresa ha solo barriere, ma in posti che non conosci: fai decidere al cavallo.', 'RIPETI FINO AL TRAGUARDO: SE ostacolo davanti, SALTA medio; ALTRIMENTI AVANZA 1.'] },
-  { n: 'Tronchi e muri', k: 'crea', c: 'Tronchi e muri a sorpresa: scegli la potenza con un SE.', m: ['..b..a...'], s: 1, fam: { len: [8, 14], ost: [2, 4], alt: 'ba', e: 0 }, e: 0, cond: ['ost', 'a', 'b'],
+  { n: 'Tronchi e muri', k: 'crea', c: 'Tronchi e muri a sorpresa: scegli la potenza con un SE.', m: ['..b.a..'], s: 1, fam: { len: [8, 14], ost: [2, 4], alt: 'ba', e: 0 }, e: 0, cond: ['ost', 'a', 'b'],
     sol: 'while not traguardo():|>if ostacolo_davanti():|>>if altezza() == ALTA:|>>>salta(ALTA)|>>else:|>>>salta(BASSA)|>else:|>>avanza(1)',
     a: ['L\'energia basta solo per i salti giusti: il cavallo deve distinguere il tronco dal muro.', 'Dentro «SE ostacolo davanti» metti un altro SE: ostacolo alto, SALTA alto; ALTRIMENTI SALTA basso.'] },
-  { n: 'Il cavallo fermo', k: 'correggi', c: 'Il cavallo resta fermo e il ciclo non finisce mai: perché?', m: ['..m...m..'], s: 1, fam: { len: [8, 14], ost: [2, 4], alt: 'm', e: 0 }, e: 0,
+  { n: 'Il cavallo fermo', k: 'correggi', c: 'Il cavallo resta fermo e il ciclo non finisce mai: perché?', m: ['..m..m.'], s: 1, fam: { len: [8, 14], ost: [2, 4], alt: 'm', e: 0 }, e: 0,
     ini: 'while not traguardo():|>if ostacolo_davanti():|>>salta(MEDIA)', sol: GEN('MEDIA'),
     a: ['Quando davanti non c\'è nessun ostacolo, che cosa fa il cavallo in questo programma?', 'Manca il ramo ALTRIMENTI con AVANZA 1: senza, il cavallo non si muove e il ciclo non finisce.'] },
-  { n: 'Tre altezze', k: 'crea', c: 'Tre altezze a sorpresa, energia contata: a ognuna la sua potenza.', m: ['..b..m..a...'], s: 1, fam: { len: [9, 15], ost: [3, 4], alt: 'bma', e: 0 }, e: 0, cond: ['ost', 'a', 'm', 'b'], sol: CASCATA,
+  { n: 'Tre altezze', k: 'crea', c: 'Tre altezze a sorpresa, energia contata: a ognuna la sua potenza.', m: ['..b.m.a..'], s: 1, fam: { len: [9, 15], ost: [3, 4], alt: 'bma', e: 0 }, e: 0, cond: ['ost', 'a', 'm', 'b'], sol: CASCATA,
     a: ['Tre altezze, tre potenze: servono SE uno dentro l\'altro, dal muro al tronco.', 'Dentro «SE ostacolo davanti»: SE ostacolo alto, SALTA alto; ALTRIMENTI (SE ostacolo medio, SALTA medio; ALTRIMENTI SALTA basso).'] },
-  { n: 'La prova del Cavaliere', k: 'crea', c: 'La prova del Cavaliere: due manche a sorpresa, tre altezze.', m: ['.a..b.m...b..'], s: 2, fam: F_BMA, e: 0, cond: ['ost', 'a', 'm', 'b'], sol: CASCATA,
+  { n: 'La prova del Cavaliere', k: 'crea', c: 'La prova del Cavaliere: due manche a sorpresa, tre altezze.', m: ['.a.bm..b.'], s: 2, fam: F_BMA, e: 0, cond: ['ost', 'a', 'm', 'b'], sol: CASCATA,
     a: ['È il programma del livello 9: deve reggere a qualunque pista scelga il giudice.', 'RIPETI FINO AL TRAGUARDO, SE ostacolo davanti, poi la cascata alto, medio, basso; ALTRIMENTI AVANZA 1.'] }
 ] },
 { grado: 'Alfiere', titolo: 'Il Codice dei Cavalieri', forma: 'mattoncini', codice: true, cmd: ['avanza', 'salta', 'ripeti', 'finche', 'se', 'sealt'], cond: ['ost', 'a', 'm', 'b'], livelli: [
-  { n: 'Mattoncini e righe', k: 'osserva', c: 'Ogni mattoncino è una riga di codice: esegui e segui le righe.', m: ['.b..b..b..'], e: 0, ini: 'for i in range(3):|>avanza(1)|>salta(BASSA)|avanza(1)', nov: 'codice',
+  { n: 'Mattoncini e righe', k: 'osserva', c: 'Ogni mattoncino è una riga di codice: esegui e segui le righe.', m: ['.b.b.b.'], e: 0, ini: 'for i in range(3):|>avanza(1)|>salta(BASSA)|avanza(1)', nov: 'codice',
     dopo: 'Sotto i mattoncini c\'è lo stesso programma scritto in Python. RIPETI 3 VOLTE diventa «for i in range(3):» e ciò che sta dentro il ciclo è rientrato di quattro spazi.' },
-  { n: 'Dal codice ai mattoncini', k: 'completa', c: 'Leggi il codice Python e costruiscilo con i mattoncini.', m: ['..b...b..', '.b..b....b..'], e: 0, leggi: GEN('BASSA'), ini: 'while not traguardo():|>___', sol: GEN('BASSA'),
+  { n: 'Dal codice ai mattoncini', k: 'completa', c: 'Leggi il codice Python e costruiscilo con i mattoncini.', m: ['..b..b.', '.b.b...b.'], e: 0, leggi: GEN('BASSA'), ini: 'while not traguardo():|>___', sol: GEN('BASSA'),
     a: ['Leggi riga per riga: «if» è SE, «else» è ALTRIMENTI. Che cosa sta dentro il while?', 'Dentro il ciclo metti SE ostacolo davanti con ALTRIMENTI: nel primo ramo SALTA basso, nel secondo AVANZA 1.'] },
-  { n: 'Dove si ferma?', k: 'prevedi', f: 't', chiedi: 'casella', c: 'Leggi il codice: in quale casella si ferma il cavallo? Toccala.', m: ['...m...', '..m....', '...m....', '....m...'], ini: 'avanza(3)|salta(MEDIA)|avanza(2)', nov: 'prevedi' },
-  { n: 'Leggere un ciclo', k: 'prevedi', f: 't', chiedi: 'casella', c: 'Segui il ciclo for riga per riga: dove si ferma il cavallo?', m: ['.b..b..b...', '.b..b......', '.b..b..b....', '.b...b..b..'], ini: 'for i in range(3):|>avanza(1)|>salta(BASSA)|avanza(2)' },
-  { n: 'Troppi mattoncini', k: 'accorcia', c: 'Troppi mattoncini: usa «altezza dell\'ostacolo» come potenza.', m: ['..b..m..a...', '.a.m...b....'], e: 0, pot: 'bmaH', nov: 'altezza', ini: CASCATA, sol: GEN('altezza()'),
+  { n: 'Dove si ferma?', k: 'prevedi', f: 't', chiedi: 'casella', c: 'Leggi il codice: in quale casella si ferma il cavallo? Toccala.', m: ['...m..', '..m...', '...m...', '....m..'], ini: 'avanza(3)|salta(MEDIA)|avanza(2)', nov: 'prevedi' },
+  { n: 'Leggere un ciclo', k: 'prevedi', f: 't', chiedi: 'casella', c: 'Segui il ciclo for riga per riga: dove si ferma il cavallo?', m: ['.b.b.b..', '.b.b.....', '.b.b.b...', '.b..b.b.'], ini: 'for i in range(3):|>avanza(1)|>salta(BASSA)|avanza(2)' },
+  { n: 'Troppi mattoncini', k: 'accorcia', c: 'Troppi mattoncini: usa «altezza dell\'ostacolo» come potenza.', m: ['..b.m.a..', '.am..b...'], e: 0, pot: 'bmaH', nov: 'altezza', ini: CASCATA, sol: GEN('altezza()'),
     a: ['Nella potenza del SALTA ora puoi scegliere «altezza dell\'ostacolo»: il cavallo usa da solo la potenza che serve.', 'Togli la cascata: SE ostacolo davanti, SALTA con potenza «altezza dell\'ostacolo»; ALTRIMENTI AVANZA 1.'] },
-  { n: 'Quattro mattoncini', k: 'crea', c: 'Manche a sorpresa: bastano quattro mattoncini. Quali?', m: ['..m.a..b...'], s: 1, fam: F_BMA, e: 0, pot: 'bmaH', sol: GEN('altezza()'),
+  { n: 'Quattro mattoncini', k: 'crea', c: 'Manche a sorpresa: bastano quattro mattoncini. Quali?', m: ['..ma.b..'], s: 1, fam: F_BMA, e: 0, pot: 'bmaH', sol: GEN('altezza()'),
     a: ['È lo stesso programma del livello precedente: funziona su qualunque pista.', 'RIPETI FINO AL TRAGUARDO: SE ostacolo davanti, SALTA (altezza dell\'ostacolo); ALTRIMENTI AVANZA 1.'] },
-  { n: 'Quante penalità?', k: 'prevedi', f: 't', chiedi: 'penalita', c: 'Leggi il codice: quante penalità prenderà il cavallo?', m: ['..b..a..m..', '..a..a..b...', '..m..b..m..', '.a.a..a...'], ini: GEN('MEDIA') },
-  { n: 'Le prime righe', k: 'completa', f: 't', c: 'Ora scrivi tu: metti un comando al posto dei trattini.', m: ['...m..b....'], e: 0, nov: 'testo', tes: T_AZIONI.concat(['BASSA', 'MEDIA', 'ALTA']),
+  { n: 'Quante penalità?', k: 'prevedi', f: 't', chiedi: 'penalita', c: 'Leggi il codice: quante penalità prenderà il cavallo?', m: ['..b.a.m.', '..a.a.b..', '..m.b.m.', '.aa.a..'], ini: GEN('MEDIA') },
+  { n: 'Le prime righe', k: 'completa', f: 't', c: 'Ora scrivi tu: metti un comando al posto dei trattini.', m: ['...m.b...'], e: 0, nov: 'testo', tes: T_AZIONI.concat(['BASSA', 'MEDIA', 'ALTA']),
     ini: 'avanza(3)|salta(MEDIA)|___|salta(___)|avanza(3)', sol: 'avanza(3)|salta(MEDIA)|avanza(1)|salta(BASSA)|avanza(3)',
-    a: ['Dopo il salto della barriera il cavallo è alla casella 5. Dov\'è il tronco?', 'Alla riga 3 serve avanza(1); nel salto della riga 4 la potenza è BASSA.'] },
-  { n: 'Il ciclo for', k: 'completa', f: 't', c: 'Completa il ciclo for: occhio ai due punti e al rientro.', m: ['.b..b..b..b...'], e: 0, tes: ['avanza(1)', 'salta(BASSA)', '3', '4', '5'],
+    a: ['Dopo il salto della barriera il cavallo è alla casella 4. Dov\'è il tronco?', 'Alla riga 3 serve avanza(1); nel salto della riga 4 la potenza è BASSA.'] },
+  { n: 'Il ciclo for', k: 'completa', f: 't', c: 'Completa il ciclo for: occhio ai due punti e al rientro.', m: ['.b.b.b.b..'], e: 0, tes: ['avanza(1)', 'salta(BASSA)', '3', '4', '5'],
     ini: 'for i in range(___):|>avanza(1)|>___|avanza(2)', sol: 'for i in range(4):|>avanza(1)|>salta(BASSA)|avanza(2)',
     a: ['Conta i tronchi: quanti giri deve fare il ciclo? E dopo ogni passo che cosa c\'è?', 'range(4); dentro il ciclo, sotto avanza(1), la riga salta(BASSA) con lo stesso rientro.'] },
-  { n: 'La prova dell\'Alfiere', k: 'completa', f: 't', c: 'La prova dell\'Alfiere: completa il codice che batte la sorpresa.', m: ['..m.b...a..'], s: 1, fam: F_BMA, e: 0, tes: ['ostacolo_davanti()', 'altezza()', 'avanza(1)', 'traguardo()', 'BASSA', 'MEDIA', 'ALTA'],
+  { n: 'La prova dell\'Alfiere', k: 'completa', f: 't', c: 'La prova dell\'Alfiere: completa il codice che batte la sorpresa.', m: ['..mb..a.'], s: 1, fam: F_BMA, e: 0, tes: ['ostacolo_davanti()', 'altezza()', 'avanza(1)', 'traguardo()', 'BASSA', 'MEDIA', 'ALTA'],
     ini: 'while not traguardo():|>if ___:|>>salta(___)|>else:|>>___', sol: GEN('altezza()'),
     a: ['È il programma generale: la condizione chiede se c\'è un ostacolo, la potenza è l\'altezza letta dal sensore.', 'if ostacolo_davanti(): poi salta(altezza()); sotto else: la riga avanza(1).'] }
 ] },
 { grado: 'Capitano', titolo: 'La pergamena', forma: 'testo', livelli: [
-  { n: 'Una riga, un comando', k: 'completa', c: 'Scrivi il resto del percorso: una riga per ogni comando.', m: ['..a...m..b..'], e: 0, tes: T_AZIONI,
+  { n: 'Una riga, un comando', k: 'completa', c: 'Scrivi il resto del percorso: una riga per ogni comando.', m: ['..a..m.b.'], e: 0, tes: T_AZIONI,
     ini: 'avanza(2)|salta(ALTA)|___', sol: 'avanza(2)|salta(ALTA)|avanza(2)|salta(MEDIA)|avanza(1)|salta(BASSA)|avanza(1)',
-    a: ['Scrivi un comando per riga. Dopo il muro sei alla casella 4: quanti passi fino alla barriera?', 'avanza(2), salta(MEDIA), avanza(1), salta(BASSA), avanza(1): cinque righe, una sotto l\'altra.'] },
-  { n: 'Quattro muri', k: 'crea', c: 'Quattro muri allo stesso ritmo: scrivi un ciclo for.', m: ['.a..a..a..a....'], e: 0, tes: T_AZIONI.concat(['for i in range(3):']), sol: 'for i in range(4):|>avanza(1)|>salta(ALTA)|avanza(3)',
+    a: ['Scrivi un comando per riga. Dopo il muro sei alla casella 3: quanti passi fino alla barriera?', 'avanza(2), salta(MEDIA), avanza(1), salta(BASSA), avanza(1): cinque righe, una sotto l\'altra.'] },
+  { n: 'Quattro muri', k: 'crea', c: 'Quattro muri allo stesso ritmo: scrivi un ciclo for.', m: ['.a.a.a.a...'], e: 0, tes: T_AZIONI.concat(['for i in range(3):']), sol: 'for i in range(4):|>avanza(1)|>salta(ALTA)|avanza(3)',
     a: ['Il ritmo è: un passo e un muro, quattro volte. Poi restano tre caselle.', 'for i in range(4): e, rientrate di 4 spazi, avanza(1) e salta(ALTA). Poi, senza rientro, avanza(3).'] },
-  { n: 'While, if, else', k: 'crea', c: 'Piste diverse: scrivi while not traguardo() con if ed else.', m: ['..m...m..', '.m..m......m..'], e: 0, tes: T_AZIONI.concat(T_CICLI), sol: GEN('MEDIA'),
+  { n: 'While, if, else', k: 'crea', c: 'Piste diverse: scrivi while not traguardo() con if ed else.', m: ['..m..m.', '.m.m.....m.'], e: 0, tes: T_AZIONI.concat(T_CICLI), sol: GEN('MEDIA'),
     a: ['Le due piste sono diverse: non contare. Il ciclo while si ferma da solo al traguardo.', 'while not traguardo(): poi if ostacolo_davanti(): salta(MEDIA) ed else: avanza(1), ognuno con il suo rientro.'] },
-  { n: 'Il rientro', k: 'correggi', c: 'Il codice non parte: trova l\'errore di rientro e correggilo.', m: ['..b...b..', '.b...b..'], e: 0, tes: T_AZIONI.concat(T_CICLI),
+  { n: 'Il rientro', k: 'correggi', c: 'Il codice non parte: trova l\'errore di rientro e correggilo.', m: ['..b..b.', '.b..b.'], e: 0, tes: T_AZIONI.concat(T_CICLI),
     ini: 'while not traguardo():|>if ostacolo_davanti():|>salta(BASSA)|>else:|>>avanza(1)', sol: GEN('BASSA'),
     a: ['Dopo una riga che finisce con i due punti, le righe del blocco vanno rientrate di più.', 'La riga salta(BASSA) deve stare dentro l\'if: aggiungile 4 spazi di rientro (8 in tutto).'] },
-  { n: 'elif', k: 'completa', c: 'Tre altezze con if, elif, else: completa i due buchi.', m: ['..b..m..a...', '.a.m...b....'], e: 0, nov: 'elif', tes: ['altezza() == MEDIA', 'altezza() == BASSA', 'salta(BASSA)', 'salta(MEDIA)', 'avanza(1)'],
+  { n: 'elif', k: 'completa', c: 'Tre altezze con if, elif, else: completa i due buchi.', m: ['..b.m.a..', '.am..b...'], e: 0, nov: 'elif', tes: ['altezza() == MEDIA', 'altezza() == BASSA', 'salta(BASSA)', 'salta(MEDIA)', 'avanza(1)'],
     ini: 'while not traguardo():|>if altezza() == ALTA:|>>salta(ALTA)|>elif ___:|>>salta(MEDIA)|>elif ostacolo_davanti():|>>___|>else:|>>avanza(1)',
     sol: 'while not traguardo():|>if altezza() == ALTA:|>>salta(ALTA)|>elif altezza() == MEDIA:|>>salta(MEDIA)|>elif ostacolo_davanti():|>>salta(BASSA)|>else:|>>avanza(1)',
     a: ['elif significa «altrimenti, se…»: qui deve riconoscere la barriera.', 'elif altezza() == MEDIA: e, sotto l\'ultimo elif, la riga salta(BASSA).'] },
-  { n: 'Quattro istruzioni', k: 'crea', c: 'Sorpresa a tre altezze: bastano quattro istruzioni e altezza().', m: ['..m.a..b...'], s: 1, fam: F_BMA, e: 0, tes: T_CICLI.concat(['avanza(1)', 'salta(altezza())']), sol: GEN('altezza()'),
+  { n: 'Quattro istruzioni', k: 'crea', c: 'Sorpresa a tre altezze: bastano quattro istruzioni e altezza().', m: ['..ma.b..'], s: 1, fam: F_BMA, e: 0, tes: T_CICLI.concat(['avanza(1)', 'salta(altezza())']), sol: GEN('altezza()'),
     a: ['Non servono if, elif, else per le tre altezze: altezza() dice già la potenza giusta.', 'while not traguardo(): if ostacolo_davanti(): salta(altezza()) ed else: avanza(1).'] },
-  { n: 'Il contatore', k: 'completa', c: 'Il giudice chiede quanti ostacoli hai saltato: completa.', m: ['..b.m..a..', '.m....b...'], e: 0, ann: 'ostacoli', nov: 'variabile', tes: T_VAR.concat(['conta = conta + 2', 'avanza(1)']),
+  { n: 'Il contatore', k: 'completa', c: 'Il giudice chiede quanti ostacoli hai saltato: completa.', m: ['..bm.a.', '.m...b..'], e: 0, ann: 'ostacoli', nov: 'variabile', tes: T_VAR.concat(['conta = conta + 2', 'avanza(1)']),
     ini: 'conta = 0|while not traguardo():|>if ostacolo_davanti():|>>salta(altezza())|>>___|>else:|>>avanza(1)|annuncia(conta)', sol: CONTA,
     a: ['La variabile conta deve crescere di 1 ogni volta che il cavallo salta.', 'Sotto salta(altezza()), con lo stesso rientro: conta = conta + 1.'] },
-  { n: 'Variabile vuota', k: 'correggi', c: 'Il programma si ferma subito: che cosa manca a «conta»?', m: ['..b..b...'], s: 1, fam: { len: [8, 13], ost: [2, 4], alt: 'bm', e: 0 }, e: 0, ann: 'ostacoli', tes: T_VAR,
+  { n: 'Variabile vuota', k: 'correggi', c: 'Il programma si ferma subito: che cosa manca a «conta»?', m: ['..b.b..'], s: 1, fam: { len: [8, 13], ost: [2, 4], alt: 'bm', e: 0 }, e: 0, ann: 'ostacoli', tes: T_VAR,
     ini: 'while not traguardo():|>if ostacolo_davanti():|>>salta(altezza())|>>conta = conta + 1|>else:|>>avanza(1)|annuncia(conta)', sol: CONTA,
     a: ['Leggi il messaggio d\'errore: una variabile va creata prima di usarla.', 'Aggiungi come prima riga conta = 0.'] },
-  { n: 'Solo i muri', k: 'crea', c: 'Il giudice vuole sapere quanti MURI hai saltato: contali.', m: ['..a.m..a...'], s: 1, fam: F_BMA, e: 0, ann: 'alti', tes: T_CICLI.concat(T_VAR, ['if altezza() == ALTA:', 'salta(altezza())', 'avanza(1)']),
+  { n: 'Solo i muri', k: 'crea', c: 'Il giudice vuole sapere quanti MURI hai saltato: contali.', m: ['..am.a..'], s: 1, fam: F_BMA, e: 0, ann: 'alti', tes: T_CICLI.concat(T_VAR, ['if altezza() == ALTA:', 'salta(altezza())', 'avanza(1)']),
     sol: 'conta = 0|while not traguardo():|>if ostacolo_davanti():|>>if altezza() == ALTA:|>>>conta = conta + 1|>>salta(altezza())|>else:|>>avanza(1)|annuncia(conta)',
     a: ['Il contatore deve crescere solo davanti a un muro: serve un if dentro l\'altro, prima di saltare.', 'Dentro if ostacolo_davanti(): scrivi if altezza() == ALTA: conta = conta + 1, poi salta(altezza()).'] },
-  { n: 'La prova del Capitano', k: 'crea', c: 'La prova del Capitano: due sorprese, e annuncia gli ostacoli.', m: ['..m.b...a..'], s: 2, fam: F_BMA, e: 0, ann: 'ostacoli', tes: T_CICLI.concat(T_VAR, ['salta(altezza())', 'avanza(1)']), sol: CONTA,
+  { n: 'La prova del Capitano', k: 'crea', c: 'La prova del Capitano: due sorprese, e annuncia gli ostacoli.', m: ['..mb..a.'], s: 2, fam: F_BMA, e: 0, ann: 'ostacoli', tes: T_CICLI.concat(T_VAR, ['salta(altezza())', 'avanza(1)']), sol: CONTA,
     a: ['È il programma del contatore: parti da conta = 0 e annuncia alla fine, fuori dal ciclo.', 'conta = 0; nel ciclo, dopo salta(altezza()), conta = conta + 1; in fondo, senza rientro, annuncia(conta).'] }
 ] },
 { grado: 'Campione', titolo: 'Il Gran Premio', forma: 'testo', livelli: [
-  { n: 'Ripasso: la sorpresa', k: 'crea', c: 'Ripasso: batti la sorpresa con while, if, else e altezza().', m: ['..m.b...a..'], s: 1, fam: F_BMA, e: 0, sol: GEN('altezza()'),
+  { n: 'Ripasso: la sorpresa', k: 'crea', c: 'Ripasso: batti la sorpresa con while, if, else e altezza().', m: ['..mb..a.'], s: 1, fam: F_BMA, e: 0, sol: GEN('altezza()'),
     a: ['Quattro istruzioni: un ciclo fino al traguardo, un if, un salto con altezza(), un passo.', 'while not traguardo(): if ostacolo_davanti(): salta(altezza()) ed else: avanza(1).'] },
-  { n: 'Ripasso: il contatore', k: 'crea', c: 'Ripasso: salta tutto e annuncia quanti ostacoli hai superato.', m: ['..b.m..a..'], s: 1, fam: F_BMA, e: 0, ann: 'ostacoli', sol: CONTA,
+  { n: 'Ripasso: il contatore', k: 'crea', c: 'Ripasso: salta tutto e annuncia quanti ostacoli hai superato.', m: ['..bm.a.'], s: 1, fam: F_BMA, e: 0, ann: 'ostacoli', sol: CONTA,
     a: ['Come nel percorso del Capitano: una variabile che cresce a ogni salto e un annuncio finale.', 'conta = 0 all\'inizio, conta = conta + 1 dopo ogni salto, annuncia(conta) fuori dal ciclo.'] },
-  { n: 'Il cavallo stanco', k: 'osserva', c: 'Il cavallo parte stanco: osserva come riposa() gli ridà energia.', m: ['..a...m..'], e0: 2, emax: 3, ini: RIPOSO, nov: 'riposa',
+  { n: 'Il cavallo stanco', k: 'osserva', c: 'Il cavallo parte stanco: osserva come riposa() gli ridà energia.', m: ['..a..m.'], e0: 2, emax: 3, ini: RIPOSO, nov: 'riposa',
     dopo: 'riposa() ridà 1 di energia ma costa 1 di tempo; energia() dice quanta ne resta. Il while riposa finché l\'energia non basta per il salto.' },
-  { n: 'Riposa solo se serve', k: 'completa', c: 'C\'è un tempo massimo: riposa solo quando l\'energia non basta.', m: ['..b..a..m..'], e0: 2, emax: 3, t: 0,
+  { n: 'Riposa solo se serve', k: 'completa', c: 'C\'è un tempo massimo: riposa solo quando l\'energia non basta.', m: ['..b.a.m.'], e0: 2, emax: 3, t: 0,
     ini: 'while not traguardo():|>if ostacolo_davanti():|>>while ___:|>>>riposa()|>>salta(altezza())|>else:|>>avanza(1)', sol: RIPOSO,
     a: ['Il cavallo deve riposare finché l\'energia è minore di quella che serve per il salto.', 'La condizione del while interno è energia() < altezza().'] },
-  { n: 'Sorpresa da stanchi', k: 'crea', c: 'Sorpresa con il cavallo stanco: scrivi tu il riposo giusto.', m: ['..m..a...b..'], s: 1, fam: F_STANCO, e0: 2, emax: 3, t: 0, sol: RIPOSO,
+  { n: 'Sorpresa da stanchi', k: 'crea', c: 'Sorpresa con il cavallo stanco: scrivi tu il riposo giusto.', m: ['..m.a..b.'], s: 1, fam: F_STANCO, e0: 2, emax: 3, t: 0, sol: RIPOSO,
     a: ['Prima di ogni salto controlla l\'energia: se non basta, riposa finché basta. Mai un riposo in più.', 'Dentro if ostacolo_davanti(): un ciclo while energia() < altezza(): riposa(), poi salta(altezza()).'] },
-  { n: 'Due condizioni', k: 'completa', c: 'Salta solo se c\'è un ostacolo E l\'energia basta: completa.', m: ['..b..a..m..'], e0: 2, emax: 3, t: 0, nov: 'logica',
+  { n: 'Due condizioni', k: 'completa', c: 'Salta solo se c\'è un ostacolo E l\'energia basta: completa.', m: ['..b.a.m.'], e0: 2, emax: 3, t: 0, nov: 'logica',
     ini: 'while not traguardo():|>if ___ and energia() >= altezza():|>>salta(altezza())|>elif ostacolo_davanti():|>>riposa()|>else:|>>avanza(1)',
     sol: 'while not traguardo():|>if ostacolo_davanti() and energia() >= altezza():|>>salta(altezza())|>elif ostacolo_davanti():|>>riposa()|>else:|>>avanza(1)',
     a: ['and è vero solo se sono vere tutte e due le condizioni. Senza ostacolo il cavallo non deve saltare.', 'Al posto dei trattini scrivi ostacolo_davanti().'] },
-  { n: 'Una funzione', k: 'osserva', c: 'Una funzione dà un nome a un pezzo di codice: osserva supera().', m: ['..a..m...b..'], e0: 2, emax: 3, ini: FUNZ, nov: 'def',
+  { n: 'Una funzione', k: 'osserva', c: 'Una funzione dà un nome a un pezzo di codice: osserva supera().', m: ['..a.m..b.'], e0: 2, emax: 3, ini: FUNZ, nov: 'def',
     dopo: 'def supera(): dà un nome a tre righe. Nel ciclo basta scrivere supera() e il programma si legge come una frase: se c\'è un ostacolo, superalo.' },
-  { n: 'Scrivi una funzione', k: 'crea', c: 'Scrivi tu la funzione supera() e usala contro la sorpresa.', m: ['..m..a...b..'], s: 1, fam: F_STANCO, e0: 2, emax: 3, t: 0, richiede: 'def', sol: FUNZ,
+  { n: 'Scrivi una funzione', k: 'crea', c: 'Scrivi tu la funzione supera() e usala contro la sorpresa.', m: ['..m.a..b.'], s: 1, fam: F_STANCO, e0: 2, emax: 3, t: 0, richiede: 'def', sol: FUNZ,
     a: ['Una funzione si scrive in cima: def supera(): e sotto, rientrate, le righe che riposano e saltano.', 'def supera(): while energia() < altezza(): riposa(); poi salta(altezza()). Nel ciclo principale, al posto del salto, scrivi supera().'] },
-  { n: 'Che cosa conta?', k: 'correggi', c: 'Il cavallo arriva, ma l\'annuncio è sbagliato: che cosa conta?', m: ['..a..m...b..'], s: 1, fam: { len: [9, 14], ost: [2, 4], alt: 'bma', e0: 2, emax: 3 }, e0: 2, emax: 3, ann: 'ostacoli',
+  { n: 'Che cosa conta?', k: 'correggi', c: 'Il cavallo arriva, ma l\'annuncio è sbagliato: che cosa conta?', m: ['..a.m..b.'], s: 1, fam: { len: [9, 14], ost: [2, 4], alt: 'bma', e0: 2, emax: 3 }, e0: 2, emax: 3, ann: 'ostacoli',
     ini: 'conta = 0|while not traguardo():|>if ostacolo_davanti():|>>while energia() < altezza():|>>>riposa()|>>>conta = conta + 1|>>salta(altezza())|>else:|>>avanza(1)|annuncia(conta)',
     sol: 'conta = 0|while not traguardo():|>if ostacolo_davanti():|>>while energia() < altezza():|>>>riposa()|>>salta(altezza())|>>conta = conta + 1|>else:|>>avanza(1)|annuncia(conta)',
     a: ['Guarda quando cresce conta: a ogni riposo o a ogni salto?', 'Sposta conta = conta + 1 fuori dal while interno, subito dopo salta(altezza()), con lo stesso rientro del salto.'] },
-  { n: 'Il Gran Premio', k: 'crea', c: 'Gran Premio: due sorprese, poca energia, tempo contato. Conta i muri.', m: ['..a.m..b...a..'], s: 2, fam: { len: [10, 16], ost: [3, 5], alt: 'bma', e0: 1, emax: 3, t: 0 }, e0: 1, emax: 3, t: 0, ann: 'alti',
+  { n: 'Il Gran Premio', k: 'crea', c: 'Gran Premio: due sorprese, poca energia, tempo contato. Conta i muri.', m: ['..am.b..a.'], s: 2, fam: { len: [10, 16], ost: [3, 5], alt: 'bma', e0: 1, emax: 3, t: 0 }, e0: 1, emax: 3, t: 0, ann: 'alti',
     sol: 'conta = 0|while not traguardo():|>if ostacolo_davanti():|>>if altezza() == ALTA:|>>>conta = conta + 1|>>while energia() < altezza():|>>>riposa()|>>salta(altezza())|>else:|>>avanza(1)|annuncia(conta)',
     a: ['Metti insieme tutto: contatore dei muri, riposo solo se serve, salto con altezza(), annuncio finale.', 'Dentro if ostacolo_davanti(): prima if altezza() == ALTA: conta = conta + 1, poi while energia() < altezza(): riposa(), poi salta(altezza()).'] }
 ] }];
@@ -1426,7 +1463,7 @@ const APERTURA = 'Sono il Maestro di scuderia: ti allenerò per il Grande Torneo
 // schede «novità»: t titolo · d una frase · demo animazione (tessere) · bl mattoncini di esempio · py codice di esempio
 const NOVITA = {
   passo: { t: 'PASSO', demo: 'passo', bl: 'avanza(1)' },
-  salto: { t: 'SALTO', demo: 'salto', bl: 'salta(BASSA)' },
+  salto: { t: 'SALTO', d: 'IL SALTO SI FA NELLA CASELLA DEL TRONCO: UNA TESSERA, UNA CASELLA.', demo: 'salto', bl: 'salta(BASSA)' },
   numero: { t: 'TANTI PASSI', demo: 'passo', bl: 'avanza(3)' },
   altezze: { t: 'TRE ALTEZZE', demo: 'salto', bl: 'salta(BASSA)|salta(MEDIA)|salta(ALTA)', carote: true },
   ripeti: { t: 'RIPETI', demo: 'passo', bl: 'for i in range(3):|>avanza(1)|>salta(BASSA)' },
@@ -1531,8 +1568,25 @@ const Suoni = (() => {
   const RE = { A3: 220, D4: 294, Fd4: 370, A4: 440, D5: 587, E5: 659, Fd5: 740, A5: 880, D6: 1175, E6: 1319, Fd6: 1480, A6: 1760, D7: 2349, D2: 73.4 };
   // istanti in cui spuntano le tre stelle: li usa anche l'animazione della scheda di vittoria (CSS --ritardo)
   const BATTITI = [0.3, 0.62, 0.94];
+  /* «Squillo della crescita», circa 3,7 s, in Mi maggiore (lo squillo di vittoria è in Re): dura quanto l'effetto
+     della carta. Rullo di timpani che cresce mentre la carta si carica, accordo di trombe sul lampo (1,45 s, come
+     nell'animazione), fanfara che sale e cascata di campanelle. */
+  const MI = { E2: 82.4, E4: 329.6, Gd4: 415.3, B4: 493.9, E5: 659.3, Gd5: 830.6, B5: 987.8, E6: 1318.5, Gd6: 1661, B6: 1975.5, E7: 2637 };
+  function crescita() {
+    let t = 0, passo = 0.13;
+    while (t < 1.38) { timpano(MI.E2, t, 0.05 + 0.17 * t / 1.38); t += passo; passo = Math.max(0.045, passo * 0.9); }   // rullo che accelera
+    [MI.E4, MI.Gd4, MI.B4, MI.E5, MI.Gd5, MI.B5, MI.E6].forEach((f, i) => campanella(f, 0.25 + i * 0.16, 0.035 + i * 0.006));
+    const L = 1.45;                                                                                          // il lampo
+    rumore(0.9, { f: 5000, q: 0.4, vol: 0.12, filtro: 'highpass', tra: L }); timpano(MI.E2, L, 0.3);
+    [MI.E4, MI.Gd4, MI.B4, MI.E5].forEach((f, i) => ottone(f, L, 0.45, i === 3 ? 0.1 : 0.06));
+    const F = 1.95;
+    ottone(MI.B4, F, 0.12, 0.1); ottone(MI.E5, F + 0.13, 0.12, 0.1); ottone(MI.Gd5, F + 0.26, 0.12, 0.1);
+    [MI.B5, MI.Gd5, MI.E5, MI.E4].forEach((f, i) => ottone(f, F + 0.41, 1.3, i ? 0.055 : 0.1));
+    timpano(MI.E2, F + 0.41, 0.26); timpano(MI.E2, F + 0.66, 0.14);
+    [MI.E6, MI.Gd6, MI.B6, MI.E7].forEach((f, i) => campanella(f, F + 0.55 + i * 0.08, 0.06));
+  }
   return {
-    BATTITI,
+    BATTITI, crescita,
     /* «Squillo dell'araldo», circa 2,4 s. Galoppo d'attacco, una nota di tromba per ogni stella presa (le stelle
        mancanti restano mute), poi la chiamata ta-ta-TAA con timpano. Solo con tre stelle: cascata di campanelle.
        Sempre lo stesso per lo stesso risultato: nessuna sorpresa nella ricompensa. */
@@ -1742,6 +1796,44 @@ function aggiornaAudio() {
 
 // una scena di racconto: immagine a tutto schermo e una o due frasi. Si chiude con un tocco.
 const NOTA_IA = '<span class="nota-ia">Avatar generato con IA · Reg. UE 2024/1689, art. 50</span>';
+
+/* La crescita del cavallo come effetto speciale (Andrea, 20/11/2026): la carta del cavallo di prima si carica di
+   luce, un lampo, e compare la carta nuova con le stelle e lo «squillo della crescita». Sotto, le quattro età:
+   conquistate illuminate, future scure con il lucchetto e il grado che le sblocca. Sempre uguale: è un traguardo,
+   non una sorpresa. */
+const ETA_NOMI = { 1: ['Puledro', 'all\'inizio'], 2: ['Cavallo', 'grado 2'], 3: ['Destriero', 'grado 5'], 4: ['Destriero del Codice', 'grado 6'] };
+function crescita(da, a) {
+  return new Promise(fatto => {
+    const c = STATO.casata, carta = e => `img/carta-${c}-${e}.webp`, col = casataDi(c).col;
+    const ov = apriOv('ov-crescita', `<div class="crescita"><div class="cr-raggi"></div>
+      <div class="cr-titolo">Il tuo cavallo cresce</div>
+      <div class="cr-carta"><img class="vecchia" src="${carta(da)}" alt=""><img class="nuova" src="${carta(a)}" alt="${esc(ETA_NOMI[a][0])}"></div>
+      <div class="cr-fila">${[1, 2, 3, 4].map(e => `<figure class="${e > a ? 'chiusa' : ''} ${e === a ? 'qui' : ''}"><div class="mini"><img src="${carta(e)}" alt="">${e > a ? ico('lucchetto') : ''}</div>${esc(ETA_NOMI[e][0])}<small>${esc(ETA_NOMI[e][1])}</small></figure>`).join('')}</div>
+      <div class="cr-testo pergamena"><img class="volto-a" style="width:4.5rem;height:4.5rem" src="img/andrea-volto.webp" alt="Andrea, il Maestro di scuderia"><div class="t"><h2>${esc(CRESCITA[a].titolo)}</h2><p>${esc(CRESCITA[a].testo)}</p></div><button class="btn oro" id="cr-avanti" disabled>${ico('dx')}Avanti</button></div>
+      <div class="cr-lampo"></div>${NOTA_IA}</div>`);
+    const box = $('.crescita', ov), cartaEl = $('.cr-carta', ov);
+    const tempi = [];
+    const dopo = (ms, f) => tempi.push(setTimeout(f, MOTO_RIDOTTO ? 0 : ms));
+    if (Suoni.accesi) { Musica.abbassa(5200); Suoni.crescita(); }
+    box.classList.add('carica');
+    // scintille che entrano nella carta mentre si carica
+    for (let i = 0; i < 26; i++) dopo(i * 45, () => {
+      const r = cartaEl.getBoundingClientRect(), s = el('div', 'cr-scintilla'), ang = Math.random() * Math.PI * 2, d = 280 + Math.random() * 220;
+      const x = r.left + r.width / 2 + Math.cos(ang) * d, y = r.top + r.height / 2 + Math.sin(ang) * d;
+      s.style.cssText = `left:${x}px;top:${y}px;--dx:${-Math.cos(ang) * d}px;--dy:${-Math.sin(ang) * d}px`; box.append(s); setTimeout(() => s.remove(), 1000);
+    });
+    dopo(1450, () => {
+      box.classList.remove('carica'); box.classList.add('lampo', 'nuova');
+      for (let i = 0; i < 36; i++) {                                         // esplosione di stelle: oro e colore della casata
+        const s = el('div', 'cr-stella'), ang = Math.random() * Math.PI * 2, d = 200 + Math.random() * 420;
+        s.style.cssText = `--c:${i % 3 ? '#FFD45C' : col};--dx:${Math.cos(ang) * d}px;--dy:${Math.sin(ang) * d}px;--r:${Math.random() * 540 - 270}deg;animation-delay:${Math.random() * 120}ms`;
+        box.append(s); setTimeout(() => s.remove(), 1900);
+      }
+    });
+    dopo(2300, () => { const b = $('#cr-avanti', ov); b.disabled = false; b.focus(); });
+    $('#cr-avanti', ov).onclick = () => { tempi.forEach(clearTimeout); Suoni.click(); ov.remove(); fatto(); };
+  });
+}
 function scena(o) {
   return new Promise(fatto => {
     const piccoli = STATO.percorso && STATO.percorso <= 2 && !o.grandi;
@@ -2660,7 +2752,7 @@ const Gioco = (() => {
       chiudi();
       if (l === 5 && primaVolta) await scena({ img: 'scena-campo', titolo: 'Si esce in campo', testo: STORIA[p].meta });
       if (l < 10) return apri(p, l + 1);
-      if (primaVolta) { Musica.fanfara(); await scena({ img: p === 8 ? 'finale' : 'castello', titolo: `Hai il grado di ${PERCORSI[p].grado}`, testo: STORIA[p].chiude }); await debrief(p); const eta = etaCavallo(); if (eta > etaPrima) await scena({ img: "stalla", titolo: CRESCITA[eta].titolo, testo: CRESCITA[eta].testo, figura: imgCav(STATO.casata, eta) }); if (p === 2 || p === 4) { await scena({ img: 'scena-campo', titolo: 'Il direttore di campo', testo: 'Prima del prossimo grado ti prendi una pausa: oggi il percorso lo disegni tu, e il cavallo lo corre.' }); return Direttore.apri(p); } }
+      if (primaVolta) { Musica.fanfara(); await scena({ img: p === 8 ? 'finale' : 'castello', titolo: `Hai il grado di ${PERCORSI[p].grado}`, testo: STORIA[p].chiude }); await debrief(p); const eta = etaCavallo(); if (eta > etaPrima) await crescita(etaPrima, eta); if (p === 2 || p === 4) { await scena({ img: 'scena-campo', titolo: 'Il direttore di campo', testo: 'Prima del prossimo grado ti prendi una pausa: oggi il percorso lo disegni tu, e il cavallo lo corre.' }); return Direttore.apri(p); } }
       vaiCastello();
     };
     $('#v-avanti', ov).focus();
@@ -2713,7 +2805,7 @@ const Gioco = (() => {
    Nel salto ostacoli chi progetta il percorso è il direttore di campo (chef de piste).
    Riusa la schermata di gara: a sinistra il tavolo del direttore, a destra il campo; si tocca una casella per
    cambiare l'ostacolo (libera > tronco > barriera > muro > libera). Valgono le regole delle piste del gioco:
-   mai due ostacoli vicini, l'ultimo al più nella casella N-2. */
+   il salto si fa nella casella dell'ostacolo, quindi ostacoli vicini ammessi; l'ultima casella è il traguardo. */
 const Direttore = (() => {
   const MAESTRO = 'while not traguardo():\n    if ostacolo_davanti():\n        salta(altezza())\n    else:\n        avanza(1)';
   const GIRO = '.bma', NOMI = { b: 'tronco', m: 'barriera', a: 'muro' };
@@ -2728,16 +2820,15 @@ const Direttore = (() => {
     n = Math.max(6, Math.min(lunMax, n));
     while (celle.length < n) celle.push('.');
     celle.length = n;
-    for (let k = n - 2; k < n; k++) celle[k] = '.';                           // le caselle N-1 e N restano libere
+    celle[n - 1] = '.';                                                       // la casella N è il traguardo
     $('#dir-lun').textContent = n; campo();
   }
   function tocca(k) {                                                         // k = numero della casella (1..N)
     if (corre) return;
     const n = celle.length;
     if (k < 1) return;
-    if (k > n - 2) { Suoni.no(); return avviso('ambra', 'Qui no', 'le ultime due caselle servono al cavallo per arrivare al traguardo.'); }
+    if (k > n - 1) { Suoni.no(); return avviso('ambra', 'Qui no', 'l\'ultima casella è il traguardo: lì non si mettono ostacoli.'); }
     const i = k - 1, prossimo = GIRO[(GIRO.indexOf(celle[i]) + 1) % GIRO.length];
-    if (prossimo !== '.' && (celle[i - 1] && celle[i - 1] !== '.' || celle[i + 1] && celle[i + 1] !== '.')) { Suoni.no(); return avviso('ambra', 'Troppo vicino', 'fra due ostacoli serve almeno una casella libera, per atterrare.'); }
     celle[i] = prossimo; Suoni.pop(); campo();
     avviso('', '', prossimo === '.' ? `Casella ${k} libera.` : `Casella ${k}: ${NOMI[prossimo]}. Tocca ancora per cambiarlo.`);
   }
