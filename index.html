@@ -411,6 +411,20 @@ svg{display:block}
 .c-coperta ul{list-style:none;margin-top:.5rem;display:flex;flex-direction:column;gap:.25rem;font-size:1.05rem;text-align:left}
 .c-coperta li{display:flex;gap:.5rem;align-items:center}
 .cartiglio{position:absolute;z-index:5;left:50%;top:.7rem;transform:translateX(-50%);max-width:92%;display:flex;align-items:center;gap:.7rem;padding:.45rem 1.1rem .45rem .55rem;border-radius:1rem;background:radial-gradient(120% 120% at 50% 0%,#FFF8E4,var(--carta) 60%,var(--carta-ombra));border:.2rem solid var(--legno);box-shadow:0 .2rem 0 var(--legno-scuro),0 .6rem 1.2rem rgba(0,0,0,.35)}
+/* il Maestro di scuderia: l'avatar di Andrea, che assegna la consegna e parla nei messaggi */
+.volto-a{flex:none;width:3.2rem;height:3.2rem;border-radius:50%;object-fit:cover;object-position:50% 20%;background:radial-gradient(circle at 50% 35%,#FFF6DD,#E8D3A0);border:.18rem solid var(--legno);box-shadow:0 .12rem .3rem rgba(0,0,0,.3)}
+.cartiglio .volto-a{width:3.4rem;height:3.4rem;margin:-.2rem 0}
+[data-disp="A"] .cartiglio .volto-a{width:4rem;height:4rem}
+#messaggio .volto-a{width:3rem;height:3rem;border-color:#fff}
+#messaggio:has(#msg-testo:empty) .volto-a{visibility:hidden}
+#b-aiuto.chiama{animation:chiama 1.2s ease-in-out infinite;background:var(--ambra);color:#3A2400}
+@keyframes chiama{50%{transform:scale(1.14);box-shadow:0 0 0 .4rem rgba(232,151,26,.35)}}
+.vit-maestro{display:flex;align-items:center;gap:.8rem;margin:.4rem 0 .8rem;text-align:left}
+.vit-maestro .volto-a{width:3.6rem;height:3.6rem}
+.vit-maestro p{flex:1;margin:0;padding:.55rem .9rem;border-radius:.8rem;background:rgba(255,255,255,.6);border:.12rem solid var(--carta-bordo);font-size:1.1rem;line-height:1.35}
+.aiuto h2 .volto-a{width:3rem;height:3rem;vertical-align:middle;margin-right:.4rem}
+.scena-testo .busto{border:0;border-radius:0;object-fit:contain;width:15rem;height:auto;align-self:flex-end;margin:-12rem 0 -1.2rem -.6rem;filter:drop-shadow(0 .4rem .6rem rgba(0,0,0,.35))}
+.nota-ia{position:absolute;right:.8rem;bottom:.4rem;font-size:.75rem;color:#fff;opacity:.8;text-shadow:0 1px 2px rgba(0,0,0,.8)}
 .cartiglio .tipo{flex:none;display:inline-flex;align-items:center;gap:.35rem;padding:.2rem .7rem;border-radius:.7rem;background:var(--casa);color:var(--casa-testo);font-family:var(--f-display);font-weight:800;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
 .cartiglio .frase{font-family:var(--f-display);font-weight:700;font-size:1.45rem;line-height:1.15;color:var(--inchiostro)}
 [data-disp="A"] .cartiglio .frase{font-size:2rem;letter-spacing:.02em}
@@ -464,6 +478,16 @@ svg{display:block}
 @keyframes d-salto{0%,15%{transform:translate(2.4rem,0)}40%{transform:translate(7rem,-3.3rem) rotate(-10deg)}60%{transform:translate(9.6rem,-3rem) rotate(8deg)}80%,100%{transform:translate(13rem,0)}}
 .vittoria{width:min(92vw,40rem);text-align:center}
 .vittoria h2{font-size:2.3rem}
+/* le stelle spuntano una alla volta, a tempo con le note dello squillo (Suoni.BATTITI: 0,30 / 0,62 / 0,94 s) */
+.stelle-vittoria{display:flex;justify-content:center;margin:.6rem 0}
+.stelle-vittoria .stelle{display:flex;align-items:flex-end;gap:.5rem}
+.stelle-vittoria .stella{width:3.4rem;height:3.4rem;transform:scale(0) rotate(-35deg);animation:spunta .45s var(--molla) forwards}
+.stelle-vittoria .stella:nth-child(2){width:4.2rem;height:4.2rem}
+.stelle-vittoria .stella:nth-child(1){animation-delay:.22s}
+.stelle-vittoria .stella:nth-child(2){animation-delay:.54s}
+.stelle-vittoria .stella:nth-child(3){animation-delay:.86s}
+.stelle-vittoria .stella.si{filter:drop-shadow(0 0 .5rem rgba(224,169,27,.75))}
+@keyframes spunta{to{transform:scale(1) rotate(0)}}
 .traguardi{display:flex;flex-direction:column;gap:.45rem;margin:1rem 0;text-align:left}
 .traguardo{display:flex;align-items:center;gap:.7rem;padding:.5rem .9rem;border-radius:.8rem;background:rgba(255,255,255,.55);border:.12rem solid var(--carta-bordo);font-size:1.1rem}
 .traguardo .stella{width:2rem;height:2rem;flex:none}
@@ -526,7 +550,7 @@ a.btn,a.tondo{text-decoration:none}
       <div class="angolo"><a class="tondo" href="ippo-docenti.html" title="Scheda per i docenti" aria-label="Scheda per i docenti"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.300" stroke-linecap="round" stroke-linejoin="round" d="M4 5.500C6.500 4 9.500 4 12 5.500 14.500 4 17.500 4 20 5.500v13c-2.500-1.500-5.500-1.500-8 0-2.500-1.500-5.500-1.500-8 0zM12 5.500v13"/></svg></a><button class="tondo b-suoni" aria-label="Suoni"></button><button class="tondo b-musica" aria-label="Musica"></button></div>
       <div class="titolo-basso">
         <button class="btn legno grande" id="b-gioca">GIOCA</button>
-        <p class="crediti">Scuola Sacra Famiglia · Orzinuovi (BS)<br>© 2026 Andrea Cerioli — Animatore Digitale · serie del coding · gioco 5</p>
+        <p class="crediti">Scuola Sacra Famiglia · Orzinuovi (BS)<br>© 2026 Andrea Cerioli — Animatore Digitale · serie del coding · gioco 5<br>L&rsquo;avatar del Maestro di scuderia è un&rsquo;immagine generata con IA (Reg. UE 2024/1689, art. 50).</p>
       </div>
     </section>
     <section class="screen" id="s-castello">
@@ -542,7 +566,7 @@ a.btn,a.tondo{text-decoration:none}
         <section class="cornice" id="p-codice"><div class="targa">CODICE</div><div class="dentro" id="codice-dentro"></div><div class="comandi" id="comandi"></div></section>
         <section class="cornice" id="p-campo"><div class="targa">CAMPO DI GARA</div><div class="dentro"><div id="campo"></div></div></section>
       </main>
-      <footer id="messaggio"><div class="testo" id="msg-testo" aria-live="polite"></div><span class="seme" id="msg-seme"></span></footer>
+      <footer id="messaggio"><img class="volto-a" src="img/andrea-volto.webp" alt="Andrea, il Maestro di scuderia"><div class="testo" id="msg-testo" aria-live="polite"></div><span class="seme" id="msg-seme"></span></footer>
     </section>
   </div>
   <div id="strato-ov"></div>
@@ -1340,14 +1364,14 @@ const TINTE = ['', ['#3C8C4E', '#1F5A2E'], ['#2E9B8C', '#16645A'], ['#2F6FD0', '
 const STORIA = [null,
   { apre: 'ECCO LA STALLA. IL TUO CAVALLO TI ASPETTA.', meta: 'ORA SI ESCE IN CAMPO. ARRIVANO I TRONCHI!', chiude: 'CE L\'HAI FATTA: HAI IL GRADO DI STALLIERE.', debrief: 'Come hai capito quante tessere servivano per arrivare alla bandiera?' },
   { apre: 'IL PAGGIO CONTA I PASSI DEL SUO CAVALLO.', meta: 'TRONCO, BARRIERA, MURO: A OGNUNO IL SUO SALTO.', chiude: 'CONTI E SALTI SENZA ERRORI: HAI IL GRADO DI PAGGIO.', debrief: 'Quando hai usato RIPETI, come hai capito che cosa si ripeteva?' },
-  { apre: 'In stalla si imparano le parole dei cavalieri: da oggi i comandi si leggono.', meta: 'Il trotto ha un ritmo. Chi lo riconosce scrive meno e arriva prima.', chiude: 'Il maestro di scuderia ti consegna lo stemma: hai il grado di Scudiero.', debrief: 'Che cosa hai guardato nella pista per decidere dove mettere un ciclo?' },
+  { apre: 'In stalla si imparano le parole dei cavalieri: da oggi i comandi si leggono.', meta: 'Il trotto ha un ritmo. Chi lo riconosce scrive meno e arriva prima.', chiude: 'Ti consegno lo stemma della scuderia: hai il grado di Scudiero.', debrief: 'Che cosa hai guardato nella pista per decidere dove mettere un ciclo?' },
   { apre: 'Al torneo le piste cambiano a ogni manche. Un cavaliere guarda prima di saltare.', meta: 'Due manche, un solo programma: adesso è il cavallo a decidere quando saltare.', chiude: 'Sotto le mura del castello ricevi il grado di Cavaliere apprendista.', debrief: 'Che cosa cambia tra un programma che conta le caselle e uno che guarda gli ostacoli?' },
   { apre: 'Da questo grado il giudice nasconde una manche fino alla partenza. Contare le caselle non serve più.', meta: 'Il giudice sceglie sempre la pista più insidiosa per il tuo programma. Fallo ragionare.', chiude: 'Nessuna sorpresa ti ha fermato: hai il grado di Cavaliere.', debrief: 'Quando il giudice ha battuto il tuo programma, che cosa hai imparato da quella pista?' },
   { apre: 'I cavalieri più esperti scrivono i comandi su pergamena. È il Codice dei Cavalieri, e si chiama Python.', meta: 'Ora sai leggere il Codice. È il momento di scriverne le prime righe.', chiude: 'Hai scritto il tuo primo codice: porti lo stendardo con il grado di Alfiere.', debrief: 'Che cosa ti ha aiutato di più a leggere il codice scritto: i mattoncini accanto, i rientri o provare?' },
   { apre: 'Niente più mattoncini: solo la pergamena. Ogni riga è un ordine, ogni rientro ha un significato.', meta: 'Il giudice ora fa domande: quanti ostacoli hai saltato? Serve una memoria: una variabile.', chiude: 'Sai scrivere, contare e annunciare: hai il grado di Capitano.', debrief: 'Qual è l\'errore che hai fatto più spesso scrivendo? Come lo riconosci adesso?' },
   { apre: 'È il giorno del Gran Premio. Il cavallo parte stanco e il tempo è contato: ogni riga pesa.', meta: 'Chi dà un nome alle proprie mosse scrive codice che si legge come un racconto: nascono le funzioni.', chiude: 'Il castello intero ti acclama: hai vinto il Gran Premio e il titolo di Campione del Torneo.', debrief: 'Tra le tue soluzioni, quale spiegheresti a un compagno come esempio di codice chiaro? Perché?' }
 ];
-const APERTURA = 'Al castello delle Quattro Casate si prepara il Grande Torneo. Si comincia dalla stalla e si sale di grado, prova dopo prova: tutti cominciano da Stalliere, e chi arriva in fondo diventa Campione.';
+const APERTURA = 'Sono il Maestro di scuderia: ti allenerò per il Grande Torneo delle Quattro Casate. Tutti cominciano da Stalliere e salgono di grado, prova dopo prova. Chi arriva in fondo diventa Campione. Se ti blocchi, sono qui accanto.';
 // schede «novità»: t titolo · d una frase · demo animazione (tessere) · bl mattoncini di esempio · py codice di esempio
 const NOVITA = {
   passo: { t: 'PASSO', demo: 'passo', bl: 'avanza(1)' },
@@ -1419,7 +1443,49 @@ const Suoni = (() => {
     s.buffer = buf; f.type = o.filtro || 'bandpass'; f.frequency.value = o.f || 900; f.Q.value = o.q || 1.2; g.gain.value = o.vol || 0.25;
     s.connect(f); f.connect(g); g.connect(bus); s.start(t);
   }
+  /* Timbri per lo squillo di vittoria. La tecnica viene da Controcorrente (timbro costruito a mano, motivo vero,
+     stelle a tempo con le note), la musica no: lì una marimba pentatonica, qui una tromba d'araldo in Re maggiore. */
+  function ottone(f, t0, dur, vol) {             // tromba: due seghe appena scordate, filtro che si apre all'attacco, vibrato sulle note lunghe
+    if (!accesi) return; const c = ac(); if (!c) return;
+    const t = c.currentTime + t0, fl = c.createBiquadFilter(), g = c.createGain();
+    fl.type = 'lowpass'; fl.Q.value = 2; fl.frequency.setValueAtTime(f * 1.2, t); fl.frequency.exponentialRampToValueAtTime(f * 7, t + 0.05); fl.frequency.exponentialRampToValueAtTime(f * 3.5, t + Math.min(dur, 0.3));
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.03); g.gain.setValueAtTime(vol * 0.8, t + Math.max(0.06, dur - 0.08)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    fl.connect(g); g.connect(bus);
+    [-6, 6].forEach(cent => {
+      const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = cent; o.connect(fl);
+      if (dur > 0.4) { const lfo = c.createOscillator(), lg = c.createGain(); lfo.frequency.value = 5.5; lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(f * 0.006, t + 0.35); lfo.connect(lg); lg.connect(o.frequency); lfo.start(t); lfo.stop(t + dur + 0.05); }
+      o.start(t); o.stop(t + dur + 0.05);
+    });
+  }
+  function timpano(f, t0, vol) {                 // colpo di timpano: sinusoide che cala appena + tonfo filtrato
+    tono(f * 1.12, 0.8, { tipo: 'sine', a: f, vol, tra: t0 });
+    rumore(0.14, { f: 180, q: 0.8, vol: vol * 1.6, filtro: 'lowpass', tra: t0 });
+  }
+  function campanella(f, t0, vol) { tono(f, 0.7, { vol, tra: t0 }); tono(f * 2.76, 0.25, { vol: vol * 0.35, tra: t0 }); }
+  const RE = { A3: 220, D4: 294, Fd4: 370, A4: 440, D5: 587, E5: 659, Fd5: 740, A5: 880, D6: 1175, E6: 1319, Fd6: 1480, A6: 1760, D7: 2349, D2: 73.4 };
+  // istanti in cui spuntano le tre stelle: li usa anche l'animazione della scheda di vittoria (CSS --ritardo)
+  const BATTITI = [0.3, 0.62, 0.94];
   return {
+    BATTITI,
+    /* «Squillo dell'araldo», circa 2,4 s. Galoppo d'attacco, una nota di tromba per ogni stella presa (le stelle
+       mancanti restano mute), poi la chiamata ta-ta-TAA con timpano. Solo con tre stelle: cascata di campanelle.
+       Sempre lo stesso per lo stesso risultato: nessuna sorpresa nella ricompensa. */
+    vittoria(st) {
+      const n = ['t', 'n', 'p'].filter(k => st && st[k]).length;
+      [0, 0.09, 0.18].forEach((x, i) => rumore(0.07, { f: 520 - i * 60, q: 2.5, vol: 0.45, tra: x }));          // ta-ta-tam degli zoccoli
+      timpano(RE.D2, 0.18, 0.2);
+      [RE.A4, RE.D5, RE.Fd5].forEach((f, i) => { if (st && st[['t', 'n', 'p'][i]]) ottone(f, BATTITI[i], 0.26, 0.11); });
+      if (!n) return;
+      const T = 1.22;
+      if (n === 1) { ottone(RE.A4, T, 0.12, 0.1); ottone(RE.D5, T + 0.14, 0.7, 0.11); ottone(RE.A3, T + 0.14, 0.7, 0.06); timpano(RE.D2, T + 0.14, 0.2); return; }
+      ottone(RE.A5, T, 0.11, 0.1); ottone(RE.A5, T + 0.13, 0.11, 0.1);                                           // ta-ta
+      [RE.D6, RE.A5, RE.Fd5, RE.D5].forEach((f, i) => ottone(f, T + 0.27, 1, i ? 0.06 : 0.1));                    // TAA: accordo di Re
+      timpano(RE.D2, T + 0.27, 0.26); timpano(RE.D2, T + 0.5, 0.12);
+      if (n === 3) {
+        [RE.D6, RE.E6, RE.Fd6, RE.A6, RE.D7].forEach((f, i) => campanella(f, T + 0.55 + i * 0.075, 0.07));
+        rumore(0.5, { f: 6000, q: 0.5, vol: 0.05, filtro: 'highpass', tra: T + 0.6 });
+      }
+    },
     get accesi() { return accesi; }, cambia() { accesi = !accesi; if (accesi) this.click(); return accesi; }, sveglia: ac,
     click() { tono(660, 0.06, { tipo: 'triangle', vol: 0.1 }); },
     pop() { tono(420, 0.09, { tipo: 'triangle', a: 760, vol: 0.14 }); },
@@ -1459,6 +1525,7 @@ const Musica = (() => {
     cambia() { accesa = !accesa; if (accesa) parti(); else ferma(); return accesa; },
     sblocca() { if (sbloccata) return; sbloccata = true; parti(); },          // i browser fanno partire l'audio solo dopo un gesto
     ambiente(a) { if (a === ambiente) return; ambiente = a; if (!a) ferma(); else parti(); },
+    abbassa(ms) { if (!brano) return; clearTimeout(salita); brano.volume = 0.04; salita = setTimeout(() => { if (brano) sfuma(brano, VOLUME); }, ms); },   // lascia spazio allo squillo
     fanfara() { if (!Suoni.accesi) return; clearTimeout(salita); if (brano) brano.volume = 0.05; const f = new Audio('audio/vittoria.mp3'); f.volume = 0.5; f.play().catch(() => {}); salita = setTimeout(() => { if (brano) sfuma(brano, VOLUME); }, 7000); }
   };
 })();
@@ -1539,13 +1606,14 @@ function aggiornaAudio() {
 }
 
 // una scena di racconto: immagine a tutto schermo e una o due frasi. Si chiude con un tocco.
+const NOTA_IA = '<span class="nota-ia">Avatar generato con IA · Reg. UE 2024/1689, art. 50</span>';
 function scena(o) {
   return new Promise(fatto => {
     const piccoli = STATO.percorso && STATO.percorso <= 2 && !o.grandi;
     const ov = apriOv('ov-scena', `<div class="fondo" style="background-image:url(img/${o.img}.webp)"></div>
-      <div class="scena-testo pergamena ${piccoli ? 'piccoli' : ''}"><img src="img/volto-${STATO.casata}.webp" alt="">
+      <div class="scena-testo pergamena ${piccoli ? 'piccoli' : ''}">${o.busto ? '<img class="busto" src="img/andrea.webp" alt="Andrea, il Maestro di scuderia">' : '<img class="volto-a" style="width:6rem;height:6rem" src="img/andrea-volto.webp" alt="Andrea, il Maestro di scuderia">'}
       <div class="t">${o.titolo ? `<h2>${esc(o.titolo)}</h2>` : ''}<p>${esc(o.testo)}</p></div>
-      <button class="btn oro" id="scena-avanti">${ico('dx')}${esc(o.bottone || 'Avanti')}</button></div>`);
+      <button class="btn oro" id="scena-avanti">${ico('dx')}${esc(o.bottone || 'Avanti')}</button></div>${o.busto ? NOTA_IA : ""}`);
     $('#scena-avanti', ov).onclick = () => { Suoni.click(); ov.remove(); fatto(); };
     $('#scena-avanti', ov).focus();
   });
@@ -1620,7 +1688,7 @@ function vaiCastello() {
   };
   $('#b-codice').onclick = usa;
   $('#in-codice').onkeydown = e => { if (e.key === 'Enter') usa(); };
-  if (!STATO.viste.apertura) { STATO.viste.apertura = 1; ricorda(); scena({ img: 'castello', titolo: 'Il Grande Torneo', testo: APERTURA, grandi: true }); }
+  if (!STATO.viste.apertura) { STATO.viste.apertura = 1; ricorda(); scena({ img: 'castello', titolo: 'Ciao, sono Andrea', testo: APERTURA, grandi: true, busto: true }); }
 }
 
 // ---------- la stalla: i dieci livelli del percorso
@@ -1629,7 +1697,7 @@ function vaiStalla(p) {
   const P = PERCORSI[p], tot = IPPO.contaStelle(STATO.stelle[p]);
   barra(`La Stalla · Grado ${p} di 8`, `${P.grado} — ${P.titolo}`);
   const fatte = IPPO.stelleDaBits(STATO.stelle[p]).filter(s => s.t).length;
-  $('#stalla-corpo').innerHTML = `<div class="stalla-su"><img src="img/volto-${STATO.casata}.webp" alt=""><div class="fumetto pergamena"><h2>${esc(P.titolo)}</h2>
+  $('#stalla-corpo').innerHTML = `<div class="stalla-su"><img class="volto-a" style="width:7rem;height:7rem" src="img/andrea-volto.webp" alt="Andrea, il Maestro di scuderia"><div class="fumetto pergamena"><h2>${esc(P.titolo)}</h2>
       <p>${esc(fatte === 10 ? STORIA[p].chiude : fatte >= 5 ? STORIA[p].meta : STORIA[p].apre)}</p><p class="su-carta" style="display:flex;align-items:center;gap:.5rem;font-weight:700">${ico('stella', 'stella si')} ${tot} stelle su 30${Registro.attivo() && STATO.chi ? ' · ' + esc(Registro.frase()) : ''}</p></div></div>
     <div class="targhe">${P.livelli.map((g, i) => { const l = i + 1, si = aperto(p, l), st = stelleDi(p, l);
       return `<button class="targa-l su-carta ${si ? '' : 'chiusa'} ${l === 10 ? 'prova' : ''}" data-l="${l}" ${si ? '' : 'aria-disabled="true"'}>${si ? '' : ico('lucchetto', 'lucchetto')}
@@ -1723,7 +1791,7 @@ const Campo = (() => {
 
   function consegna(tipo, frase, o) {
     o = o || {};
-    cart.innerHTML = `<span class="tipo">${ico(TIPI[tipo].ico)}${o.soloIcona ? '' : TIPI[tipo].nome}</span><span class="frase">${esc(frase)}</span>${o.ascolta && Voce.c_e() ? `<button class="ascolta" id="b-ascolta" aria-label="Ascolta la consegna">${ico('suono')}</button>` : ''}`;
+    cart.innerHTML = `<img class="volto-a" src="img/andrea-volto.webp" alt="Andrea, il Maestro di scuderia"><span class="tipo">${ico(TIPI[tipo].ico)}${o.soloIcona ? '' : TIPI[tipo].nome}</span><span class="frase">${esc(frase)}</span>${o.ascolta && Voce.c_e() ? `<button class="ascolta" id="b-ascolta" aria-label="Ascolta la consegna">${ico('suono')}</button>` : ''}`;
     const b = $('#b-ascolta', cart); if (b) b.onclick = () => Voce.leggi(frase, b);
   }
   function misure(s) {
@@ -2218,7 +2286,7 @@ const Codice = {
 
 // ============================================================ GIOCO: un livello dall'apertura alla vittoria
 const Gioco = (() => {
-  let liv = null, lista = [], vista = 0, corsa = 0, aperture = 0, inCorsa = false, vel = 1, aPassi = false, prossimo = null, aiuti = 0, previsione = null, variante = 0, pisteViste = [];
+  let liv = null, lista = [], vista = 0, corsa = 0, aperture = 0, inCorsa = false, vel = 1, aPassi = false, prossimo = null, aiuti = 0, falliti = 0, previsione = null, variante = 0, pisteViste = [];
   const sfondoDi = l => l <= 3 ? 'campo1' : l <= 6 ? 'campo2' : l <= 9 ? 'campo3' : 'campo4';
   const piccoli = () => liv.forma === 'tessere';
   const opzPista = () => ({ e: liv.e, e0: liv.e0, emax: liv.emax, t: liv.t });
@@ -2228,7 +2296,7 @@ const Gioco = (() => {
   function avviso(tono, titolo, testo, o) {
     const m = $('#messaggio'), t = $('#msg-testo'); o = o || {};
     m.dataset.tono = tono || '';
-    t.innerHTML = (titolo ? `<b>${esc(titolo)}${testo ? ':' : ''}</b> ` : '') + `<span>${esc(testo || '')}</span>`;
+    t.innerHTML = titolo || testo || o.bottone ? (titolo ? `<b>${esc(titolo)}${testo ? ':' : ''}</b> ` : '') + `<span>${esc(testo || '')}</span>` : '';   // vuoto: il volto del Maestro si nasconde
     if (o.bottone) { const b = el('button', 'btn piccolo ' + (o.classe || 'oro'), ico('dx') + esc(o.bottone)); b.style.marginLeft = 'auto'; b.onclick = o.alTocco; t.append(b); b.focus(); }
   }
 
@@ -2292,7 +2360,7 @@ const Gioco = (() => {
   function apri(p, l) {
     stop(false); Voce.taci();
     STATO.percorso = p; STATO.livello = l; liv = livello(p, l);
-    aiuti = 0; previsione = null; variante = 0; aPassi = false;
+    aiuti = 0; falliti = 0; previsione = null; variante = 0; aPassi = false; $("#b-aiuto").classList.remove("chiama");
     const P = PERCORSI[p];
     mostra('s-gara'); barra(`Livello ${l} · ${liv.n}`, `Grado ${p} · ${P.grado}`);
     $('#barra-stelle').innerHTML = stelline(stelleDi(p, l));
@@ -2387,21 +2455,41 @@ const Gioco = (() => {
     if (liv.k === 'prevedi') {
       const vero = liv.chiedi === 'penalita' ? ultima.esito.pen : ultima.esito.pos;
       if (vero === previsione) return vittoria({ t: true, n: true, p: true }, v, 'prevedi');
-      Suoni.no();
+      Suoni.no(); falliti++;
       return avviso('ambra', 'Previsione da rivedere', liv.chiedi === 'penalita' ? `avevi detto ${previsione}, le penalità sono ${vero}. Rileggi il codice riga per riga: quale potenza usa a ogni salto?` : `avevi scelto la casella ${previsione}, il cavallo si è fermato alla ${vero}. ${fine.msg || ''}`,
         { bottone: 'Un\'altra pista', classe: 'carta', alTocco: () => { variante++; preparaManche(); vedi(0); chiediPrevisione(); } });
     }
     if (v.manca === 'def') { Suoni.no(); return avviso('ambra', 'Il giudice chiede una funzione', 'definiscila in cima con «def supera():» e usala nel ciclo scrivendo «supera()».'); }
     if (!v.stelle.t) {
-      Suoni.no();
-      if (piccoli()) return avviso('ambra', fine.breve || '', '');
+      Suoni.no(); falliti++;
+      if (piccoli()) return avviso('ambra', fine.breve || '', '', offerta());
       const dove = corse.length > 1 || ultima.sorpresa ? (ultima.sorpresa ? 'Nella manche a sorpresa: ' : `Nella manche ${ultima.nome}: `) : '';
-      return avviso('ambra', dove ? dove.replace(/: $/, '') : 'Riprova', fine.msg + (ultima.sorpresa ? ' La pista resta visibile: studiala e sistema il programma.' : ''));
+      return avviso('ambra', dove ? dove.replace(/: $/, '') : 'Riprova', fine.msg + (ultima.sorpresa ? ' La pista resta visibile: studiala e sistema il programma.' : ''), offerta());
     }
     vittoria(v.stelle, v, liv.k, ast);
   }
+  /* Il Maestro si accorge di chi è bloccato: dalla terza corsa fallita sullo stesso livello offre un consiglio.
+     Non apre niente da solo: accende la lampadina e mette un pulsante accanto al messaggio. Decide l'alunno. */
+  const SOGLIA_CONSIGLIO = 3;
+  function offerta() {
+    if (falliti < SOGLIA_CONSIGLIO || aiuti >= 2 || fermoPerTipo()) return {};
+    $('#b-aiuto').classList.add('chiama');
+    return { bottone: piccoli() ? 'AIUTO' : 'Vuoi un consiglio?', classe: 'carta', alTocco: () => aiuto() };
+  }
   const primaPenalita = corse => { for (const m of corse) { const f = m.esito.frames.find(x => x.esito === 'abbattuto'); if (f) return f.msg; if (m.esito.fine.annuncio && !m.esito.fine.annuncio.giusto) return `Hai annunciato ${m.esito.fine.annuncio.detto == null ? 'niente' : m.esito.fine.annuncio.detto}, il giudice aspettava ${m.esito.fine.annuncio.atteso}: 4 penalità.`; if (m.esito.fine.ritardo) return `Tempo massimo superato di ${m.esito.fine.ritardo}: ${m.esito.fine.ritardo} penalità. Dove hai riposato più del necessario?`; } return ''; };
 
+  /* Il commento del Maestro alla vittoria: che cosa è riuscito e qual è la prossima sfida. Parla del programma,
+     mai della persona (niente «bravo»). Chi non legge ancora (gradi 1-2) non lo vede: per loro parlano le stelle. */
+  function commento(st, v, tipo, corse, pen, parola) {
+    if (piccoli() || tipo === 'osserva' || tipo === 'prevedi') return '';
+    let f;
+    if (st.p) f = `Percorso netto e solo ${v.blocchi} ${parola}: nel programma non c'è niente di troppo.`;
+    else if (st.n) f = `Nessuna penalità. Hai usato ${v.blocchi} ${parola}, ma ne bastano ${liv.par}: che cosa si ripete uguale?`;
+    else f = `Il cavallo arriva, ma con ${pen} penalità. ${primaPenalita(corse) || 'Guarda dove ha sbagliato e correggi quel punto.'}`;
+    if (st.p && liv.l < 10) f += ` Nel prossimo livello: «${PERCORSI[liv.p].livelli[liv.l].n}».`;
+    if (falliti >= 2) f += ` Ci sono volute ${falliti + 1} corse: ogni errore ti ha detto qualcosa.`;
+    return `<div class="vit-maestro"><img class="volto-a" src="img/andrea-volto.webp" alt="Andrea, il Maestro di scuderia"><p>${esc(f)}</p></div>`;
+  }
   // ---------- vittoria, stelle, codice gara
   function vittoria(st, v, tipo, ast) {
     const p = liv.p, l = liv.l, primaVolta = !stelleDi(p, l).t, era = stelleDi(p, l);
@@ -2409,7 +2497,7 @@ const Gioco = (() => {
     if (l < 10) STATO.aperti[p] = Math.max(STATO.aperti[p], l + 1);
     Registro.salva();
     const ora = stelleDi(p, l); $('#barra-stelle').innerHTML = stelline(ora);
-    Suoni.traguardo(); setTimeout(() => Suoni.stella(), 500);
+    if (Suoni.accesi) { Musica.abbassa(2800); Suoni.vittoria(ora); }
     const corse = v.manche.filter(m => m.esito), pen = corse.reduce((n, m) => n + m.esito.pen, 0), parola = liv.forma === 'testo' ? 'istruzioni' : liv.forma === 'tessere' ? 'tessere' : 'mattoncini';
     const righe = tipo === 'osserva' || tipo === 'prevedi' ? '' : `<div class="traguardi">
         <div class="traguardo ${st.t ? 'si' : ''}">${ico('stella', 'stella ' + (st.t ? 'si' : ''))}<div><b>${piccoli() ? 'TRAGUARDO' : corse.length > 1 ? 'Traguardo in tutte le manche' : 'Traguardo'}</b></div></div>
@@ -2419,7 +2507,7 @@ const Gioco = (() => {
     const titolo = tipo === 'osserva' ? (piccoli() ? 'VISTO!' : 'Osservazione completata') : tipo === 'prevedi' ? 'Previsione giusta' : l === 10 ? 'Prova superata' : piccoli() ? 'TRAGUARDO!' : st.p ? 'Tre stelle' : st.n ? 'Percorso netto' : 'Traguardo';
     const ov = apriOv('ov-vittoria', `<div class="scheda pergamena vittoria su-carta"><h2>${esc(titolo)}</h2>
       ${tipo === 'prevedi' ? '<p>Hai letto il codice e previsto che cosa avrebbe fatto il cavallo: è così che si controlla un programma prima di eseguirlo.</p>' : ''}
-      <div style="display:flex;justify-content:center;margin:.6rem 0;font-size:1.6rem">${stelline(ora).replace(/class="stella/g, 'style="width:3.2rem;height:3.2rem" class="stella')}</div>${righe}
+      <div class="stelle-vittoria">${stelline(ora)}</div>${commento(st, v, tipo, corse, pen, parola)}${righe}
       ${cod && !(Registro.attivo() && STATO.chi && Registro.stato !== 'rete' && Registro.stato !== 'errore') ? `<div class="codice-gara"><span>Codice gara per il livello ${l + 1}</span><b>${cod}</b><small>Segnatelo: serve per riprendere da qui un altro giorno.</small></div>` : (Registro.attivo() && STATO.chi ? `<p><small>${esc(Registro.frase())}</small></p>` : '')}
       <div class="azioni">${tutte || tipo === 'osserva' || tipo === 'prevedi' ? '' : `<button class="btn carta" id="v-riprova">${ico('ricomincia')}${piccoli() ? '' : 'Miglioro'}</button>`}<button class="btn carta" id="v-stalla">${ico('sx')}${piccoli() ? '' : 'Stalla'}</button><button class="btn oro" id="v-avanti">${ico('dx')}${piccoli() ? 'AVANTI' : l < 10 ? 'Livello ' + (l + 1) : 'Al castello'}</button></div></div>`);
     const chiudi = () => ov.remove();
@@ -2444,7 +2532,7 @@ const Gioco = (() => {
   // ---------- aiuti e novità
   function aiuto() {
     if (inCorsa) return;
-    Suoni.click();
+    Suoni.click(); $('#b-aiuto').classList.remove('chiama');
     if (fermoPerTipo()) return avviso('', 'Che cosa fare', liv.k === 'osserva' ? 'premi ESEGUI e guarda che cosa fa il cavallo, mattoncino per mattoncino.' : 'leggi il programma riga per riga seguendo il cavallo con il dito sulla pista, poi fai la tua previsione.');
     if (piccoli()) {            // chi non legge: l'aiuto si vede, non si legge
       aiuti = Math.min(2, aiuti + 1);
@@ -2452,9 +2540,9 @@ const Gioco = (() => {
       return;
     }
     aiuti = Math.min(2, aiuti + 1);
-    const ov = apriOv('ov-aiuto', `<div class="scheda pergamena aiuto"><h2>${ico('lampadina')} Aiuto</h2>
+    const ov = apriOv('ov-aiuto', `<div class="scheda pergamena aiuto"><h2><img class="volto-a" src="img/andrea-volto.webp" alt="">${aiuti === 1 ? 'Un consiglio del Maestro' : 'Ancora un consiglio'}</h2>
       ${liv.a.slice(0, aiuti).map((t, i) => `<div class="passo-a"><b>${i + 1}.</b><span>${esc(t)}</span></div>`).join('')}
-      <div class="azioni">${aiuti < 2 ? `<button class="btn carta" id="a-altro">Un altro aiuto</button>` : ''}<button class="btn oro" id="a-ok">Ho capito</button></div></div>`);
+      <div class="azioni">${aiuti < 2 ? `<button class="btn carta" id="a-altro">Un altro consiglio</button>` : ''}<button class="btn oro" id="a-ok">Ho capito</button></div></div>`);
     $('#a-ok', ov).onclick = () => ov.remove();
     const b = $('#a-altro', ov); if (b) b.onclick = () => { ov.remove(); aiuto(); };
   }
