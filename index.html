@@ -19,7 +19,7 @@
   - Otto percorsi (gradi: Stalliere ... Campione), dieci livelli ciascuno, per tutti dalla 1ª primaria alla 3ª
     secondaria: si parte dal grado 1, non dalla propria classe. La forma del codice cresce di grado in grado:
     tessere-icona (1-2), mattoncini (3-6), Python (6-8). Scaffolding: Usa, Modifica, Crea.
-  - Un file solo, HTML/CSS/JS vanilla. Unica dipendenza esterna: Google Fonts. Immagini in img/, musiche in audio/.
+  - Un file solo, HTML/CSS/JS vanilla. Unica dipendenza esterna: Google Fonts. Immagini in img/; musiche ed effetti li suona il gioco (nessun file audio).
   - Motore puro, senza DOM, fra CORE-START e CORE-END: lo verifica in Node _lavoro/test_core.mjs.
     Livelli fra LEVELS-START e LEVELS-END: li verifica _lavoro/test_livelli.mjs (soluzioni, par, 500 piste a sorpresa).
   - Niente dati nel browser: Cmd+R o la chiusura riportano tutto a zero (Mac di laboratorio condivisi). Progressi per
@@ -1632,38 +1632,39 @@ const aperto = (p, l) => STATO.docente || l === 1 || l <= STATO.aperti[p] || ste
 const impostaCasata = id => { STATO.casata = id; $('#app').dataset.casata = id; };
 
 // ============================================================ AUDIO
-// Effetti sintetizzati con Web Audio (nessun file); musiche mp3 CC0 in audio/, una per ambiente.
+// Effetti e musiche sintetizzati con Web Audio (nessun file audio): tutto viene dal tema dell'inno delle case.
 const Suoni = (() => {
   let ctx = null, bus = null, accesi = PAR.get('suoni') !== '0';
+  let busM = null, uscita = null, forza = false;   // la musica passa dagli stessi strumenti, ma esce da busM (volume suo) e suona anche a effetti spenti
   function ac() {
     if (!ctx) { try { ctx = new (window.AudioContext || window.webkitAudioContext)(); bus = ctx.createDynamicsCompressor(); bus.connect(ctx.destination); } catch (e) { return null; } }
     if (ctx.state === 'suspended') ctx.resume();
     return ctx;
   }
   function tono(f, dur, o) {
-    if (!accesi) return; const c = ac(); if (!c) return; o = o || {};
+    if (!accesi && !forza) return; const c = ac(); if (!c) return; o = o || {};
     const t = c.currentTime + (o.tra || 0), osc = c.createOscillator(), g = c.createGain();
     osc.type = o.tipo || 'sine'; osc.frequency.setValueAtTime(f, t);
     if (o.a) osc.frequency.exponentialRampToValueAtTime(o.a, t + dur);
     g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(o.vol || 0.18, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    osc.connect(g); g.connect(bus); osc.start(t); osc.stop(t + dur + 0.03);
+    osc.connect(g); g.connect(uscita || bus); osc.start(t); osc.stop(t + dur + 0.03);
   }
   function rumore(dur, o) {
-    if (!accesi) return; const c = ac(); if (!c) return; o = o || {};
+    if (!accesi && !forza) return; const c = ac(); if (!c) return; o = o || {};
     const t = c.currentTime + (o.tra || 0), n = Math.floor(c.sampleRate * dur), buf = c.createBuffer(1, n, c.sampleRate), d = buf.getChannelData(0);
     for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 2);
     const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
     s.buffer = buf; f.type = o.filtro || 'bandpass'; f.frequency.value = o.f || 900; f.Q.value = o.q || 1.2; g.gain.value = o.vol || 0.25;
-    s.connect(f); f.connect(g); g.connect(bus); s.start(t);
+    s.connect(f); f.connect(g); g.connect(uscita || bus); s.start(t);
   }
   /* Timbri per lo squillo di vittoria. La tecnica viene da Controcorrente (timbro costruito a mano, motivo vero,
      stelle a tempo con le note), la musica no: lì una marimba pentatonica, qui il tema dell'inno delle case. */
   function ottone(f, t0, dur, vol) {             // tromba: due seghe appena scordate, filtro che si apre all'attacco, vibrato sulle note lunghe
-    if (!accesi) return; const c = ac(); if (!c) return;
+    if (!accesi && !forza) return; const c = ac(); if (!c) return;
     const t = c.currentTime + t0, fl = c.createBiquadFilter(), g = c.createGain();
     fl.type = 'lowpass'; fl.Q.value = 2; fl.frequency.setValueAtTime(f * 1.2, t); fl.frequency.exponentialRampToValueAtTime(f * 7, t + 0.05); fl.frequency.exponentialRampToValueAtTime(f * 3.5, t + Math.min(dur, 0.3));
     g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.03); g.gain.setValueAtTime(vol * 0.8, t + Math.max(0.06, dur - 0.08)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    fl.connect(g); g.connect(bus);
+    fl.connect(g); g.connect(uscita || bus);
     [-6, 6].forEach(cent => {
       const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = cent; o.connect(fl);
       if (dur > 0.4) { const lfo = c.createOscillator(), lg = c.createGain(); lfo.frequency.value = 5.5; lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(f * 0.006, t + 0.35); lfo.connect(lg); lg.connect(o.frequency); lfo.start(t); lfo.stop(t + dur + 0.05); }
@@ -1684,13 +1685,34 @@ const Suoni = (() => {
   const DB = { Db2: 69.3, Ab2: 103.8, C3: 130.8, Db3: 138.6, F3: 174.6, Gb3: 185, Ab3: 207.7, Bb3: 233.1, C4: 261.6, Db4: 277.2, Eb4: 311.1, F4: 349.2, Gb4: 370,
     Ab4: 415.3, C5: 523.3, Db5: 554.4, Eb5: 622.3, F5: 698.5, Ab5: 830.6, Db6: 1108.7, F6: 1396.9, Ab6: 1661.2, Db7: 2217.5 };
   function pizzico(f, t0, dur, vol) {            // corda pizzicata: triangolo con due armonici, attacco secco, coda che si scurisce
-    if (!accesi) return; const c = ac(); if (!c) return;
+    if (!accesi && !forza) return; const c = ac(); if (!c) return;
     const t = c.currentTime + t0, g = c.createGain(), fl = c.createBiquadFilter();
     fl.type = 'lowpass'; fl.frequency.setValueAtTime(Math.min(9000, f * 8), t); fl.frequency.exponentialRampToValueAtTime(Math.max(600, f * 2.5), t + dur);
     g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.006); g.gain.exponentialRampToValueAtTime(vol * 0.35, t + dur * 0.3); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    fl.connect(g); g.connect(bus);
+    fl.connect(g); g.connect(uscita || bus);
     [[1, 'triangle', 1], [2, 'sine', 0.4], [3, 'sine', 0.15]].forEach(([m, tipo, a]) => { const o = c.createOscillator(), og = c.createGain(); o.type = tipo; o.frequency.value = f * m; og.gain.value = a; o.connect(og); og.connect(fl); o.start(t); o.stop(t + dur + 0.03); });
   }
+  function velo(f, t0, dur, vol) {               // tappeto: due sinusoidi appena scordate e un triangolo, attacco e rilascio lenti
+    if (!accesi && !forza) return; const c = ac(); if (!c) return;
+    const t = c.currentTime + t0, g = c.createGain(), a = Math.min(0.5, dur * 0.3);
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(vol, t + a); g.gain.setValueAtTime(vol, t + dur - a); g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.25);
+    g.connect(uscita || bus);
+    [['sine', -5, 1], ['sine', 5, 1], ['triangle', 0, 0.35]].forEach(([tipo, cent, k]) => { const o = c.createOscillator(), og = c.createGain(); o.type = tipo; o.frequency.value = f; o.detune.value = cent; og.gain.value = k; o.connect(og); og.connect(g); o.start(t); o.stop(t + dur + 0.3); });
+  }
+  function flauto(f, t0, dur, vol) {             // voce che canta: sinusoide con un filo di ottava, attacco dolce e vibrato leggero
+    if (!accesi && !forza) return; const c = ac(); if (!c) return;
+    const t = c.currentTime + t0, g = c.createGain(), lfo = c.createOscillator(), lg = c.createGain();
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(vol, t + 0.05); g.gain.setValueAtTime(vol * 0.9, t + Math.max(0.06, dur - 0.1)); g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.08);
+    g.connect(uscita || bus); lfo.frequency.value = 5; lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(f * 0.004, t + 0.3); lfo.connect(lg); lfo.start(t); lfo.stop(t + dur + 0.1);
+    [[1, 1], [2, 0.18], [3, 0.05]].forEach(([m, k]) => { const o = c.createOscillator(), og = c.createGain(); o.type = 'sine'; o.frequency.value = f * m; og.gain.value = k; lg.connect(o.frequency); o.connect(og); og.connect(g); o.start(t); o.stop(t + dur + 0.1); });
+  }
+  // la musica (Musica) scrive le sue note dentro fn: finché fn gira, gli strumenti escono da busM
+  function perMusica(fn) {
+    const c = ac(); if (!c) return;
+    if (!busM) { busM = c.createGain(); busM.gain.value = 0; busM.connect(bus); }
+    uscita = busM; forza = true; try { fn(c.currentTime); } finally { uscita = null; forza = false; }
+  }
+  function volumeMusica(v, ms) { const c = ac(); if (!c || !busM) return; const t = c.currentTime; busM.gain.cancelScheduledValues(t); busM.gain.setValueAtTime(busM.gain.value, t); busM.gain.linearRampToValueAtTime(v, t + (ms || 300) / 1000); }
   function campanella(f, t0, vol) { tono(f, 0.7, { vol, tra: t0 }); tono(f * 2.76, 0.25, { vol: vol * 0.35, tra: t0 }); }
   // istanti in cui spuntano le tre stelle: li usa anche l'animazione della scheda di vittoria (CSS --ritardo)
   const BATTITI = [0.3, 0.9, 1.5];
@@ -1711,17 +1733,99 @@ const Suoni = (() => {
     timpano(DB.Db2, F + 0.41, 0.26); timpano(DB.Db2, F + 0.66, 0.14);
     [DB.Db6, DB.F6, DB.Ab6, DB.Db7].forEach((f, i) => campanella(f, F + 0.55 + i * 0.08, 0.06));
   }
+  /* «Fanfara del grado», circa 7,3 s: il tema dell'inno in grande, per la conquista di un grado. Le trombe cantano
+     la salita Re♭ Mi♭ Fa tre volte, ogni volta più su, sugli accordi dell'inno (Re♭, Si♭ minore, Sol♭ e La♭), con
+     le celle pizzicate sotto; arrivo sull'accordo di Re♭ con timpani e campanelle. */
+  function fanfara() {
+    const hz = m => 440 * Math.pow(2, (m - 69) / 12), E = 0.2;
+    [[0, [73, 75, 77], [61, 65, 68], [61, 56, 53]], [1.8, [77, 80, 82], [58, 61, 65], [65, 61, 58]], [3.6, [78, 80, 84], [54, 58, 61], [66, 61, 58]]].forEach(([t, mel, acc, cel], i) => {
+      mel.forEach((m, k) => ottone(hz(m), t + k * 0.6, 0.55, 0.1));
+      acc.forEach(m => ottone(hz(m), t, i === 2 ? 1.15 : 1.7, 0.035));
+      for (let k = 0; k < (i === 2 ? 6 : 9); k++) pizzico(hz(cel[k % 3]), t + k * E, 0.45, k % 3 ? 0.07 : 0.11);
+      timpano(hz([37, 46, 42][i]), t, 0.2);
+    });
+    [56, 60, 63].forEach(m => ottone(hz(m), 4.8, 0.55, 0.045)); timpano(hz(44), 4.8, 0.2); [0, 0.2, 0.4].forEach(x => pizzico(hz([68, 63, 60][x * 5]), 4.8 + x, 0.4, 0.09));
+    const F = 5.4;
+    [85, 80, 77, 73, 61].forEach((m, k) => ottone(hz(m), F, 1.8, k ? 0.05 : 0.1));
+    timpano(DB.Db2, F, 0.3); timpano(DB.Db2, F + 0.3, 0.16); timpano(DB.Db2, F + 0.6, 0.1);
+    [DB.Db6, DB.F6, DB.Ab6, DB.Db7].forEach((f, k) => campanella(f, F + 0.2 + k * 0.1, 0.06));
+  }
+  /* COLONNA SONORA DEL TRAILER (20/11/2026): il tema dell'inno al posto di «Determined Pursuit». 38 secondi scritti
+     tutti insieme alla partenza, su un bus suo che «Salta» spegne. Crome da 0,25 s (120 al minuto, il passo
+     dell'inno): i tagli della regia cadono tutti su quella griglia. Il copione, per tempi del trailer:
+       0-6     attesa: tappeto scuro (Si♭ minore), note rade che crescono, timpani, salita
+       6       esplode il tema: arpeggio, basso, zoccoli e le trombe con Re♭ Mi♭ Fa
+       8,5-10  una nota di tromba per casata, a salire · 10,5 colpo
+       11,5    il salto al rallentatore: tutto si ferma su un accordo lungo, tre campanelle
+       14      «è un comando» (Sol♭) · 16,25 «lo scrivi tu» (La♭), l'arpeggio riparte e cresce
+       18-24   tessere, mattoncini, Python: un colpo ogni due secondi, Re♭ / Fa minore / Si♭ minore
+       24-27,25 le quattro carte: quattro accordi a salire · 28,25 «8 gradi. 80 sfide.» · 30 sospensione e rullo
+       32      il titolo: Re♭ pieno, le trombe rifanno il tema fino all'ottava, chiusa a 36
+     Rende { t0, ferma }: t0 è l'istante di partenza sull'orologio audio, che fa anche da orologio della regia. */
+  function colonnaTrailer() {
+    const c = ac(); if (!c) return null;
+    const g = c.createGain(); g.gain.value = 0.85; g.connect(bus);
+    const A = 0.15, Q = 0.25, hz = m => 440 * Math.pow(2, (m - 69) / 12), t0 = c.currentTime + A;
+    uscita = g; forza = true;
+    try {
+      const T = x => A + x;
+      const piatto = (t, vol) => rumore(0.9, { f: 5500, q: 0.4, vol, filtro: 'highpass', tra: T(t) });
+      const colpo = (t, note, basso, dur, vol) => { note.forEach((m, i) => ottone(hz(m), T(t), dur, i ? vol * 0.5 : vol)); timpano(hz(basso + 12), T(t), 0.3); piatto(t, 0.07); };
+      const arp = (t, cella, n, vol, su) => { for (let k = 0; k < n; k++) pizzico(hz(cella[k % cella.length] + (su || 0)), T(t + k * Q), 0.5, (k % cella.length ? 0.65 : 1) * vol * (0.8 + 0.2 * k / n)); };
+      const passo = (t, n, basso) => {                     // n crome di galoppo: zoccoli sul 3+3+2 e basso pizzicato
+        for (let k = 0; k < n; k++) { const j = k % 8; if (j === 0 || j === 3 || j === 6) { rumore(0.06, { f: j ? 520 : 380, q: 2.5, vol: 0.13, tra: T(t + k * Q) }); pizzico(hz(basso + 12), T(t + k * Q), j ? 0.3 : 0.6, j ? 0.1 : 0.16); } }
+      };
+      const canto = (t, note, vol) => note.forEach(([dt, m, dur]) => ottone(hz(m), T(t + dt), dur, vol || 0.09));
+      // 0-6: l'attesa
+      [[0, 3, [46, 53, 58, 61], 0.018], [3, 1.5, [42, 54, 58, 61], 0.028], [4.5, 1.5, [44, 56, 60, 63], 0.04]].forEach(([t, d, n, v]) => n.forEach(m => velo(hz(m), T(t), d, v)));
+      for (let i = 0; i < 12; i++) pizzico(hz((i < 6 ? [70, 65, 61] : i < 9 ? [70, 66, 61] : [72, 68, 63])[i % 3]), T(i * 0.5), 0.9, 0.02 + i * 0.005);
+      [[3, 0.06], [4, 0.1], [5, 0.16], [5.5, 0.2], [5.75, 0.25]].forEach(([t, v]) => timpano(hz(44), T(t), v));
+      tono(hz(56), 1.2, { tipo: 'sawtooth', a: hz(68), vol: 0.035, tra: T(4.8) });
+      // 6: il tema
+      colpo(6, [73, 68, 65, 61], 37, 0.6, 0.1); canto(6, [[0, 73, 0.7], [0.75, 75, 0.7], [1.5, 77, 0.95]]);
+      arp(6, [61, 56, 53], 12, 0.14); arp(9, [63, 56], 4, 0.14); passo(6, 16, 37); [49, 56, 61, 65].forEach(m => velo(hz(m), T(6), 4, 0.035));
+      [77, 80, 82, 85].forEach((m, i) => { ottone(hz(m), T(8.5 + i * 0.5), 0.4, 0.085); timpano(hz(49), T(8.5 + i * 0.5), 0.14); });   // le quattro casate
+      arp(10, [65, 60, 56], 6, 0.14); passo(10, 6, 41); colpo(10.5, [80, 77, 72, 65], 41, 0.5, 0.09);
+      // 11,5: il salto, sospeso
+      colpo(11.5, [85, 82, 77, 73], 46, 2.3, 0.085); [46, 53, 58, 61, 65].forEach(m => velo(hz(m), T(11.5), 2.3, 0.045));
+      [85, 89, 92].forEach((m, i) => campanella(hz(m), T(11.75 + i * 0.75), 0.06));
+      // 14 e 16,25: il comando
+      colpo(14, [78, 73, 70, 66], 42, 0.5, 0.09); arp(14, [66, 61, 58], 9, 0.13); passo(14, 9, 42); [54, 58, 61, 66].forEach(m => velo(hz(m), T(14), 2.25, 0.04));
+      colpo(16.25, [80, 75, 72, 68], 44, 0.6, 0.09); arp(16.25, [68, 63, 60], 7, 0.15); passo(16.25, 7, 44); [56, 60, 63, 68].forEach(m => velo(hz(m), T(16.25), 1.75, 0.045));
+      // 18-24: tre pannelli
+      [[18, [73, 68, 65, 61], 37, [61, 56, 53], [[0, 73, 0.45], [0.5, 75, 0.45], [1, 77, 0.9]]], [20, [77, 72, 68, 65], 41, [65, 60, 56], [[0, 77, 0.45], [0.5, 80, 0.45], [1, 84, 0.9]]],
+       [22, [82, 77, 73, 70], 46, [70, 65, 61], [[0, 82, 0.45], [0.5, 80, 0.45], [1, 77, 0.9]]]].forEach(([t, acc, b, cella, mel]) => {
+        colpo(t, acc, b, 0.5, 0.085); arp(t, cella, 8, 0.13, 12); passo(t, 8, b); canto(t, mel, 0.075); acc.forEach(m => velo(hz(m - 12), T(t), 2, 0.03));
+      });
+      // 24-27,25: le quattro carte, a salire
+      [[24, [78, 73, 70, 66], 42, 4], [25, [80, 75, 72, 68], 44, 4], [26, [82, 77, 73, 70], 46, 5], [27.25, [84, 80, 75, 72], 48, 4]].forEach(([t, acc, b, n]) => { colpo(t, acc, b, 0.8, 0.09); arp(t, [acc[3], acc[2], acc[1]], n, 0.13); });
+      // 28,25: la sfida · 30: la sospensione
+      colpo(28.25, [85, 82, 78, 73], 42, 1.5, 0.1); arp(28.25, [66, 61, 58], 7, 0.1, 12); passo(28.25, 7, 42);
+      colpo(30, [87, 84, 80, 75], 44, 1.9, 0.09); [44, 56, 63, 68].forEach(m => velo(hz(m), T(30), 2, 0.045));
+      for (let t = 31, p = 0.13; t < 31.95; t += p, p = Math.max(0.045, p * 0.9)) timpano(hz(44), T(t), 0.06 + 0.2 * (t - 31));
+      tono(hz(56), 1, { tipo: 'sawtooth', a: hz(68), vol: 0.035, tra: T(31) });
+      // 32: il titolo
+      colpo(32, [85, 80, 77, 73, 61], 37, 1.2, 0.11); [DB.Db6, DB.F6, DB.Ab6, DB.Db7].forEach((f, k) => campanella(f, T(32.15 + k * 0.09), 0.06));
+      arp(32, [61, 56, 53], 12, 0.14); arp(35, [63, 56], 4, 0.14); passo(32, 16, 37);
+      canto(32.5, [[0, 73, 0.45], [0.5, 75, 0.45], [1, 77, 0.9], [2, 80, 0.45], [2.5, 84, 0.9]], 0.085);
+      [49, 56, 61, 65].forEach(m => velo(hz(m), T(32), 4, 0.04));
+      [85, 80, 77, 73, 61].forEach((m, k) => ottone(hz(m), T(36), 2, k ? 0.05 : 0.1)); timpano(DB.Db2, T(36), 0.3); timpano(DB.Db2, T(36.3), 0.15); piatto(36, 0.08);
+      [DB.Db6, DB.F6, DB.Ab6, DB.Db7].forEach((f, k) => campanella(f, T(36.2 + k * 0.1), 0.055));
+    } finally { uscita = null; forza = false; }
+    return { t0, ferma() { const t = c.currentTime; g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0, t + 0.15); setTimeout(() => { try { g.disconnect(); } catch (e) {} }, 400); } };
+  }
   return {
-    BATTITI, crescita,
+    BATTITI, crescita, fanfara, perMusica, volumeMusica, colonnaTrailer, adesso() { const c = ac(); return c ? c.currentTime : 0; },
+    strumenti: { pizzico, velo, flauto, ottone, tono, rumore },
     // effetti da trailer (Trailer): suoni sintetizzati, come il resto, sincronizzati con i tagli dal codice del trailer
     trailer: {
-      bordone(d) { ottone(41.2, 0, d, 0.07); ottone(61.7, 0.2, d - 0.2, 0.05); },                                  // Mi e Si gravi tenuti
-      braam() { ottone(41.2, 0, 2.4, 0.13); ottone(82.4, 0, 2.2, 0.1); ottone(123.5, 0.02, 2, 0.06); timpano(41.2, 0, 0.4); rumore(1.6, { f: 160, q: 0.6, vol: 0.3, filtro: 'lowpass' }); },
+      bordone(d) { ottone(69.3, 0, d, 0.07); ottone(103.8, 0.2, d - 0.2, 0.05); },                                 // Re♭ e La♭ gravi tenuti
+      braam() { ottone(34.65, 0, 2.4, 0.13); ottone(69.3, 0, 2.2, 0.1); ottone(103.8, 0.02, 2, 0.06); timpano(69.3, 0, 0.4); rumore(1.6, { f: 160, q: 0.6, vol: 0.3, filtro: 'lowpass' }); },
       battito(v) { timpano(55, 0, v || 0.22); },
       colpo() { timpano(65.4, 0, 0.32); rumore(0.35, { f: 3000, q: 0.5, vol: 0.12, filtro: 'highpass' }); },
       folata() { rumore(0.9, { f: 900, q: 0.5, vol: 0.22 }); rumore(0.6, { f: 2400, q: 0.7, vol: 0.1, tra: 0.25 }); },
       salita(d) { tono(110, d, { tipo: 'sawtooth', a: 880, vol: 0.035 }); tono(165, d, { tipo: 'triangle', a: 1320, vol: 0.03 }); rumore(d, { f: 4000, q: 0.4, vol: 0.06, filtro: 'highpass' }); },
-      lampo(n) { campanella([659.3, 830.6, 987.8, 1318.5][n % 4], 0, 0.08); timpano(55 + n * 8, 0, 0.26); }
+      lampo(n) { campanella([554.4, 698.5, 830.6, 1108.7][n % 4], 0, 0.08); timpano(55 + n * 8, 0, 0.26); }
     },
     /* Vittoria: il tema in salita. Le celle dell'inno una dopo l'altra, ogni volta con la nota alta un grado più su
        (Re♭, Mi♭, Fa, Sol♭), poi le due coppie (La♭, Do) e l'arrivo sul Re♭ dell'ottava sopra: una scala intera in
@@ -1764,31 +1868,78 @@ const Suoni = (() => {
     no() { tono(DB.Db4, 0.12, { tipo: 'triangle', a: DB.Bb3, vol: 0.1 }); }
   };
 })();
+/* MUSICHE: tutte variazioni sull'inno delle case, suonate dal gioco (nessun file; 20/11/2026, richiesta di Andrea).
+   Prima c'erano quattro mp3 medievali di RandomMind: stanno in _backup/audio-prima/.
+   Che cosa viene dall'inno (trascritto dalla registrazione, voce tolta): l'arpeggio a celle 3+3+3+3+2+2 (ARP) e il
+   giro di accordi di quattro frasi da due battute, Re♭ / Fa minore / Si♭ minore / Sol♭ che sale a Sol (ACC, BASSO).
+   Le melodie (MEL) sono nuove, scritte sopra quel giro partendo dalla salita Re♭ Mi♭ Fa.
+   Un brano è una lista di sezioni; ogni sezione dura le quattro frasi (64 crome) e dice quali strati suonano:
+     arp   1 = l'arpeggio dell'inno · 'su' = un'ottava sopra · 'rado' = solo le prime due celle della frase
+           'eco' = solo gli accenti, un'ottava sopra
+     velo  il tappeto di accordi · basso · mel 'A' 'B' 'C' · zoccoli (il 3+3+3+3+2+2 battuto piano)
+   Tre brani: castello (il tema intero, passo dell'inno), stalla (parte dal Si♭ minore, più lento, con il flauto),
+   campo (il tappetino dei livelli: piano, senza melodia, per non distrarre chi programma).
+   Le note sono numeri MIDI (61 = Re♭4). Il motore scrive le note con poco anticipo (0,35 s) a ogni giro di timer:
+   se la scheda va in secondo piano e il timer rallenta, riparte dal punto giusto senza accavallare. */
 const Musica = (() => {
-  const TRACCE = { castello: ['audio/castello.mp3'], stalla: ['audio/stalla.mp3'], campo: ['audio/campo1.mp3', 'audio/campo2.mp3'] }, VOLUME = 0.22;
-  let accesa = PAR.get('musica') !== '0', ambiente = null, brano = null, giro = 0, sbloccata = false, salita = null;
-  function sfuma(a, a_vol, poi) {
-    const da = a.volume, t0 = performance.now();
-    (function passo() { const k = Math.min(1, (performance.now() - t0) / 700); a.volume = da + (a_vol - da) * k; if (k < 1) requestAnimationFrame(passo); else if (poi) poi(); })();
+  const VOLUME = 0.55, hz = m => 440 * Math.pow(2, (m - 69) / 12);
+  const ARP = [[61, 56, 53, 61, 56, 53, 61, 56, 53, 61, 56, 53, 63, 56, 63, 56], [53, 60, 56, 65, 60, 56, 65, 60, 56, 65, 60, 56, 65, 60, 65, 60],
+               [61, 56, 53, 61, 56, 53, 61, 56, 53, 61, 56, 53, 63, 56, 63, 56], [65, 61, 56, 65, 61, 56, 65, 61, 65, 61, 55, 65, 61, 55, 65, 61]];
+  const ACCENTI = [0, 3, 6, 9, 12, 14];                                        // dove cade la nota alta di ogni cella
+  const ACC = [[[0, 16, [49, 56, 61, 65]]], [[0, 16, [53, 56, 60, 65]]], [[0, 16, [46, 53, 58, 61]]], [[0, 10, [54, 58, 61, 65]], [10, 6, [55, 58, 61, 65]]]];
+  const BASSO = [[37, 37], [41, 41], [46, 46], [42, 43]];                      // la seconda nota vale dalla croma 10
+  const MEL = {
+    A: [[[0, 3, 73], [3, 3, 75], [6, 6, 77], [12, 2, 75], [14, 2, 73]], [[0, 3, 72], [3, 3, 77], [6, 6, 80], [12, 4, 77]],
+        [[0, 3, 73], [3, 3, 77], [6, 6, 82], [12, 2, 80], [14, 2, 77]], [[0, 3, 78], [3, 3, 77], [6, 4, 73], [10, 6, 75]]],
+    B: [[[0, 2, 77], [2, 1, 75], [3, 3, 73], [6, 2, 68], [8, 4, 73], [12, 4, 75]], [[0, 2, 77], [2, 1, 80], [3, 3, 84], [6, 6, 80], [12, 4, 77]],
+        [[0, 3, 82], [3, 3, 80], [6, 2, 77], [8, 4, 73], [12, 4, 77]], [[0, 3, 78], [3, 3, 82], [6, 4, 80], [10, 6, 75]]],
+    C: [[[0, 6, 68], [6, 10, 73]], [[0, 6, 72], [6, 10, 68]], [[0, 6, 73], [6, 10, 77]], [[0, 6, 78], [6, 4, 77], [10, 6, 75]]]
+  };
+  const BRANI = {
+    castello: { croma: 0.245, forza: 1, frasi: [0, 1, 2, 3], sezioni: [
+      { arp: 1, velo: 1 }, { arp: 1, velo: 1, basso: 1, mel: 'A' }, { arp: 'su', velo: 1, basso: 1, mel: 'B', zoccoli: 1 }, { arp: 1, velo: 1, basso: 1, mel: 'A', zoccoli: 1 }] },
+    stalla: { croma: 0.3, forza: 0.85, frasi: [2, 3, 0, 1], sezioni: [
+      { arp: 'rado', velo: 1, mel: 'C' }, { arp: 1, velo: 1, basso: 1 }, { arp: 'eco', velo: 1, basso: 1, mel: 'C' }, { arp: 1, velo: 1, basso: 1, mel: 'A' }] },
+    campo: { croma: 0.27, forza: 0.6, frasi: [0, 1, 2, 3], sezioni: [
+      { arp: 'rado', velo: 1 }, { arp: 'rado', velo: 1, basso: 1 }, { arp: 1, velo: 1, basso: 1 }, { arp: 'eco', velo: 1 }, { arp: 'rado', velo: 1, basso: 1 }, { arp: 'su', velo: 1 }] }
+  };
+  let accesa = PAR.get('musica') !== '0', ambiente = null, sbloccata = false, salita = null, timer = null, brano = null, passo = 0, prossimo = 0, cambio = null;
+  // le note di una croma: n = numero d'ordine dall'inizio del brano, t0 = fra quanti secondi suona
+  function croma(b, n, t0) {
+    const S = Suoni.strumenti, sez = b.sezioni[Math.floor(n / 64) % b.sezioni.length], fr = b.frasi[Math.floor(n / 16) % 4], k = n % 16, E = b.croma, F = b.forza, alto = ACCENTI.includes(k);
+    if (sez.arp) {
+      const m = ARP[fr][k], suona = sez.arp === 'rado' ? k < 6 : sez.arp === 'eco' ? alto : true, su = sez.arp === 'su' || sez.arp === 'eco' ? 12 : 0;
+      if (suona) S.pizzico(hz(m + su), t0, sez.arp === 'eco' ? E * 4 : E * 2.4, (alto ? 0.12 : 0.075) * F);
+    }
+    if (sez.velo) ACC[fr].forEach(([da, dur, note]) => { if (da === k) note.forEach((m, i) => S.velo(hz(m), t0, dur * E, (i ? 0.028 : 0.04) * F)); });
+    if (sez.basso && (k === 0 || k === 6 || k === 8 || k === 14)) S.pizzico(hz(BASSO[fr][k >= 10 ? 1 : 0] + 12), t0, k === 0 ? E * 5 : E * 2, (k === 0 ? 0.16 : 0.1) * F);
+    if (sez.mel) MEL[sez.mel][fr].forEach(([da, dur, m]) => { if (da === k) S.flauto(hz(m), t0, dur * E * 0.95, 0.075 * F); });
+    if (sez.zoccoli && alto) S.rumore(0.06, { f: k === 0 ? 380 : 520, q: 2.5, vol: 0.09 * F, tra: t0 });
+  }
+  function giro() {
+    if (!brano) return;
+    Suoni.perMusica(ora => {
+      if (prossimo < ora) prossimo = ora + 0.05;                               // timer rimasto indietro (scheda in secondo piano): si riparte da adesso
+      while (prossimo < ora + 0.35) { croma(brano, passo++, prossimo - ora); prossimo += brano.croma; }
+    });
   }
   function parti() {
     if (!accesa || !sbloccata || !ambiente) return;
-    const lista = TRACCE[ambiente], src = lista[giro % lista.length];
-    if (brano && brano.dataset.src === src && !brano.paused) return;
-    ferma();
-    const a = new Audio(src); a.dataset.src = src; a.volume = 0; a.loop = lista.length === 1;
-    a.addEventListener('ended', () => { if (brano === a) { giro++; brano = null; parti(); } });
-    a.play().then(() => sfuma(a, VOLUME)).catch(() => {});
-    brano = a;
+    const nuovo = BRANI[ambiente]; if (brano === nuovo && timer) return;
+    clearTimeout(cambio);
+    const via = () => { brano = nuovo; passo = 0; prossimo = 0; Suoni.perMusica(() => {}); Suoni.volumeMusica(VOLUME, 900); if (!timer) timer = setInterval(giro, 80); giro(); };
+    if (brano && timer) { Suoni.volumeMusica(0, 450); brano = null; cambio = setTimeout(via, 650); } else via();   // cambio di ambiente: sfuma, poi il brano nuovo
   }
-  function ferma() { const a = brano; brano = null; if (a) sfuma(a, 0, () => rilascia(a)); }
+  function ferma() { clearTimeout(cambio); clearTimeout(salita); brano = null; Suoni.volumeMusica(0, 600); clearInterval(timer); timer = null; }
   return {
+    BRANI, croma,
     get accesa() { return accesa; },
     cambia() { accesa = !accesa; if (accesa) parti(); else ferma(); return accesa; },
     sblocca() { if (sbloccata) return; sbloccata = true; parti(); },          // i browser fanno partire l'audio solo dopo un gesto
     ambiente(a) { if (a === ambiente) return; ambiente = a; if (!a) ferma(); else parti(); },
-    abbassa(ms) { if (!brano) return; clearTimeout(salita); brano.volume = 0.04; salita = setTimeout(() => { if (brano) sfuma(brano, VOLUME); }, ms); },   // lascia spazio allo squillo
-    fanfara() { if (!Suoni.accesi) return; clearTimeout(salita); if (brano) brano.volume = 0.05; const f = new Audio('audio/vittoria.mp3'); f.volume = 0.5; f.play().catch(() => {}); salita = setTimeout(() => { if (brano) sfuma(brano, VOLUME); }, 7000); }
+    abbassa(ms) { if (!timer) return; clearTimeout(salita); Suoni.volumeMusica(VOLUME * 0.15, 150); salita = setTimeout(() => { if (timer) Suoni.volumeMusica(VOLUME, 700); }, ms); },   // lascia spazio a squilli e trailer
+    fanfara() { if (!Suoni.accesi) return; this.abbassa(7800); Suoni.fanfara(); },
+    ascolta(a) { accesa = true; sbloccata = true; ambiente = null; this.ambiente(a); }, zitta() { ambiente = null; ferma(); }   // per _lavoro/ascolta-jingle.html
   };
 })();
 window.addEventListener('pointerdown', () => { Suoni.sveglia(); Musica.sblocca(); }, { once: true });
@@ -3013,25 +3164,24 @@ const Gioco = (() => {
 /* «La ciliegina sulla torta» (Andrea, 20/11/2026): un trailer di circa 36 secondi che motiva a imparare il coding.
    Parte solo dal pulsante «Guarda il trailer» della schermata iniziale: GIOCA entra subito nel gioco.
    «Salta» è sempre visibile.
-   Musica: «Determined Pursuit» di Emma_MA (OpenGameArt.org, CC0), scelta da Andrea. audio/trailer.mp3 è il tratto
-   12-50,5 s del brano: l'orchestra entra piena a 6,0 s e resta piena fino a 36 s, poi sfuma.
+   Musica: il tema dell'inno delle case, scritto per il trailer e suonato dal gioco (Suoni.colonnaTrailer; prima
+   c'era «Determined Pursuit» di Emma_MA, ora in _backup/audio-prima/trailer.mp3). Il tema esplode a 6,0 s.
    SECONDA REGIA (rifatta con Fable 5.2 su richiesta di Andrea: la prima era corretta ma piatta). Idea: «c'è un torneo
-   che non si vince con la forza: si vince con il codice». Ogni taglio cade su un accento misurato del brano:
-   6,0 · 8,5 · 11,5 · 13,9 · 16,3 · 24 · 25 · 26 · 27,2 · 28,2 · 29,9 · 32,0.
+   che non si vince con la forza: si vince con il codice». Ogni taglio cade su un accento della musica, tutti sulla
+   griglia delle crome (0,25 s): 6 · 8,5 · 11,5 · 14 · 16,25 · 18 · 20 · 22 · 24 · 25 · 26 · 27,25 · 28,25 · 30 · 32.
    REGIA SULL'OROLOGIO DELLA MUSICA: ogni passo aspetta un istante della musica, così resta a tempo anche se il
-   computer rallenta; con la musica spenta lo stesso orologio corre da solo. Anche il video del galoppo segue
+   computer rallenta (l'orologio è quello dell'audio); con la musica spenta lo stesso orologio corre da solo. Anche il video del galoppo segue
    l'orologio (MAPPA): il salto della staccionata comincia esattamente sull'accento a 11,5 s e va al rallentatore.
    Immagini di Andrea: video/trailer.mp4 (il galoppo, muto) e video/scena1-3.mp4 (dalle GIF animata1-3). */
 const Trailer = (() => {
   // orologio del trailer -> secondo del video del galoppo (il salto è fra 3,15 e 4,8 s del video)
-  const MAPPA = [[6, 0], [10.5, 2.7], [11.5, 3.15], [16.3, 4.83], [18, 6.5]];
+  const MAPPA = [[6, 0], [10.5, 2.7], [11.5, 3.15], [16.25, 4.83], [18, 6.5]];
   // i cavalieri nel video, da sinistra: dove puntare lo zoom
   const CAVALIERI = [['quercia', 14], ['aquila', 38], ['cero', 61], ['tasso', 85]];
   function guarda() {
     return new Promise(fatto => {
       let vivo = true; const tempi = [];
       const ov = apriOv('ov-trailer', `<div class="tr">
-        <audio class="tr-musica" src="audio/trailer.mp3" preload="auto"></audio>
         <video class="tr-video" data-v="scena1" src="video/scena1.mp4" muted playsinline loop preload="auto"></video>
         <video class="tr-video" data-v="scena2" src="video/scena2.mp4" muted playsinline loop preload="auto"></video>
         <video class="tr-video zoom" data-v="galoppo" src="video/trailer.mp4" poster="img/trailer-poster.webp" muted playsinline preload="auto"></video>
@@ -3041,12 +3191,13 @@ const Trailer = (() => {
         <div class="tr-banda su"></div><div class="tr-banda giu"></div><div class="tr-lampo"></div>
         <div class="tr-finale"><p>Programma il tuo cavallo. Conquista il torneo.</p><button class="btn legno grande" id="tr-entra">ENTRA NEL TORNEO</button></div>
         <button class="tr-salta" id="tr-salta">Salta ${ico('dx')}</button></div>`);
-      const tr = $('.tr', ov), testo = $('.tr-testo', ov), musica = $('.tr-musica', ov), S = Suoni.accesi ? Suoni.trailer : null;
+      const tr = $('.tr', ov), testo = $('.tr-testo', ov), S = Suoni.accesi ? Suoni.trailer : null;
       const vid = n => $(`.tr-video[data-v="${n}"]`, ov);
       const suona = (n, ...x) => { if (S && vivo) S[n](...x); };
-      // l'orologio: la musica se suona, altrimenti il tempo trascorso
-      let t0 = performance.now(), conMusica = false;
-      const ora = () => conMusica && !musica.paused ? musica.currentTime : (performance.now() - t0) / 1000;
+      let t0 = performance.now(), colonna = null;
+      // l'orologio: quello dell'audio quando la musica suona (resta a tempo con le note), altrimenti il tempo trascorso.
+      // Se l'audio è fermo (browser che non l'ha ancora sbloccato) i due orologi si allontanano e vale il secondo.
+      const ora = () => { const tp = (performance.now() - t0) / 1000; if (!colonna) return tp; const ta = Suoni.adesso() - colonna.t0; return Math.abs(ta - tp) < 1.5 ? ta : tp; };
       const a = sec => new Promise((ok, ko) => { const g = () => { if (!vivo) return ko('fine'); if (ora() >= sec) ok(); else requestAnimationFrame(g); }; g(); tempi.push(setTimeout(g, Math.max(0, (sec - ora()) * 1000 + 30))); });
       // scritte: «*parola*» diventa dorata; con «parole» entrano una alla volta
       const scritta = (txt, cls, dura, parole) => {
@@ -3065,19 +3216,19 @@ const Trailer = (() => {
         v.play().catch(() => {}); if (n !== 'galoppo') requestAnimationFrame(() => v.classList.add('avvicina'));
         return v;
       };
-      const fine = come => { if (!vivo) return; vivo = false; tempi.forEach(clearTimeout); rilascia(musica); $$('.tr-video', ov).forEach(rilascia); Musica.abbassa(1); ov.remove(); fatto(come); };
+      const fine = come => { if (!vivo) return; vivo = false; tempi.forEach(clearTimeout); if (colonna) colonna.ferma(); $$('.tr-video', ov).forEach(rilascia); Musica.abbassa(1); ov.remove(); fatto(come); };
       $('#tr-salta', ov).onclick = () => { Suoni.click(); fine('salta'); };
       $('#tr-entra', ov).onclick = () => { Suoni.pop(); fine('entra'); };
       Musica.abbassa(60000);
 
       (async () => {
-        if (Musica.accesa) { musica.volume = 0.9; try { await musica.play(); conMusica = true; } catch (e) {} }
+        if (Musica.accesa) colonna = Suoni.colonnaTrailer();
         t0 = performance.now();
         // ---- 0-6: l'idea, sull'introduzione che cresce
         scena('scena1', 0.85);
         await a(0.4); scritta('Al castello delle Quattro Casate…', 'piccolo', 2300, true);
         await a(3); lampo(); scena('scena2', 0.85); scritta('…c\'è un torneo che *non *si *vince *con *la *forza.', 'piccolo', 2600, true);
-        // ---- 6,0: l'orchestra esplode
+        // ---- 6,0: il tema esplode
         await a(6); suona('braam'); colpo(); testo.innerHTML = '';
         const video = scena('galoppo', 0.6);
         const guardia = () => {                                    // il video segue l'orologio della musica
@@ -3103,10 +3254,10 @@ const Trailer = (() => {
         // ---- 11,5: il salto, al rallentatore, sull'accento
         await a(11.5); suona('folata'); scossa(); video.style.transform = 'scale(1.18)';
         scritta('Ogni salto…', 'grande', 2000, true);
-        await a(13.9); scossa(); scritta('…è un *comando.', 'grande', 2100, true);
+        await a(14); scossa(); scritta('…è un *comando.', 'grande', 2100, true);
         const c = el('div', 'tr-codice'); tr.append(c); const cmd = 'salta(ALTA)';
         for (let i = 1; i <= cmd.length; i++) tempi.push(setTimeout(() => { c.textContent = cmd.slice(0, i); }, i * 70));
-        await a(16.3); colpo(); c.remove(); video.style.transform = 'scale(1)';
+        await a(16.25); colpo(); c.remove(); video.style.transform = 'scale(1)';
         scritta('E il comando lo scrivi *tu.', 'medio', 1500, true);
         // ---- 18-24: dalle tessere al codice vero, un pannello per battuta
         await a(18); colpo(); video.classList.remove('si'); try { video.pause(); } catch (e) {}
@@ -3125,16 +3276,16 @@ const Trailer = (() => {
         for (let i = 1; i <= 22; i++) tempi.push(setTimeout(() => disegna(Math.ceil(tot * i / 22)), i * 70));
         // ---- 24-28: il cavallo cresce con te, una carta per accento
         testo.style.alignItems = ''; testo.style.paddingBottom = '';
-        const giro = [[24, 'aquila', 1, 'Stalliere'], [25, 'tasso', 2, 'Scudiero'], [26, 'quercia', 3, 'Cavaliere'], [27.2, 'cero', 4, 'Campione']];
+        const giro = [[24, 'aquila', 1, 'Stalliere'], [25, 'tasso', 2, 'Scudiero'], [26, 'quercia', 3, 'Cavaliere'], [27.25, 'cero', 4, 'Campione']];
         for (const [t, casata, eta, grado] of giro) {
           await a(t); colpo(); testo.innerHTML = '';
           pannello(`<img class="tr-carta" src="img/carta-${casata}-${eta}.webp" alt=""><div class="tr-nome" style="--c:${casataDi(casata).col}"><small>${eta === 1 ? 'parti da' : eta === 4 ? 'fino a' : 'poi'}</small>${grado}</div>`);
         }
-        // ---- 28,2: la sfida
-        await a(28.2); pannello(''); colpo(); scena('scena3', 0.9);
+        // ---- 28,25: la sfida
+        await a(28.25); pannello(''); colpo(); scena('scena3', 0.9);
         scritta('8 gradi. 80 sfide.', 'grande', 1500, true);
-        await a(29.9); scossa(); scritta('Fin dove arrivi *tu?', 'grande', 1900, true);
-        // ---- 32,0: il titolo, con l'orchestra ancora piena
+        await a(30); scossa(); scritta('Fin dove arrivi *tu?', 'grande', 1900, true);
+        // ---- 32,0: il titolo, sul Re♭ pieno
         await a(32); suona('braam'); colpo(); $$('.tr-video', ov).forEach(v => { v.classList.remove('si'); try { v.pause(); } catch (e) {} });
         tr.classList.add('titoli'); $('.tr-img', ov).classList.add('si', 'kb'); testo.innerHTML = '';
         for (let i = 0; i < 44; i++) {                             // esplosione di stelle dorate
@@ -3142,7 +3293,7 @@ const Trailer = (() => {
           s.style.cssText = `--c:${['#FFD45C', '#FFF1C2', '#2F7FE0', '#EE8A1E'][i % 4]};--dx:${Math.cos(ang) * d}px;--dy:${Math.sin(ang) * d}px;--r:${Math.random() * 540 - 270}deg;animation-delay:${Math.random() * 150}ms`;
           tr.append(s); tempi.push(setTimeout(() => s.remove(), 2000));
         }
-        await a(33.4); $('.tr-finale', ov).classList.add('si'); $('#tr-entra', ov).focus();
+        await a(33.5); $('.tr-finale', ov).classList.add('si'); $('#tr-entra', ov).focus();
       })().catch(() => {});
     });
   }
