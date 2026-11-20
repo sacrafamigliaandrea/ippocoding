@@ -331,7 +331,8 @@ svg{display:block}
 
 /* ---------- gara: disposizione generale */
 #s-gara{background:linear-gradient(#3F6FB5,#274B86)}
-.gara{flex:1;min-height:0;display:grid;gap:1.4rem;padding:1.7rem 1.2rem .6rem;grid-template-columns:minmax(26rem,43fr) 57fr}
+.gara{flex:1;min-height:0;display:grid;gap:1.4rem;padding:1.7rem 1.2rem .6rem;grid-template-columns:minmax(26rem,35fr) 65fr}   /* campo più largo (Andrea, 20/11/2026) */
+[data-forma="mattoncini"] .gara{grid-template-columns:minmax(36rem,41fr) 59fr}   /* i mattoncini annidati crescono anche in larghezza */
 [data-disp="A"] .gara{grid-template-columns:1fr;grid-template-rows:minmax(0,58fr) minmax(0,42fr)}
 [data-disp="A"] #p-campo{order:1}
 [data-disp="A"] #p-codice{order:2}
@@ -2030,11 +2031,12 @@ const Campo = (() => {
   // la geometria dipende solo dalle misure del riquadro e dalla lunghezza della pista
   function misura() {
     const W = radice.clientWidth, H = radice.clientHeight, r = rem(), n = pista.len + 1;
-    // a sinistra della casella VIA resta lo spazio per il corpo del cavallo: le zampe davanti stanno sul numero della casella
-    const cw = (W * 0.96) / (n + 1.85), x0 = W * 0.01 + 1.85 * cw;
+    // a sinistra della casella VIA resta lo spazio per il corpo del cavallo: le zampe davanti stanno sul numero della casella.
+    // Cavallo al più largo 2 caselle (prima 2,8): caselle più larghe e personaggio in proporzione (Andrea, 20/11/2026)
+    const cw = (W * 0.97) / (n + 1.1), x0 = W * 0.01 + 1.1 * cw;
     const hb = Math.max(2.6 * r, Math.min(H * 0.16, 6.4 * r)), fondo = H - 3.5 * r, cima = fondo - hb, yb = cima + hb * 0.36;
     const eta = etaCavallo(), rapp = (RAPP_CAV[opz.casata] || {})[eta] || 1.2, sopra = Math.max(40, yb - 4.4 * r);
-    const cavW = Math.max(56, Math.min(cw * 2.8, rapp * sopra / 1.62, W * 0.3)) * SCALA_ETA[eta], cavH = cavW / rapp;
+    const cavW = Math.max(56, Math.min(cw * 2, rapp * sopra / 1.62, W * 0.24)) * SCALA_ETA[eta], cavH = cavW / rapp;
     return { W, H, r, n, x0, cw, hb, cima, yb, cavW, cavH, cx: k => x0 + (k + 0.5) * cw };
   }
   const xCav = k => geo.cx(k) + geo.cw * 0.5 - geo.cavW, yCav = () => geo.yb - geo.cavH * 0.95;      // il muso arriva al bordo destro della casella
@@ -2604,7 +2606,7 @@ const Gioco = (() => {
   // ---------- costruzione della schermata
   function pannelloCodice() {
     const d = $('#codice-dentro'), c = $('#comandi'), A = piccoli();
-    $('#app').dataset.disp = A ? 'A' : 'B';
+    $('#app').dataset.disp = A ? 'A' : 'B'; $('#app').dataset.forma = liv.forma;
     $('#p-codice .targa').textContent = liv.forma === 'testo' ? 'CODICE PYTHON' : A ? 'PROGRAMMA' : 'CODICE';
     const tasti = `<button class="btn verde" id="b-esegui">${ico('play')}ESEGUI</button><button class="btn ambra" id="b-stop" disabled>${ico('stop')}STOP</button><button class="btn carta piccolo" id="b-passo" title="Esegue un'istruzione alla volta">${ico('passo')}Passo</button>
       <span class="spazio"></span>${STATO.docente && liv.sol ? `<button class="btn oro piccolo" id="b-soluzione">${ico('lampadina')}Soluzione</button>` : ''}
@@ -2867,14 +2869,16 @@ const Gioco = (() => {
 
 // ============================================================ DOCENTE
 // ============================================================ IL TRAILER D'INTRODUZIONE
-/* «La ciliegina sulla torta» (Andrea, 20/11/2026): un trailer di circa 32 secondi che motiva a imparare il coding.
+/* «La ciliegina sulla torta» (Andrea, 20/11/2026): un trailer di circa 36 secondi che motiva a imparare il coding.
    Parte la prima volta che si preme GIOCA (i browser fanno partire l'audio solo dopo un tocco) e si rivede dal
    pulsante «Guarda il trailer»; «Salta» è sempre visibile. ?trailer=0 lo esclude.
-   Materiali di Andrea: video/trailer.mp4 (il galoppo, 10 s, muto: la sua traccia audio non è stata ascoltata) e
-   video/scena1-3.mp4 (dalle GIF animata1-3: stalla, cortile del castello, i cavalieri in fila). Colonna sonora
-   sintetizzata (Suoni.trailer), fanfara CC0 sul titolo. Regia: una sequenza di passi con attese; «Salta» ferma tutto.
-   Sequenza: stalla > castello > galoppo con salto al rallentatore > tessere, mattoncini, Python > carte della
-   crescita > i cavalieri in fila > titolo. */
+   Musica: «Determined Pursuit» di Emma_MA (OpenGameArt.org, CC0), scelta da Andrea. audio/trailer.mp3 è il tratto
+   12-50 s del brano: 120 battiti al minuto, battute da 2 s, l'orchestra entra piena a 6,0 s del trailer.
+   REGIA SULL'OROLOGIO DELLA MUSICA: ogni taglio aspetta un istante della musica (secondi qui sotto, sempre su un
+   battito), così resta a tempo anche se il computer rallenta. Con la musica spenta lo stesso orologio corre da solo.
+   Immagini di Andrea: video/trailer.mp4 (il galoppo, muto) e video/scena1-3.mp4 (dalle GIF animata1-3).
+   Sequenza: stalla 0 > castello 3 > galoppo 6 (salto al rallentatore) > tessere 18, mattoncini 20, Python 22 >
+   carte della crescita 24-27 > i cavalieri in fila 28 > titolo 32 > dissolvenza fino a 38. */
 const Trailer = (() => {
   let visto = false;
   const SALTO = [3.15, 4.7];                                      // secondi del video in cui i cavalieri saltano: rallentatore
@@ -2882,6 +2886,7 @@ const Trailer = (() => {
     return new Promise(fatto => {
       let vivo = true; const tempi = [];
       const ov = apriOv('ov-trailer', `<div class="tr">
+        <audio class="tr-musica" src="audio/trailer.mp3" preload="auto"></audio>
         <video class="tr-video" data-v="scena1" src="video/scena1.mp4" muted playsinline loop preload="auto"></video>
         <video class="tr-video" data-v="scena2" src="video/scena2.mp4" muted playsinline loop preload="auto"></video>
         <video class="tr-video" data-v="galoppo" src="video/trailer.mp4" poster="img/trailer-poster.webp" muted playsinline preload="auto"></video>
@@ -2891,35 +2896,37 @@ const Trailer = (() => {
         <div class="tr-banda su"></div><div class="tr-banda giu"></div><div class="tr-lampo"></div>
         <div class="tr-finale"><p>Programma il tuo cavallo. Conquista il torneo.</p><button class="btn legno grande" id="tr-entra">ENTRA NEL TORNEO</button></div>
         <button class="tr-salta" id="tr-salta">Salta ${ico('dx')}</button></div>`);
-      const tr = $('.tr', ov), testo = $('.tr-testo', ov), S = Suoni.accesi ? Suoni.trailer : null;
+      const tr = $('.tr', ov), testo = $('.tr-testo', ov), musica = $('.tr-musica', ov), S = Suoni.accesi ? Suoni.trailer : null;
       const vid = n => $(`.tr-video[data-v="${n}"]`, ov);
       const suona = (n, ...a) => { if (S && vivo) S[n](...a); };
-      const attendi = ms => new Promise((ok, ko) => tempi.push(setTimeout(() => vivo ? ok() : ko('fine'), ms)));
-      const scritta = (html, cls, ms) => { testo.innerHTML = `<div class="tr-t ${cls}">${html}</div>`; if (ms) tempi.push(setTimeout(() => { const t = $('.tr-t', testo); if (t) t.classList.add('esce'); }, ms)); };
+      // l'orologio: la musica se suona, altrimenti il tempo trascorso
+      let t0 = performance.now(), conMusica = false;
+      const ora = () => conMusica && !musica.paused ? musica.currentTime : (performance.now() - t0) / 1000;
+      const a = sec => new Promise((ok, ko) => { const g = () => { if (!vivo) return ko('fine'); if (ora() >= sec) ok(); else requestAnimationFrame(g); }; g(); tempi.push(setTimeout(g, Math.max(0, (sec - ora()) * 1000 + 30))); });
+      const scritta = (html, cls, dura) => { testo.innerHTML = `<div class="tr-t ${cls}">${html}</div>`; if (dura) tempi.push(setTimeout(() => { const t = $('.tr-t', testo); if (t) t.classList.add('esce'); }, dura)); };
       const lampo = () => { const l = $('.tr-lampo', ov); l.classList.remove('via'); void l.offsetWidth; l.classList.add('via'); };
       const pannello = html => { $$('.tr-pannello, .tr-carta', ov).forEach(x => x.remove()); if (html) tr.insertAdjacentHTML('beforeend', html); };
-      const scena = async (n, vel) => {                            // mostra un video e nasconde gli altri
+      const scena = (n, vel) => {                                  // mostra un video e ferma gli altri
         $$('.tr-video', ov).forEach(v => { if (v.dataset.v !== n) { v.classList.remove('si', 'avvicina'); try { v.pause(); } catch (e) {} } });
         const v = vid(n); if (!v) return null; v.currentTime = 0; v.playbackRate = vel || 1; v.classList.add('si');
-        try { await v.play(); } catch (e) {}
-        requestAnimationFrame(() => v.classList.add('avvicina'));
+        v.play().catch(() => {}); requestAnimationFrame(() => v.classList.add('avvicina'));
         return v;
       };
-      const fine = () => { if (!vivo) return; vivo = false; tempi.forEach(clearTimeout); $$('.tr-video', ov).forEach(v => { try { v.pause(); } catch (e) {} }); Musica.abbassa(1); ov.remove(); fatto(); };
+      const fine = () => { if (!vivo) return; vivo = false; tempi.forEach(clearTimeout); try { musica.pause(); } catch (e) {} $$('.tr-video', ov).forEach(v => { try { v.pause(); } catch (e) {} }); Musica.abbassa(1); ov.remove(); fatto(); };
       $('#tr-salta', ov).onclick = () => { Suoni.click(); fine(); };
       $('#tr-entra', ov).onclick = () => { Suoni.pop(); fine(); };
-      Musica.abbassa(45000);
+      Musica.abbassa(60000);
 
       (async () => {
-        // 1. la stalla e il castello: bordone e battito
-        suona('bordone', 5.6); [0, 1.1, 2.2, 3.2, 4.1, 4.9].forEach(t => tempi.push(setTimeout(() => suona('battito', 0.12 + t * 0.03), t * 1000)));
-        await scena('scena1', 0.85);
-        await attendi(400); scritta('Nel regno delle Quattro Casate…', 'piccolo', 2200);
-        await attendi(2700); lampo(); await scena('scena2', 0.85); scritta('…si prepara il Grande Torneo.', 'piccolo', 2200);
-        await attendi(2700);
-        // 2. colpo di trombe gravi, il galoppo
-        suona('braam'); lampo(); testo.innerHTML = '';
-        const video = await scena('galoppo', 1);
+        if (Musica.accesa) { musica.volume = 0.9; try { await musica.play(); conMusica = true; } catch (e) {} }
+        t0 = performance.now();
+        // stalla e castello: l'introduzione del brano che cresce
+        scena('scena1', 0.85);
+        await a(0.4); scritta('Nel regno delle Quattro Casate…', 'piccolo', 2300);
+        await a(3); lampo(); scena('scena2', 0.85); scritta('…si prepara il Grande Torneo.', 'piccolo', 2400);
+        // 6,0: l'orchestra entra piena, entra il galoppo
+        await a(6); suona('braam'); lampo(); testo.innerHTML = '';
+        const video = scena('galoppo', 1);
         let rallenta = false;
         const codice = () => {                                     // salta(ALTA) che si scrive da solo
           const c = el('div', 'tr-codice'); tr.append(c); const s = 'salta(ALTA)';
@@ -2930,49 +2937,42 @@ const Trailer = (() => {
           if (!vivo) return;
           const t = video.currentTime;
           if (!rallenta && t >= SALTO[0] && t < SALTO[1]) { rallenta = true; video.playbackRate = 0.35; suona('folata'); scritta('Ogni salto…', 'medio', 1800); tempi.push(setTimeout(() => { scritta('…è un comando', 'medio'); codice(); }, 2200)); }
-          if (rallenta && t >= SALTO[1] && video.playbackRate !== 1) { video.playbackRate = 1; suona('colpo'); }
+          if (rallenta && t >= SALTO[1] && video.playbackRate !== 1) video.playbackRate = 1;
           requestAnimationFrame(guardia);
         };
         requestAnimationFrame(guardia);
-        await attendi(900); scritta('Quattro casate', 'grande', 1300);
-        await attendi(1500); scritta('Un solo torneo', 'grande', 1100);
-        await new Promise((ok, ko) => { const v = () => { if (!vivo) return ko('fine'); if (video.currentTime >= 8.2 || video.ended) ok(); else requestAnimationFrame(v); }; v(); });
-        // 3. montaggio a tempo di timpani: tessere, mattoncini, Python
-        lampo(); suona('colpo'); video.classList.remove('si'); try { video.pause(); } catch (e) {} testo.innerHTML = '';
+        await a(7); scritta('Quattro casate', 'grande', 1300);
+        await a(8.5); scritta('Un solo torneo', 'grande', 1100);
+        // 18,0: montaggio, un pannello per battuta
+        await a(18); lampo(); video.classList.remove('si'); try { video.pause(); } catch (e) {} testo.innerHTML = '';
         testo.style.alignItems = 'flex-end'; testo.style.paddingBottom = '16vh';
-        pannello(`<div class="tr-pannello"><div class="tr-tessere">${['blu:avanza', 'ara:salto', 'blu:avanza', 'blu:avanza', 'ara:salto'].map((x, i) => `<div class="tr-tessera ${x.split(':')[0]}" style="animation-delay:${i * 0.14}s">${ico(x.split(':')[1])}</div>`).join('')}</div></div>`);
+        pannello(`<div class="tr-pannello"><div class="tr-tessere">${['blu:avanza', 'ara:salto', 'blu:avanza', 'blu:avanza', 'ara:salto'].map((x, i) => `<div class="tr-tessera ${x.split(':')[0]}" style="animation-delay:${i * 0.25}s">${ico(x.split(':')[1])}</div>`).join('')}</div></div>`);
         scritta('Dalle tessere…', 'medio');
-        await attendi(2000); suona('colpo'); lampo();
+        await a(20); lampo();
         pannello(`<div class="tr-pannello"><div class="tr-blocco">ripeti 3 volte<div class="dentro"><span style="background:#2F7FE0">avanza 1</span><span style="background:#EE8A1E">salta ALTA</span></div></div></div>`);
         scritta('…ai mattoncini…', 'medio');
-        await attendi(2000); suona('colpo'); lampo();
+        await a(22); lampo();
         pannello(`<div class="tr-pannello"><div class="tr-py" id="tr-py"></div></div>`);
         scritta('…fino al codice vero.', 'medio');
         const py = [['k', 'while not '], ['f', 'traguardo'], ['', '():\n    '], ['k', 'if '], ['f', 'ostacolo_davanti'], ['', '():\n        '], ['f', 'salta'], ['', '('], ['f', 'altezza'], ['', '())\n    '], ['k', 'else'], ['', ':\n        '], ['f', 'avanza'], ['', '('], ['c', '1'], ['', ')']];
         const tot = py.map(p => p[1]).join('').length;
         const disegna = n => { const b = $('#tr-py', ov); if (!b) return; let r = n, h = ''; for (const [k, t] of py) { if (r <= 0) break; const p = esc(t.slice(0, r)); h += k ? `<span class="${k}">${p}</span>` : p; r -= t.length; } b.innerHTML = h; };
-        for (let i = 1; i <= 24; i++) tempi.push(setTimeout(() => disegna(Math.ceil(tot * i / 24)), i * 80));
-        await attendi(2300);
-        // 4. le carte della crescita, una casata per lampo
-        testo.style.alignItems = ''; testo.style.paddingBottom = '';
+        for (let i = 1; i <= 24; i++) tempi.push(setTimeout(() => disegna(Math.ceil(tot * i / 24)), i * 70));
+        // 24-27: le carte della crescita, una per secondo (due battiti)
+        await a(24); testo.style.alignItems = ''; testo.style.paddingBottom = '';
         const giro = [['aquila', 1, 'Da Stalliere…'], ['tasso', 2, ''], ['quercia', 3, ''], ['cero', 4, '…a Campione.']];
         for (let i = 0; i < giro.length; i++) {
-          const [c, e, t] = giro[i]; suona('lampo', i); lampo();
+          await a(24 + i); const [c, e, t] = giro[i]; lampo();
           pannello(`<img class="tr-carta" src="img/carta-${c}-${e}.webp" alt="">`);
           if (t) scritta(t, 'grande'); else testo.innerHTML = '';
-          await attendi(i === 3 ? 1500 : 950);
         }
-        // 5. i cavalieri in fila: il torneo ti aspetta
-        pannello(''); lampo(); suona('colpo'); await scena('scena3', 0.9);
-        scritta('Il torneo ti aspetta.', 'medio', 1900);
-        await attendi(2100);
-        // 6. un attimo di salita, poi il titolo
-        suona('salita', 1.1); testo.innerHTML = '';
-        await attendi(1100);
-        lampo(); $$('.tr-video', ov).forEach(v => { v.classList.remove('si'); try { v.pause(); } catch (e) {} });
-        tr.classList.add('titoli'); $('.tr-img', ov).classList.add('si', 'kb');
-        if (S) Musica.fanfara(); suona('braam');
-        await attendi(1300); $('.tr-finale', ov).classList.add('si'); $('#tr-entra', ov).focus();
+        // 28: i cavalieri in fila
+        await a(28); pannello(''); lampo(); scena('scena3', 0.9);
+        scritta('Il torneo ti aspetta.', 'medio', 3400);
+        // 32: il titolo, mentre la musica sfuma fino a 38
+        await a(32); lampo(); $$('.tr-video', ov).forEach(v => { v.classList.remove('si'); try { v.pause(); } catch (e) {} });
+        tr.classList.add('titoli'); $('.tr-img', ov).classList.add('si', 'kb'); testo.innerHTML = ''; suona('braam');
+        await a(33.5); $('.tr-finale', ov).classList.add('si'); $('#tr-entra', ov).focus();
       })().catch(() => {});
     });
   }
