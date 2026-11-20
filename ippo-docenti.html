@@ -121,7 +121,8 @@ annuncia(conta)</pre>
 </table>
 <ul>
   <li>Ogni concetto nuovo arriva con una scheda «novità», poi un Osserva, poi un Completa, poi da soli.</li>
-  <li><b>Due aiuti a richiesta</b> per livello (il punto interrogativo in alto), graduati e senza costo in stelle. Il gioco non suggerisce mai la mossa senza che venga chiesta.</li>
+  <li><b>Il Maestro di scuderia</b> è l'avatar di Andrea Cerioli e fa da agente pedagogico, solo per iscritto. Si presenta all'inizio, assegna la consegna di ogni livello con il suo volto accanto, firma i messaggi dopo ogni corsa e, alla vittoria, dice in una riga che cosa è riuscito e qual è la prossima sfida. Parla del programma, mai della persona: niente «bravo».</li>
+  <li><b>Due aiuti a richiesta</b> per livello (il punto interrogativo in alto), graduati e senza costo in stelle. Dalla <b>terza corsa fallita</b> sullo stesso livello il Maestro se ne accorge: la lampadina pulsa e accanto al messaggio compare «Vuoi un consiglio?». Non si apre niente da solo: decide l'alunno.</li>
   <li><b>Chi non legge ancora</b> (1ª, in parte 2ª): consegna di poche parole in maiuscolo con il pulsante «ascolta»; aiuti ed errori sono visivi (la tessera che pulsa, la casella evidenziata, il pezzo giusto in trasparenza).</li>
   <li><b>Tre traguardi, tre stelle</b>: traguardo in tutte le manche · percorso netto · programma entro una lunghezza massima. Basta la prima stella per proseguire: le altre sono una sfida in più, mai un blocco.</li>
 </ul>
@@ -164,7 +165,15 @@ annuncia(conta)</pre>
 </ul>
 <h3>Progressi: classe e Mac</h3>
 <p>All'inizio lo studente tocca la sua classe e il Mac che sta usando (1-28). Il numero del Mac decide la casata e il cavaliere: 1-7 AquilaBlu, 8-14 TassoRosso, 15-21 QuerciaVerde, 22-28 CeroGiallo. Chi torna allo stesso Mac ritrova le sue stelle; chi lo cambia, o gioca fuori dal laboratorio, usa il <b>codice gara</b> che compare a ogni vittoria.</p>
-<div class="riquadro verde"><b>Che cosa si salva.</b> Classe, numero del Mac e stelle. Mai un nome, mai un dato personale. Sui Mac non resta nulla: il gioco non usa la memoria permanente del browser.</div>
+<div class="riquadro verde"><b>Che cosa si salva.</b> Classe, numero del Mac e stelle; per la classifica, data e stelle nuove di ogni Mac (scheda «Lezioni»). Mai un nome, mai un dato personale. Sui Mac non resta nulla: il gioco non usa la memoria permanente del browser.</div>
+<h3>Classifica live delle casate</h3>
+<p>Con il foglio collegato, nel castello compare in basso a destra il <b>Torneo delle casate</b> della classe, solo per la lezione di oggi. Per ogni casata: le stelle conquistate oggi <b>divise per i Mac in gara</b> della casata («4,3 stelle a testa · 6 in gara»). Così vince la casata che gioca meglio, non quella con più Mac occupati. Un Mac è «in gara» dal primo livello che apre, anche se non prende stelle: chi è in difficoltà non conviene che smetta di giocare. A parità di stelle a testa le casate sono pari merito. Nessun alunno compare: solo le quattro casate.</p>
+<p>Per proiettarla alla LIM: modalità docente (cinque tocchi sul logo) &gt; scegli la classe &gt; <b>Apri la classifica</b>. Si aggiorna ogni 10 secondi; sui Mac degli studenti ogni 30.</p>
+<div class="riquadro blu"><b>Da fare una volta.</b> La classifica richiede la versione 2 dello script del foglio: in Apps Script incollare il nuovo <span class="mono">ippo.gs</span>, poi Gestisci deployment &gt; Modifica &gt; Versione «Nuova versione» &gt; Esegui il deployment. L'indirizzo resta lo stesso. Finché lo script è alla versione 1 gli studenti semplicemente non vedono la classifica.</div>
+<h3>Il cavallo cresce</h3>
+<p>Il cavallo di ogni studente cresce con i gradi vinti: <b>puledro</b> all'inizio, <b>cavallo</b> da Scudiero (vinto il grado 2), <b>destriero bardato</b> con i colori della casata da Cavaliere (vinto il grado 5), <b>destriero del Codice</b>, meccanico e con i simboli di Python, per gli ultimi due gradi (vinto il grado 6, il primo in cui si scrive codice). Quando cresce, una scena lo mostra. Conta il grado più alto vinto, quindi il cavallo resta grande anche quando si torna a ripassare un grado precedente. Il premio è legato a quello che si è imparato, mai al caso.</p>
+<h3>Bonus: il direttore di campo</h3>
+<p>Nel salto ostacoli il direttore di campo è chi progetta il percorso. Dopo il grado 2 e dopo il grado 4 c'è un momento di relax: lo studente disegna il suo percorso toccando le caselle (tronco, barriera, muro) e lo fa correre al cavallo, che usa il programma del Maestro. Non ci sono stelle né codice da scrivere. Dopo il grado 2 il percorso arriva a 10 caselle, dopo il grado 4 a 14. Il bonus resta poi disponibile nel castello, con il pulsante «Direttore di campo».</p>
 <h3>Collegare il foglio dei progressi</h3>
 <p>Finché il foglio non è collegato il gioco funziona lo stesso, con i soli codici gara. Per collegarlo: aprire <span class="mono">_lavoro/apps-script/ippo.gs</span>, seguire le istruzioni in testa al file (foglio Google della scuola, Apps Script, deployment come app web con «Esegui come: Me» e «Accesso: Chiunque») e incollare l'indirizzo che finisce con <span class="mono">/exec</span> nella costante <span class="mono">REGISTRO_URL</span> di <span class="mono">index.html</span>. A ogni modifica dello script va pubblicata una nuova versione.</p>
 <h3>Codici gara</h3>
@@ -176,6 +185,7 @@ annuncia(conta)</pre>
 <h2>Immagini, musiche, strumenti</h2>
 <ul>
   <li><b>Illustrazioni</b> di personaggi, ostacoli e ambienti fornite da Andrea Cerioli; scontorno eseguito in locale.</li>
+  <li><b>Avatar del Maestro di scuderia</b>: immagine di Andrea Cerioli generata con strumenti di intelligenza artificiale (Reg. UE 2024/1689, art. 50). La dicitura compare anche nel gioco.</li>
   <li><b>Musiche</b>: «Medieval: The Old Tower Inn», «The Bard's Tale», «Minstrel Dance», «Market Day», «Victory Theme» di RandomMind, da OpenGameArt.org, licenza CC0 (pubblico dominio). Ricodificate e, la fanfara, accorciata.</li>
   <li><b>Effetti sonori</b> sintetizzati nel browser. <b>Lettura della consegna</b> con la sintesi vocale del dispositivo.</li>
   <li><b>Caratteri</b>: Baloo 2, Atkinson Hyperlegible, JetBrains Mono (Google Fonts).</li>

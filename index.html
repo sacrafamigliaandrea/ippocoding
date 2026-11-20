@@ -196,6 +196,54 @@ svg{display:block}
 .stendardi{margin-bottom:.6rem}
 .riga-codice{display:flex;align-items:center;gap:.6rem;padding:.6rem 1rem}
 .riga-codice label{font-weight:700}
+.riga-codice .sep{width:.1rem;align-self:stretch;background:var(--carta-bordo);margin:0 .3rem}
+/* classifica live delle casate: in basso a destra nel castello, a tutto schermo sul proiettore */
+#s-castello .corpo:has(.classifica) .riga-codice{align-self:flex-start}
+#s-castello .classifica{position:absolute;right:1.5rem;bottom:1.2rem;width:min(30rem,44vw)}
+.classifica{padding:.7rem 1rem;color:var(--inchiostro)}
+.cl-testa{display:flex;align-items:center;gap:.7rem;margin-bottom:.4rem}
+.cl-testa b{flex:1;font-family:var(--f-display);font-size:1.1rem;color:var(--blu)}
+.cl-ora{font-size:.8rem;color:var(--inchiostro-soft)}
+.cl-vuota{margin:.3rem 0;font-size:1rem;color:var(--inchiostro-soft)}
+.cl-righe{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.35rem}
+.cl-righe li{display:grid;grid-template-columns:2rem 2.2rem 7.5rem 1fr auto;align-items:center;gap:.5rem;padding:.25rem .5rem;border-radius:.6rem;background:rgba(255,255,255,.55)}
+.cl-righe li.mia{box-shadow:inset 0 0 0 .16rem var(--c);background:rgba(255,255,255,.85)}
+.cl-righe li.fuori{opacity:.55}
+.cl-pos{font-family:var(--f-display);font-weight:800;font-size:1.2rem;color:var(--cs)}
+.cl-righe img{width:2.2rem;height:2.2rem;border-radius:50%;object-fit:cover;border:.14rem solid var(--c)}
+.cl-nome{font-weight:700;font-size:1rem}
+.cl-barra{height:.7rem;border-radius:.4rem;background:rgba(0,0,0,.08);overflow:hidden}
+.cl-barra i{display:block;height:100%;background:var(--c);border-radius:.4rem;transition:width .6s var(--molla)}
+.cl-val{display:flex;flex-direction:column;align-items:flex-end;font-size:.85rem;line-height:1.15;white-space:nowrap}
+.cl-val b{font-family:var(--f-display);font-size:1.15rem}
+.cl-val small{font-size:.75rem;color:var(--inchiostro-soft)}
+.classifica.proiettata{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,64rem);padding:1.5rem 2rem}
+.proiettata .cl-testa b{font-size:1.9rem}
+.cl-righe.grande{gap:.7rem}
+.cl-righe.grande li{grid-template-columns:3.4rem 4rem 13rem 1fr auto;padding:.6rem 1rem;gap:1rem}
+.cl-righe.grande .cl-pos{font-size:2.3rem}
+.cl-righe.grande img{width:4rem;height:4rem}
+.cl-righe.grande .cl-nome{font-size:1.6rem}
+.cl-righe.grande .cl-barra{height:1.2rem}
+.cl-righe.grande .cl-val{font-size:1.2rem}
+.cl-righe.grande .cl-val b{font-size:2rem}
+.cl-righe.grande .cl-val small{font-size:1rem}
+.cl-regola{margin:.9rem 0 0;font-size:1rem;color:var(--inchiostro-soft)}
+/* direttore di campo */
+#campo.disegna .c-pista .c-cella:not(.via){cursor:pointer}
+#campo.disegna .c-pista .c-cella:not(.via):not(.fine):hover{background:rgba(255,255,255,.45)}
+.direttore{display:flex;flex-direction:column;gap:1rem;padding:1rem 1.2rem;color:var(--inchiostro)}
+.direttore h2{display:flex;align-items:center;gap:.5rem;font-size:1.7rem;color:var(--blu)}
+.direttore h2 svg{width:1.8rem;height:1.8rem}
+.direttore p{font-size:1.15rem;line-height:1.4;margin:0}
+.dir-ost{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
+.dir-ost div{display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:.6rem;border-radius:.8rem;background:rgba(255,255,255,.65);border:.12rem solid var(--carta-bordo)}
+.dir-ost img{height:4.2rem;width:auto;object-fit:contain}
+.dir-ost b{font-family:var(--f-display);font-size:1.15rem;text-transform:capitalize}
+.dir-ost small{font-size:.9rem;color:var(--inchiostro-soft)}
+.dir-lun{display:flex;align-items:center;gap:.7rem;font-weight:700;font-size:1.15rem}
+.dir-lun b{min-width:2.2rem;text-align:center;font-family:var(--f-display);font-size:1.6rem}
+.dir-nota{font-size:1rem !important;color:var(--inchiostro-soft)}
 .riga-codice input{width:13rem;padding:.4rem .7rem;border-radius:.6rem;border:.14rem solid var(--carta-bordo);font:700 1.15rem var(--f-mono);text-transform:uppercase;background:#fff;color:var(--inchiostro)}
 .riga-codice .esito{font-size:1rem;color:var(--ambra-scuro);min-width:10rem}
 
@@ -458,6 +506,9 @@ svg{display:block}
 #ov-scena{padding:0;background:#000}
 #ov-scena .fondo{animation:zoom 14s ease-out both}
 @keyframes zoom{from{transform:scale(1.08)}}
+.scena-alone{position:absolute;left:50%;top:40%;width:min(70vh,46rem);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,226,140,.75),rgba(224,169,27,.25) 45%,transparent 70%);animation:appare 1s ease-out both}
+.scena-figura{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);height:min(50vh,32rem);width:auto;filter:drop-shadow(0 1rem 1.2rem rgba(0,0,0,.45));animation:cresce .9s var(--molla) both}
+@keyframes cresce{from{transform:translate(-50%,-50%) scale(.7);opacity:0}}
 .scena-testo{position:absolute;left:50%;bottom:2.2rem;transform:translateX(-50%);width:min(92vw,62rem);padding:1.2rem 1.6rem;display:flex;align-items:center;gap:1.2rem}
 .scena-testo .t{flex:1}
 .scena-testo h2{font-size:1.9rem;color:var(--blu)}
@@ -1415,6 +1466,21 @@ function ripresa() {
   } catch (e) {}
 }
 const stelleDi = (p, l) => IPPO.stelleDaBits(STATO.stelle[p])[l - 1];
+/* Il cavallo cresce con i gradi (immagini di Andrea, 20/11/2026): puledro all'inizio, cavallo vero da Scudiero
+   (vinto il grado 2), destriero bardato con i colori della casata da Cavaliere (vinto il grado 5), destriero Python per i gradi 7-8 (vinto il grado 6, il primo con il codice scritto).
+   Conta il grado più alto vinto: i gradi sono tutti aperti e si può anche saltare avanti. ?cavallo=1|2|3|4 per provarlo. */
+const gradoVinto = p => IPPO.stelleDaBits(STATO.stelle[p]).filter(s => s.t).length === 10;
+function etaCavallo() {
+  const forza = +PAR.get("cavallo"); if (forza >= 1 && forza <= 4) return forza;
+  let alto = 0; for (let p = 1; p <= 8; p++) if (gradoVinto(p)) alto = p;
+  return alto >= 6 ? 4 : alto >= 5 ? 3 : alto >= 2 ? 2 : 1;
+}
+const imgCav = (casata, eta) => { eta = eta || etaCavallo(); return `img/cav-${casata}${eta === 2 ? '' : '-' + eta}.webp`; };
+const CRESCITA = {
+  2: { titolo: 'Il tuo cavallo è cresciuto', testo: 'Uno Scudiero non cavalca più un puledro: in stalla ti aspetta un cavallo vero, più alto e più forte.' },
+  3: { titolo: 'Il destriero del Cavaliere', testo: 'Sei Cavaliere: il tuo cavallo porta la bardatura con i colori della tua casata.' },
+  4: { titolo: "Il destriero del Codice", testo: "Hai scritto le prime righe di Python: la scuderia ti affida il destriero del Codice. Lo guidi con la pergamena, riga per riga." }
+};
 const aperto = (p, l) => STATO.docente || l === 1 || l <= STATO.aperti[p] || stelleDi(p, l - 1).t;
 const impostaCasata = id => { STATO.casata = id; $('#app').dataset.casata = id; };
 
@@ -1571,8 +1637,77 @@ const Registro = {
     try { const d = await this.tenta(par); if (STATO.chi !== io) return; if (d.ok) { this.unisci(d.p); this.stato = 'ok'; } else this.stato = 'errore'; }
     catch (e) { if (STATO.chi === io) this.stato = 'rete'; }
   },
+  // check-in: il Mac entra fra i presenti della lezione al primo livello che apre (una volta al giorno per scheda)
+  checkin() {
+    if (!this.attivo() || !STATO.chi) return;
+    const k = [STATO.chi.classe, STATO.chi.mac, new Date().toDateString()].join('|');
+    try { if (sessionStorage.getItem('ippo-checkin') === k) return; sessionStorage.setItem('ippo-checkin', k); } catch (e) {}
+    this.tenta({ a: 'c', classe: STATO.chi.classe, mac: STATO.chi.mac }).catch(() => {});
+  },
+  async classifica(classe) {                        // null se il foglio non risponde o ha ancora lo script della versione 1
+    if (!this.attivo() || !classe) return null;
+    try { const d = await this.tenta({ a: 'k', classe }); return d.ok && Array.isArray(d.casate) ? d.casate : 'vecchio'; } catch (e) { return null; }   // «vecchio»: lo script del foglio è ancora la versione 1
+  },
   frase() { return !this.attivo() || !STATO.chi ? '' : this.stato === 'rete' ? 'La rete non risponde: salvo appena torna.' : this.stato === 'errore' ? 'Il foglio della scuola non salva: segnati il codice gara.' : 'Salvato per questo Mac.'; }
 };
+
+// ============================================================ CLASSIFICA LIVE DELLE CASATE
+/* Decisione di Andrea (20/11/2026): classifica live fra le quattro casate, con le stelle della lezione di oggi.
+   Regole (skill meccaniche-di-gioco, punteggio-squadre.md): stelle A TESTA, divise per i Mac presenti della casata
+   (entrati in gioco oggi, con o senza stelle), mai la somma grezza; a parità è ex aequo; nessun alunno compare.
+   Il conto lo fa il foglio (azione «k»); qui solo ordine, ex aequo e disegno. */
+const Classifica = (() => {
+  const pari = (a, b) => Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
+  function ordina(casate) {
+    const righe = casate.map(c => ({ ...c, k: CASATE.find(x => x.nome === c.nome), inGara: c.presenti > 0, aTesta: c.presenti ? c.stelle / c.presenti : 0 })).filter(r => r.k);
+    righe.sort((a, b) => (b.inGara - a.inGara) || (b.aTesta - a.aTesta));
+    righe.forEach((r, i) => { const p = righe[i - 1]; r.pos = !r.inGara ? null : p && p.inGara && pari(r.aTesta, p.aTesta) ? p.pos : i + 1; });
+    return righe;
+  }
+  const num = x => x.toLocaleString('it-IT', { maximumFractionDigits: 1, minimumFractionDigits: x % 1 ? 1 : 0 });
+  function html(casate, mia, grande) {
+    if (!casate) return `<p class="cl-vuota">La classifica non risponde: si aggiorna appena torna la rete.</p>`;
+    const righe = ordina(casate), max = Math.max(1, ...righe.map(r => r.aTesta));
+    if (!righe.some(r => r.inGara)) return `<p class="cl-vuota">Nessuno è ancora in gara oggi: la classifica parte con il primo livello.</p>`;
+    return `<ol class="cl-righe ${grande ? 'grande' : ''}">${righe.map(r => `<li class="${r.k.id === mia ? 'mia' : ''} ${r.inGara ? '' : 'fuori'}" style="--c:${r.k.col};--cs:${r.k.scuro}">
+      <span class="cl-pos">${r.pos ? r.pos + 'ª' : '–'}</span><img src="img/volto-${r.k.id}.webp" alt=""><span class="cl-nome">${esc(r.k.nome)}</span>
+      <span class="cl-barra"><i style="width:${(100 * r.aTesta / max).toFixed(1)}%"></i></span>
+      <span class="cl-val">${r.inGara ? `<b>${num(r.aTesta)}</b> stelle a testa<small>${r.presenti} in gara · ${r.stelle} stelle</small>` : '<small>nessuno in gara</small>'}</span></li>`).join('')}</ol>`;
+  }
+  let giro = null, quale = 0;
+  // aggiorna dentro `box` ogni `ogni` ms finché il box resta nella pagina
+  function segui(box, classe, ogni, grande) {
+    const io = ++quale; clearTimeout(giro);
+    const passo = async () => {
+      if (io !== quale || !box.isConnected) return;
+      const d = await Registro.classifica(classe);
+      if (io !== quale || !box.isConnected) return;
+      if (d === 'vecchio') {                        // il foglio non conosce ancora la classifica: gli studenti non vedono nulla
+        if (!grande) return box.remove();
+        $('.cl-corpo', box).innerHTML = '<p class="cl-vuota">Lo script del foglio è ancora la versione 1: pubblica la nuova versione di ippo.gs (istruzioni in testa al file).</p>'; return;
+      }
+      $('.cl-corpo', box).innerHTML = html(d,STATO.chi ? casataDiMac(STATO.chi.mac).id : null, grande);
+      $('.cl-ora', box).textContent = 'aggiornata alle ' + new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+      giro = setTimeout(passo, ogni);
+    };
+    passo();
+  }
+  // pannello per il castello: solo con il foglio collegato e uno studente che ha scelto classe e Mac
+  function pannello() {
+    if (!Registro.attivo() || !STATO.chi) return null;
+    const box = el('div', 'classifica pergamena', `<div class="cl-testa"><b>Torneo delle casate · ${esc(etichettaClasse(STATO.chi.classe))}, oggi</b><span class="cl-ora"></span></div><div class="cl-corpo"><p class="cl-vuota">Arrivano i risultati…</p></div>`);
+    setTimeout(() => segui(box, STATO.chi.classe, 30000), 0);
+    return box;
+  }
+  // a tutto schermo per il proiettore (modalità docente): si aggiorna ogni 10 secondi
+  function proiettore(classe) {
+    const ov = apriOv('ov-classifica', `<div class="fondo" style="background-image:url(img/castello.webp)"></div><div class="classifica pergamena proiettata"><div class="cl-testa"><b>Torneo delle casate · ${esc(etichettaClasse(classe))}, lezione di oggi</b><span class="cl-ora"></span><button class="btn carta piccolo" id="cl-chiudi">Chiudi</button></div>
+      <div class="cl-corpo"><p class="cl-vuota">Arrivano i risultati…</p></div><p class="cl-regola">Stelle conquistate oggi divise per i Mac in gara della casata: vince chi gioca meglio, non chi è più numeroso.</p></div>`);
+    $('#cl-chiudi', ov).onclick = () => { quale++; ov.remove(); };
+    segui($('.classifica', ov), classe, 10000, true);
+  }
+  return { ordina, html, pannello, proiettore };
+})();
 
 // ============================================================ SCHERMATE E BARRA
 const strato = () => $('#strato-ov');
@@ -1610,7 +1745,7 @@ const NOTA_IA = '<span class="nota-ia">Avatar generato con IA · Reg. UE 2024/16
 function scena(o) {
   return new Promise(fatto => {
     const piccoli = STATO.percorso && STATO.percorso <= 2 && !o.grandi;
-    const ov = apriOv('ov-scena', `<div class="fondo" style="background-image:url(img/${o.img}.webp)"></div>
+    const ov = apriOv('ov-scena', `<div class="fondo" style="background-image:url(img/${o.img}.webp)${o.figura ? ";filter:brightness(.5) blur(3px)" : ""}"></div>${o.figura ? `<div class="scena-alone"></div><img class="scena-figura" src="${o.figura}" alt="Il tuo cavaliere">` : ""}
       <div class="scena-testo pergamena ${piccoli ? 'piccoli' : ''}">${o.busto ? '<img class="busto" src="img/andrea.webp" alt="Andrea, il Maestro di scuderia">' : '<img class="volto-a" style="width:6rem;height:6rem" src="img/andrea-volto.webp" alt="Andrea, il Maestro di scuderia">'}
       <div class="t">${o.titolo ? `<h2>${esc(o.titolo)}</h2>` : ''}<p>${esc(o.testo)}</p></div>
       <button class="btn oro" id="scena-avanti">${ico('dx')}${esc(o.bottone || 'Avanti')}</button></div>${o.busto ? NOTA_IA : ""}`);
@@ -1679,7 +1814,7 @@ function vaiCastello() {
       return `<button class="stendardo ${p === mio ? 'tuo' : ''}" data-p="${p}" style="--tinta:${TINTE[p][0]};--tinta-s:${TINTE[p][1]}">${p === mio ? '<span class="tuo-l">tocca a te</span>' : ''}
         <span class="scuola">Grado</span><span class="anno">${p}</span><span class="grado">${esc(P.grado)}</span>
         <span class="forma">${ico(p === 6 ? 'libro' : P.forma)}${p === 6 ? 'mattoncini e Python' : FORMA_TXT[P.forma]}</span><span class="conto">${ico('stella', 'stella')}${n} di 30</span></button>`; }).join('')}</div>
-    <div class="riga-codice pergamena"><label for="in-codice">Hai un codice gara?</label><input id="in-codice" maxlength="14" placeholder="TROTTO-47" autocomplete="off" spellcheck="false"><button class="btn piccolo" id="b-codice">Riprendi</button><span class="esito" id="codice-esito" aria-live="polite"></span></div>`;
+    <div class="riga-codice pergamena">${direttoreAperto() ? `<button class="btn carta piccolo" id="b-direttore">${ico('matita')}Direttore di campo</button><span class="sep"></span>` : ''}<label for="in-codice">Hai un codice gara?</label><input id="in-codice" maxlength="14" placeholder="TROTTO-47" autocomplete="off" spellcheck="false"><button class="btn piccolo" id="b-codice">Riprendi</button><span class="esito" id="codice-esito" aria-live="polite"></span></div>`;
   $$('.stendardo', corpo).forEach(b => b.onclick = () => { Suoni.pop(); vaiStalla(+b.dataset.p); });
   const usa = () => {
     const c = IPPO.leggiCodice($('#in-codice').value);
@@ -1687,6 +1822,8 @@ function vaiCastello() {
     STATO.aperti[c.p] = Math.max(STATO.aperti[c.p], c.l); ricorda(); Suoni.stella(); vaiStalla(c.p);
   };
   $('#b-codice').onclick = usa;
+  const cl = Classifica.pannello(); if (cl) corpo.append(cl);
+  const bd = $('#b-direttore'); if (bd) bd.onclick = () => { Suoni.pop(); Direttore.apri(IPPO.stelleDaBits(STATO.stelle[4]).filter(s => s.t).length === 10 || STATO.docente ? 4 : 2); };
   $('#in-codice').onkeydown = e => { if (e.key === 'Enter') usa(); };
   if (!STATO.viste.apertura) { STATO.viste.apertura = 1; ricorda(); scena({ img: 'castello', titolo: 'Ciao, sono Andrea', testo: APERTURA, grandi: true, busto: true }); }
 }
@@ -1714,7 +1851,12 @@ function vaiStalla(p) {
 // Il cavaliere è un'immagine fissa (scontornata dai PNG di Andrea): lo muovono trasformazioni e Web Animations.
 const Campo = (() => {
   const OST = { 1: { img: 'ost-tronco', rapp: 300 / 285, alt: 0.34, nome: 'tronco' }, 2: { img: 'ost-barriera', rapp: 290 / 300, alt: 0.50, nome: 'barriera' }, 3: { img: 'ost-muro', rapp: 201 / 300, alt: 0.60, nome: 'muro' } };
-  const RAPP_CAV = { aquila: 640 / 545, tasso: 640 / 488, cero: 640 / 519, quercia: 640 / 540 };
+  // larghezza/altezza delle immagini, per casata e per età del cavallo (li stampa _lavoro/asset/prepara_crescita.py)
+  const RAPP_CAV = {
+    aquila: { 1: 617 / 640, 2: 640 / 545, 3: 640 / 546, 4: 640 / 538 }, tasso: { 1: 640 / 594, 2: 640 / 488, 3: 640 / 488, 4: 640 / 422 },
+    quercia: { 1: 608 / 640, 2: 640 / 540, 3: 640 / 508, 4: 640 / 492 }, cero: { 1: 640 / 596, 2: 640 / 519, 3: 640 / 507, 4: 640 / 536 }
+  };
+  const SCALA_ETA = { 1: 0.86, 2: 1, 3: 1.04, 4: 1.06 };      // il puledro si vede più piccolo: la crescita deve notarsi in gara
   const DURATE = { passo: 380, salto: 760, riposa: 520, annuncia: 1000, giro: 150, cond: 170, assegna: 150, chiama: 150 };
   let radice, sfondo, piano, cart, hud, pista = null, opz = {}, geo = null, cav = null, pos = 0, vivo = 0, attese = [];
   const rem = () => parseFloat(getComputedStyle(document.documentElement).fontSize);
@@ -1732,8 +1874,8 @@ const Campo = (() => {
     // a sinistra della casella VIA resta lo spazio per il corpo del cavallo: le zampe davanti stanno sul numero della casella
     const cw = (W * 0.96) / (n + 1.85), x0 = W * 0.01 + 1.85 * cw;
     const hb = Math.max(2.6 * r, Math.min(H * 0.16, 6.4 * r)), fondo = H - 3.5 * r, cima = fondo - hb, yb = cima + hb * 0.36;
-    const rapp = RAPP_CAV[opz.casata] || 1.2, sopra = Math.max(40, yb - 4.4 * r);
-    const cavW = Math.max(56, Math.min(cw * 2.8, rapp * sopra / 1.62, W * 0.3)), cavH = cavW / rapp;
+    const eta = etaCavallo(), rapp = (RAPP_CAV[opz.casata] || {})[eta] || 1.2, sopra = Math.max(40, yb - 4.4 * r);
+    const cavW = Math.max(56, Math.min(cw * 2.8, rapp * sopra / 1.62, W * 0.3)) * SCALA_ETA[eta], cavH = cavW / rapp;
     return { W, H, r, n, x0, cw, hb, cima, yb, cavW, cavH, cx: k => x0 + (k + 0.5) * cw };
   }
   const xCav = k => geo.cx(k) + geo.cw * 0.5 - geo.cavW, yCav = () => geo.yb - geo.cavH * 0.95;      // il muso arriva al bordo destro della casella
@@ -1765,7 +1907,7 @@ const Campo = (() => {
       piano.appendChild(d);
     });
     // cavaliere
-    cav = el('div', 'c-cav', `<div class="salto"><div class="corpo-c"><img src="img/cav-${opz.casata}.webp" alt="Il tuo cavaliere"></div></div><div class="c-ombra"></div>`);
+    cav = el('div', 'c-cav', `<div class="salto"><div class="corpo-c"><img src="${imgCav(opz.casata)}" alt="Il tuo cavaliere"></div></div><div class="c-ombra"></div>`);
     cav.style.width = g.cavW + 'px';
     piano.appendChild(cav); metti(pos);
     if (opz.coperta) copri();
@@ -2358,7 +2500,7 @@ const Gioco = (() => {
     Campo.manche(lista, vista, vedi);
   }
   function apri(p, l) {
-    stop(false); Voce.taci();
+    stop(false); Voce.taci(); if (Direttore.attivo) Direttore.chiudi(); Registro.checkin();
     STATO.percorso = p; STATO.livello = l; liv = livello(p, l);
     aiuti = 0; falliti = 0; previsione = null; variante = 0; aPassi = false; $("#b-aiuto").classList.remove("chiama");
     const P = PERCORSI[p];
@@ -2493,6 +2635,7 @@ const Gioco = (() => {
   // ---------- vittoria, stelle, codice gara
   function vittoria(st, v, tipo, ast) {
     const p = liv.p, l = liv.l, primaVolta = !stelleDi(p, l).t, era = stelleDi(p, l);
+    const etaPrima = etaCavallo();                   // per accorgersi che il cavallo è appena cresciuto
     STATO.stelle[p] = (STATO.stelle[p] | IPPO.bitsDiLivello(l, st)) >>> 0;
     if (l < 10) STATO.aperti[p] = Math.max(STATO.aperti[p], l + 1);
     Registro.salva();
@@ -2517,7 +2660,7 @@ const Gioco = (() => {
       chiudi();
       if (l === 5 && primaVolta) await scena({ img: 'scena-campo', titolo: 'Si esce in campo', testo: STORIA[p].meta });
       if (l < 10) return apri(p, l + 1);
-      if (primaVolta) { Musica.fanfara(); await scena({ img: p === 8 ? 'finale' : 'castello', titolo: `Hai il grado di ${PERCORSI[p].grado}`, testo: STORIA[p].chiude }); await debrief(p); }
+      if (primaVolta) { Musica.fanfara(); await scena({ img: p === 8 ? 'finale' : 'castello', titolo: `Hai il grado di ${PERCORSI[p].grado}`, testo: STORIA[p].chiude }); await debrief(p); const eta = etaCavallo(); if (eta > etaPrima) await scena({ img: "stalla", titolo: CRESCITA[eta].titolo, testo: CRESCITA[eta].testo, figura: imgCav(STATO.casata, eta) }); if (p === 2 || p === 4) { await scena({ img: 'scena-campo', titolo: 'Il direttore di campo', testo: 'Prima del prossimo grado ti prendi una pausa: oggi il percorso lo disegni tu, e il cavallo lo corre.' }); return Direttore.apri(p); } }
       vaiCastello();
     };
     $('#v-avanti', ov).focus();
@@ -2548,7 +2691,7 @@ const Gioco = (() => {
   }
   function novita(chiave) {
     const N = NOVITA[chiave]; if (!N) return;
-    const cavallo = `<img class="d-cav" src="img/cav-${STATO.casata}.webp" alt="">`;
+    const cavallo = `<img class="d-cav" src="${imgCav(STATO.casata)}" alt="">`;
     const ov = apriOv('ov-novita', `<div class="scheda pergamena novita"><span class="etichetta">novità</span><h2 style="margin-top:.4rem">${esc(N.t)}</h2>${N.d ? `<p>${esc(N.d)}</p>` : ''}
       <div class="mostra" id="nov-mostra">${N.demo ? `<div class="demo ${N.demo}">${cavallo}${N.demo === 'salto' ? '<img class="d-ost" src="img/ost-tronco.webp" alt="">' : ''}</div>` : ''}</div>
       <div class="azioni"><button class="btn oro" id="nov-ok">${ico('dx')}${liv.forma === 'tessere' ? 'VIA' : 'Ho capito'}</button></div></div>`);
@@ -2564,6 +2707,86 @@ const Gioco = (() => {
 })();
 
 // ============================================================ DOCENTE
+// ============================================================ DIRETTORE DI CAMPO: il bonus «disegna il tuo percorso»
+/* Momento di relax dopo i gradi 2 e 4 (decisione di Andrea, 20/11/2026): lo studente disegna un percorso e guarda il
+   cavallo correrlo con il programma del Maestro, già pronto. Niente stelle, niente codice da scrivere.
+   Nel salto ostacoli chi progetta il percorso è il direttore di campo (chef de piste).
+   Riusa la schermata di gara: a sinistra il tavolo del direttore, a destra il campo; si tocca una casella per
+   cambiare l'ostacolo (libera > tronco > barriera > muro > libera). Valgono le regole delle piste del gioco:
+   mai due ostacoli vicini, l'ultimo al più nella casella N-2. */
+const Direttore = (() => {
+  const MAESTRO = 'while not traguardo():\n    if ostacolo_davanti():\n        salta(altezza())\n    else:\n        avanza(1)';
+  const GIRO = '.bma', NOMI = { b: 'tronco', m: 'barriera', a: 'muro' };
+  let attivo = false, celle = [], lunMax = 10, corre = false;
+  const str = () => celle.join('');
+  const avviso = (t, ti, te) => Gioco.avviso(t, ti, te);
+  function campo() {
+    Campo.mostra(IPPO.pista(str(), {}), { sfondo: 'campo2', casata: STATO.casata });
+    $('#campo').classList.add('disegna');
+  }
+  function lunghezza(n) {
+    n = Math.max(6, Math.min(lunMax, n));
+    while (celle.length < n) celle.push('.');
+    celle.length = n;
+    for (let k = n - 2; k < n; k++) celle[k] = '.';                           // le caselle N-1 e N restano libere
+    $('#dir-lun').textContent = n; campo();
+  }
+  function tocca(k) {                                                         // k = numero della casella (1..N)
+    if (corre) return;
+    const n = celle.length;
+    if (k < 1) return;
+    if (k > n - 2) { Suoni.no(); return avviso('ambra', 'Qui no', 'le ultime due caselle servono al cavallo per arrivare al traguardo.'); }
+    const i = k - 1, prossimo = GIRO[(GIRO.indexOf(celle[i]) + 1) % GIRO.length];
+    if (prossimo !== '.' && (celle[i - 1] && celle[i - 1] !== '.' || celle[i + 1] && celle[i + 1] !== '.')) { Suoni.no(); return avviso('ambra', 'Troppo vicino', 'fra due ostacoli serve almeno una casella libera, per atterrare.'); }
+    celle[i] = prossimo; Suoni.pop(); campo();
+    avviso('', '', prossimo === '.' ? `Casella ${k} libera.` : `Casella ${k}: ${NOMI[prossimo]}. Tocca ancora per cambiarlo.`);
+  }
+  async function corri() {
+    if (corre) return;
+    corre = true; $$('#codice-dentro button, #comandi button').forEach(b => b.disabled = true);
+    const p = IPPO.pista(str(), {}), esito = IPPO.esegui(IPPO.parse(MAESTRO).ast, p);
+    campo(); avviso('', '', 'Il cavallo parte!');
+    await Campo.riproduci(esito.frames, { vel: () => 1 });
+    corre = false; $$('#codice-dentro button, #comandi button').forEach(b => b.disabled = false);
+    if (!attivo) return;
+    avviso('verde', p.n ? `${p.n === 1 ? 'Un ostacolo' : p.n + ' ostacoli'} superati` : 'Solo galoppo', p.n ? 'il programma del Maestro guarda ogni ostacolo e sceglie il salto giusto. Cambia il percorso e rimettilo alla prova.' : 'tocca le caselle per mettere tronchi, barriere e muri.');
+  }
+  function apri(dopoGrado) {
+    Gioco.stop(false); Voce.taci();
+    attivo = true; corre = false; lunMax = dopoGrado >= 4 ? 14 : 10;
+    celle = (dopoGrado >= 4 ? '..b...m...a...' : '..b...m...').split('').slice(0, lunMax);
+    mostra('s-gara'); $('#b-aiuto').hidden = true; $('#barra-stelle').hidden = true;
+    barra('Direttore di campo', 'Disegna il tuo percorso');
+    $('#p-codice .targa').textContent = 'DIRETTORE DI CAMPO';
+    $('#app').dataset.disp = 'B';
+    $('#codice-dentro').innerHTML = `<div class="direttore">
+      <h2>${ico('matita')}Disegna il tuo percorso</h2>
+      <p>Tocca una casella del campo per mettere un ostacolo. Tocca ancora per cambiarlo.</p>
+      <div class="dir-ost">${['tronco', 'barriera', 'muro'].map((o, i) => `<div><img src="img/ost-${o}.webp" alt=""><b>${o}</b><small>${i + 1}° tocco</small></div>`).join('')}</div>
+      <div class="dir-lun"><span>Caselle</span><button class="btn carta piccolo" id="dir-meno" aria-label="Una casella in meno">−</button><b id="dir-lun">${celle.length}</b><button class="btn carta piccolo" id="dir-piu" aria-label="Una casella in più">+</button></div>
+      <p class="dir-nota">Il cavallo corre con il programma del Maestro: guarda se c'è un ostacolo e salta alto quanto serve.</p></div>`;
+    $('#comandi').hidden = false;
+    $('#comandi').innerHTML = `<button class="btn verde" id="dir-via">${ico('play')}FAI CORRERE</button><button class="btn carta piccolo" id="dir-pulisci">${ico('ricomincia')}Svuota</button><span class="spazio"></span><button class="btn oro piccolo" id="dir-esci">${ico('dx')}Al castello</button>`;
+    $('#dir-meno').onclick = () => { Suoni.click(); lunghezza(celle.length - 1); };
+    $('#dir-piu').onclick = () => { Suoni.click(); lunghezza(celle.length + 1); };
+    $('#dir-via').onclick = corri;
+    $('#dir-pulisci').onclick = () => { Suoni.togli(); celle = celle.map(() => '.'); campo(); avviso('', '', 'Percorso vuoto: disegnane uno nuovo.'); };
+    $('#dir-esci').onclick = () => { chiudi(); vaiCastello(); };
+    $('#msg-seme').textContent = '';
+    const io = ++montaggi; let fatto = false;
+    const monta = () => { if (fatto || io !== montaggi || !attivo) return; fatto = true; Campo.monta($('#campo')); Campo.consegna('crea', 'Disegna il tuo percorso, poi fallo correre.', { ascolta: true }); campo(); };
+    requestAnimationFrame(() => requestAnimationFrame(monta)); setTimeout(monta, 250);
+    avviso('', 'Sei il direttore di campo', 'oggi il percorso lo decidi tu. Niente stelle: è il tuo momento di relax.');
+  }
+  let montaggi = 0;
+  function chiudi() { attivo = false; corre = false; Campo.ferma(); $('#campo').classList.remove('disegna'); }
+  // un solo ascoltatore sul riquadro del campo: sopravvive ai ridisegni della pista
+  document.addEventListener('click', e => { if (!attivo) return; const c = e.target.closest('#campo .c-cella'); if (c) tocca(+c.dataset.k); });
+  return { apri, chiudi, get attivo() { return attivo; } };
+})();
+// il bonus si apre dopo il grado 2 e dopo il grado 4, e resta poi disponibile al castello
+const direttoreAperto = () => STATO.docente || [2, 4].some(p => IPPO.stelleDaBits(STATO.stelle[p]).filter(s => s.t).length === 10);
+
 // Cinque tocchi sul logo: tutti i livelli aperti, pulsante Soluzione, prova del collegamento al foglio.
 function modalitaDocente() {
   STATO.docente = !STATO.docente; aggiornaChip(); Suoni.stella();
@@ -2572,10 +2795,13 @@ function modalitaDocente() {
     <ul><li>Tutti i livelli sono aperti, in tutti i percorsi.</li><li>In ogni livello compare il pulsante <b>Soluzione</b>.</li><li>Link diretto a un livello: <code>?percorso=4&amp;livello=7</code>. Stesse manche a sorpresa per tutta la classe: <code>?seed=4A-martedi</code>.</li><li>Altri parametri: <code>?musica=0</code>, <code>?suoni=0</code>, <code>?registro=0</code>.</li></ul>
     <h3>Progressi per classe e Mac</h3>
     <p>${Registro.attivo() ? 'Il foglio della scuola è collegato: si salvano classe, Mac e stelle, mai un nome.' : 'Il foglio della scuola non è collegato (REGISTRO_URL è vuoto in index.html): le stelle restano nella scheda del browser e per riprendere serve il codice gara. Le istruzioni per collegarlo sono nella scheda docenti.'}</p>
+    ${Registro.attivo() ? `<h3>Classifica delle casate sul proiettore</h3><p>Stelle della lezione di oggi, a testa sui Mac in gara. Si aggiorna da sola ogni 10 secondi.</p>
+    <div class="azioni" style="justify-content:flex-start"><select id="doc-classe">${Object.keys(CLASSI).map(o => CLASSI[o].map(c => `<option value="${o[0]}${c}" ${STATO.chi && STATO.chi.classe === o[0] + c ? 'selected' : ''}>${c[0]}ª ${c[1]} ${o}</option>`).join('')).join('')}</select><button class="btn piccolo" id="doc-classifica">Apri la classifica</button></div>` : ''}
     <div class="azioni" style="justify-content:flex-start">${Registro.attivo() ? '<button class="btn piccolo" id="doc-prova">Prova il collegamento al foglio</button><span id="doc-esito"></span>' : ''}<a class="btn piccolo carta" href="ippo-docenti.html" target="_blank" rel="noopener">${ico('libro')}Scheda docenti</a><button class="btn oro" id="doc-ok">Chiudi</button></div></div>`);
   $('#doc-ok', ov).onclick = () => { ov.remove(); if (schermo === 's-castello') vaiCastello(); else if (schermo === 's-stalla') vaiStalla(STATO.percorso); };
+  const bc = $('#doc-classifica', ov); if (bc) bc.onclick = () => { const c = $('#doc-classe', ov).value; ov.remove(); Classifica.proiettore(c); };
   const b = $('#doc-prova', ov);
-  if (b) b.onclick = async () => { const e = $('#doc-esito', ov); e.textContent = 'Provo...'; try { const d = await Registro.chiama({ a: 'prova' }); e.textContent = d.ok && d.ippo ? 'Collegamento riuscito.' : 'Il foglio risponde, ma non con lo script di Ippo Coding: controlla il deployment.'; } catch (err) { e.textContent = 'Il foglio non risponde: controlla l\'indirizzo e il deployment.'; } };
+  if (b) b.onclick = async () => { const e = $('#doc-esito', ov); e.textContent = 'Provo...'; try { const d = await Registro.chiama({ a: 'prova' }); e.textContent = d.ok && d.ippo ? (d.versione >= 2 ? 'Collegamento riuscito.' : 'Collegamento riuscito, ma lo script è la versione 1: per la classifica pubblica la nuova versione di ippo.gs.') : 'Il foglio risponde, ma non con lo script di Ippo Coding: controlla il deployment.'; } catch (err) { e.textContent = 'Il foglio non risponde: controlla l\'indirizzo e il deployment.'; } };
 }
 function cinqueTocchi(elemento) {
   let n = 0, t = 0;
@@ -2589,7 +2815,7 @@ function avvia() {
   $$('.b-musica').forEach(b => b.onclick = () => { Musica.cambia(); aggiornaAudio(); });
   $('#b-aiuto').innerHTML = ico('aiuto'); $('#b-aiuto').onclick = () => Gioco.aiuto();
   $('#b-indietro').innerHTML = ico('sx');
-  $('#b-indietro').onclick = () => { Suoni.click(); Voce.taci(); if (schermo === 's-gara') { Gioco.stop(false); vaiStalla(STATO.percorso); } else if (schermo === 's-stalla') vaiCastello(); else mostra('s-titolo'); };
+  $('#b-indietro').onclick = () => { Suoni.click(); Voce.taci(); if (schermo === "s-gara" && Direttore.attivo) { Direttore.chiudi(); vaiCastello(); } else if (schermo === "s-gara") { Gioco.stop(false); vaiStalla(STATO.percorso); } else if (schermo === 's-stalla') vaiCastello(); else mostra('s-titolo'); };
   $('#chi-chip').onclick = () => { if (schermo === 's-gara') return; mostra('s-titolo'); chiediChi(vaiCastello); };
   $('#chi-chip').style.cursor = 'pointer'; $('#chi-chip').title = 'Cambia classe e Mac';
   $('#b-gioca').textContent = 'GIOCA';
