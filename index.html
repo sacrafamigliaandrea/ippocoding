@@ -22,8 +22,8 @@
   - Un file solo, HTML/CSS/JS vanilla. Unica dipendenza esterna: Google Fonts. Immagini in img/, musiche in audio/.
   - Motore puro, senza DOM, fra CORE-START e CORE-END: lo verifica in Node _lavoro/test_core.mjs.
     Livelli fra LEVELS-START e LEVELS-END: li verifica _lavoro/test_livelli.mjs (soluzioni, par, 500 piste a sorpresa).
-  - Mai localStorage (Mac di laboratorio condivisi). Progressi per classe e Mac su un foglio Google della scuola
-    (REGISTRO_URL, _lavoro/apps-script/ippo.gs), ripresa nella scheda con sessionStorage, codice gara di riserva.
+  - Niente dati nel browser: Cmd+R o la chiusura riportano tutto a zero (Mac di laboratorio condivisi). Progressi per
+    classe e Mac su un foglio Google della scuola (REGISTRO_URL, _lavoro/apps-script/ippo.gs), codice gara di riserva.
   - Docente: cinque tocchi sul logo. Link: ?percorso=N&livello=M, ?seed=, ?musica=0, ?suoni=0, ?registro=0.
   - Blu istituzionale #123E90 (le casate sono della scuola), legno e pergamena. Errori in ambra, mai in rosso;
     oro solo per il merito. Il rosso compare soltanto come colore di TassoRosso. Nessuna emoji: solo SVG inline.
@@ -111,6 +111,9 @@ svg{display:block}
 #barra .marchio i{font-style:normal;color:var(--oro)}
 #barra .marchio u{text-decoration:none;color:#7FD4F2}
 #barra .spazio{flex:1}
+#barra .b-percorso{display:inline-flex;align-items:center;gap:.45rem;height:2.7rem;padding:0 1rem;border-radius:.75rem;background:var(--oro);color:#3A2A00;font-family:var(--f-display);font-weight:800;font-size:1rem;box-shadow:0 .16rem 0 var(--oro-scuro);white-space:nowrap}
+#barra .b-percorso:hover{transform:translateY(-.1rem)}
+#barra .b-percorso svg{width:1.3rem;height:1.3rem}
 .chi-chip{display:flex;align-items:center;gap:.5rem;padding:.3rem .8rem .3rem .35rem;border-radius:2rem;background:rgba(255,255,255,.14);font-size:.95rem;white-space:nowrap}
 .chi-chip img{width:2.1rem;height:2.1rem;border-radius:50%;border:.14rem solid var(--casa);object-fit:cover}
 .stelle{display:inline-flex;gap:.15rem;align-items:center}
@@ -197,6 +200,80 @@ svg{display:block}
 .riga-codice{display:flex;align-items:center;gap:.6rem;padding:.6rem 1rem}
 .riga-codice label{font-weight:700}
 .riga-codice .sep{width:.1rem;align-self:stretch;background:var(--carta-bordo);margin:0 .3rem}
+/* ---------- il trailer d'introduzione */
+.tr{position:absolute;inset:0;background:#000;overflow:hidden;color:#fff}
+.tr-video,.tr-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s}
+.tr-video.si,.tr-img.si{opacity:1}
+.tr-video.avvicina{transform:scale(1.14);transition:opacity .5s,transform 9s linear}
+.tr-img.kb{animation:tr-kb 7s ease-out forwards}
+@keyframes tr-kb{from{transform:scale(1.18)}to{transform:scale(1)}}
+.tr-banda{position:absolute;left:0;right:0;height:9vh;background:#000;z-index:5;transition:height .8s ease}
+.tr-banda.su{top:0}.tr-banda.giu{bottom:0}
+.tr.titoli .tr-banda{height:0}
+.tr-velo{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,transparent 40%,rgba(0,0,0,.55));z-index:2;pointer-events:none}
+.tr-testo{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;pointer-events:none;padding:0 6vw;text-align:center}
+.tr-t{font-family:var(--f-display);font-weight:800;line-height:1.02;letter-spacing:.04em;text-transform:uppercase;text-shadow:0 .3rem 1.6rem rgba(0,0,0,.8),0 0 2.4rem rgba(255,214,110,.35);animation:tr-entra .9s cubic-bezier(.2,.8,.2,1) both}
+.tr-t.grande{font-size:min(9vw,8.5rem);color:#FFE7A3}
+.tr-t.medio{font-size:min(5.6vw,4.6rem)}
+.tr-t.piccolo{font-size:min(4.6vw,3.6rem);text-transform:none;letter-spacing:.01em;font-weight:700}
+.tr-t.esce{animation:tr-esce .5s ease-in both}
+@keyframes tr-entra{from{opacity:0;transform:scale(1.25);filter:blur(.6rem)}to{opacity:1;transform:none;filter:none}}
+@keyframes tr-esce{to{opacity:0;transform:scale(.92);filter:blur(.4rem)}}
+.tr-codice{position:absolute;left:50%;top:66%;transform:translateX(-50%);z-index:4;font:700 min(4vw,3rem) var(--f-mono);color:#7CFFB0;text-shadow:0 0 1rem rgba(124,255,176,.7);white-space:pre}
+.tr-codice::after{content:"";display:inline-block;width:.55em;height:1em;margin-left:.08em;vertical-align:-.12em;background:#7CFFB0;animation:tr-cursore .7s steps(1) infinite}
+@keyframes tr-cursore{50%{opacity:0}}
+.tr-pannello{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4vh;z-index:3;background:radial-gradient(circle at 50% 45%,#1C3F86,#060D22 75%)}
+.tr-tessere{display:flex;gap:1.4vw}
+.tr-tessera{width:min(9vw,8rem);height:min(9vw,8rem);border-radius:1.4rem;display:flex;align-items:center;justify-content:center;box-shadow:0 .5rem 0 rgba(0,0,0,.35);animation:tr-scatta .45s cubic-bezier(.3,1.6,.5,1) both}
+.tr-tessera svg{width:55%;height:55%;color:#fff}
+.tr-tessera.blu{background:#2F7FE0}.tr-tessera.ara{background:#EE8A1E}
+@keyframes tr-scatta{from{opacity:0;transform:translateY(-3rem) scale(.6)}}
+.tr-blocco{font:800 min(3.4vw,2.6rem) var(--f-display);color:#fff;border-radius:1rem;padding:1.2vw 1.8vw;background:#2E9B5A;box-shadow:0 .4rem 0 rgba(0,0,0,.3);animation:tr-scatta .45s cubic-bezier(.3,1.6,.5,1) both}
+.tr-blocco .dentro{display:flex;flex-direction:column;gap:.8vw;margin:1vw 0 0 2.4vw}
+.tr-blocco .dentro span{border-radius:.7rem;padding:.6vw 1.2vw;font-size:.85em}
+.tr-py{font:700 min(3vw,2.3rem)/1.45 var(--f-mono);color:#E8EEF8;background:#0B1530;border:.15rem solid #2C4A8A;border-radius:1rem;padding:2vw 3vw;white-space:pre;min-width:40vw;min-height:12em}
+.tr-py .k{color:#FF9F43}.tr-py .f{color:#7CC8FF}.tr-py .c{color:#FFE066}
+.tr-carta{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:3;animation:tr-carta 1s ease-out both}
+@keyframes tr-carta{from{transform:scale(1.25);filter:brightness(2.2)}to{transform:scale(1.04);filter:none}}
+.tr-lampo{position:absolute;inset:0;background:#fff;z-index:6;opacity:0;pointer-events:none}
+.tr-lampo.via{animation:cr-lampo .5s ease-out}
+.tr-finale{position:absolute;left:0;right:0;bottom:7vh;z-index:5;display:flex;flex-direction:column;align-items:center;gap:1.6vh;text-align:center;opacity:0;transform:translateY(1rem);transition:all .9s ease}
+.tr-finale.si{opacity:1;transform:none}
+.tr-finale p{margin:0;font:800 min(3.4vw,2.4rem) var(--f-display);text-shadow:0 .2rem 1rem rgba(0,0,0,.9)}
+.tr-salta{position:absolute;top:calc(9vh + .8rem);right:1rem;z-index:7;padding:.45rem 1rem;border-radius:2rem;background:rgba(255,255,255,.14);border:.12rem solid rgba(255,255,255,.4);color:#fff;font-weight:700;font-size:1rem;backdrop-filter:blur(4px)}
+.tr-salta:hover{background:rgba(255,255,255,.26)}
+.b-trailer{margin-top:.2rem;padding:.3rem .9rem;border-radius:2rem;background:rgba(11,37,89,.6);border:.12rem solid rgba(255,255,255,.45);color:#fff;font-weight:700;font-size:.95rem;display:inline-flex;align-items:center;gap:.35rem}
+.b-trailer svg{width:1rem;height:1rem}
+/* ---------- costruisci il tuo percorso: campo ostacoli 3D in stile Setting Aula */
+.p3{position:absolute;inset:0;display:grid;grid-template-columns:22rem 1fr;background:#E6E0D4}
+.p3-mag{display:flex;flex-direction:column;gap:.8rem;padding:1rem;overflow:auto;background:var(--carta);border-right:.2rem solid var(--legno);color:var(--inchiostro)}
+.p3-mag h2{font-size:1.55rem;color:var(--blu);line-height:1.1}
+.p3-mag p{margin:0;font-size:1rem;line-height:1.35;color:var(--inchiostro-soft)}
+.p3-mag h3{font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--inchiostro-soft);margin:.3rem 0 0}
+.p3-carte{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.p3-carta{display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:.6rem .4rem .5rem;border-radius:.8rem;background:#fff;border:.14rem solid var(--carta-bordo);box-shadow:0 .16rem 0 var(--carta-bordo);touch-action:none;cursor:grab;user-select:none}
+.p3-carta:hover{border-color:var(--oro-scuro)}
+.p3-carta img{height:3.6rem;width:auto;max-width:100%;object-fit:contain;pointer-events:none}
+.p3-carta b{font-family:var(--f-display);font-size:1.05rem}
+.p3-carta small{font-size:.8rem;color:var(--inchiostro-soft)}
+.p3-tasti{display:flex;flex-wrap:wrap;gap:.5rem}
+.p3-tasti .btn{flex:1 1 auto}
+.p3-vista{position:relative;min-width:0;min-height:0;overflow:hidden}
+.p3-vista canvas{display:block;width:100%;height:100%;touch-action:none;outline:none}
+.p3-vista.piazza canvas{cursor:copy}
+.p3-viste{position:absolute;top:.8rem;left:.8rem;display:flex;gap:.4rem}
+.p3-viste button{padding:.35rem .8rem;border-radius:.6rem;background:rgba(255,253,248,.92);border:.12rem solid var(--carta-bordo);font-weight:700;font-size:.9rem;color:var(--inchiostro)}
+.p3-viste button.si{background:var(--blu);color:#fff;border-color:var(--blu)}
+.p3-chiudi{position:absolute;top:.8rem;right:.8rem}
+.p3-selbar{position:absolute;display:flex;gap:.3rem;padding:.3rem;border-radius:.7rem;background:var(--inchiostro);box-shadow:0 .3rem .8rem rgba(0,0,0,.35);transform:translate(-50%,-120%);pointer-events:auto}
+.p3-selbar[hidden]{display:none}
+.p3-selbar button{display:inline-flex;align-items:center;gap:.25rem;padding:.3rem .55rem;border-radius:.5rem;background:rgba(255,255,255,.12);color:#fff;font-weight:700;font-size:.85rem}
+.p3-selbar button:hover{background:rgba(255,255,255,.24)}
+.p3-selbar svg{width:1.1rem;height:1.1rem}
+.p3-msg{position:absolute;left:50%;bottom:.9rem;transform:translateX(-50%);display:flex;align-items:center;gap:.7rem;max-width:min(90%,46rem);padding:.5rem 1rem .5rem .5rem;border-radius:1rem;background:rgba(255,253,248,.95);border:.14rem solid var(--carta-bordo);box-shadow:0 .3rem .8rem rgba(0,0,0,.2);font-size:1.05rem;color:var(--inchiostro)}
+.p3-msg.ambra{background:var(--ambra-chiaro);border-color:var(--ambra)}
+.p3-msg.verde{background:var(--verde-chiaro);border-color:var(--verde)}
+.p3-carica{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:1.4rem;color:var(--inchiostro-soft)}
 /* classifica live delle casate: in basso a destra nel castello, a tutto schermo sul proiettore */
 #s-castello .corpo:has(.classifica) .riga-codice{align-self:flex-start}
 #s-castello .classifica{position:absolute;right:1.5rem;bottom:1.2rem;width:min(30rem,44vw)}
@@ -229,21 +306,6 @@ svg{display:block}
 .cl-righe.grande .cl-val b{font-size:2rem}
 .cl-righe.grande .cl-val small{font-size:1rem}
 .cl-regola{margin:.9rem 0 0;font-size:1rem;color:var(--inchiostro-soft)}
-/* direttore di campo */
-#campo.disegna .c-pista .c-cella:not(.via){cursor:pointer}
-#campo.disegna .c-pista .c-cella:not(.via):not(.fine):hover{background:rgba(255,255,255,.45)}
-.direttore{display:flex;flex-direction:column;gap:1rem;padding:1rem 1.2rem;color:var(--inchiostro)}
-.direttore h2{display:flex;align-items:center;gap:.5rem;font-size:1.7rem;color:var(--blu)}
-.direttore h2 svg{width:1.8rem;height:1.8rem}
-.direttore p{font-size:1.15rem;line-height:1.4;margin:0}
-.dir-ost{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
-.dir-ost div{display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:.6rem;border-radius:.8rem;background:rgba(255,255,255,.65);border:.12rem solid var(--carta-bordo)}
-.dir-ost img{height:4.2rem;width:auto;object-fit:contain}
-.dir-ost b{font-family:var(--f-display);font-size:1.15rem;text-transform:capitalize}
-.dir-ost small{font-size:.9rem;color:var(--inchiostro-soft)}
-.dir-lun{display:flex;align-items:center;gap:.7rem;font-weight:700;font-size:1.15rem}
-.dir-lun b{min-width:2.2rem;text-align:center;font-family:var(--f-display);font-size:1.6rem}
-.dir-nota{font-size:1rem !important;color:var(--inchiostro-soft)}
 .riga-codice input{width:13rem;padding:.4rem .7rem;border-radius:.6rem;border:.14rem solid var(--carta-bordo);font:700 1.15rem var(--f-mono);text-transform:uppercase;background:#fff;color:var(--inchiostro)}
 .riga-codice .esito{font-size:1rem;color:var(--ambra-scuro);min-width:10rem}
 
@@ -459,7 +521,8 @@ svg{display:block}
 .c-coperta ul{list-style:none;margin-top:.5rem;display:flex;flex-direction:column;gap:.25rem;font-size:1.05rem;text-align:left}
 .c-coperta li{display:flex;gap:.5rem;align-items:center}
 .cartiglio{position:absolute;z-index:5;left:50%;top:.7rem;transform:translateX(-50%);max-width:92%;display:flex;align-items:center;gap:.7rem;padding:.45rem 1.1rem .45rem .55rem;border-radius:1rem;background:radial-gradient(120% 120% at 50% 0%,#FFF8E4,var(--carta) 60%,var(--carta-ombra));border:.2rem solid var(--legno);box-shadow:0 .2rem 0 var(--legno-scuro),0 .6rem 1.2rem rgba(0,0,0,.35)}
-/* il Maestro di scuderia: l'avatar di Andrea, che assegna la consegna e parla nei messaggi */
+/* il Maestro di scuderia: l'avatar di Andrea, che assegna la consegna e parla nei messaggi. Non si presenta per nome
+   (richiesta di Andrea, 20/11/2026, come in Setting Aula): il nome resta solo nei crediti. */
 .volto-a{flex:none;width:3.2rem;height:3.2rem;border-radius:50%;object-fit:cover;object-position:50% 20%;background:radial-gradient(circle at 50% 35%,#FFF6DD,#E8D3A0);border:.18rem solid var(--legno);box-shadow:0 .12rem .3rem rgba(0,0,0,.3)}
 .cartiglio .volto-a{width:3.4rem;height:3.4rem;margin:-.2rem 0}
 [data-disp="A"] .cartiglio .volto-a{width:4rem;height:4rem}
@@ -623,6 +686,7 @@ a.btn,a.tondo{text-decoration:none}
     <span id="barra-stelle" hidden></span>
     <div class="marchio" id="marchio" aria-hidden="true"><i>IPPO</i><u>CODING</u></div>
     <span class="spazio"></span>
+    <button class="b-percorso" id="b-percorso" title="Costruisci il tuo percorso: una pausa quando ne hai bisogno"></button>
     <span class="bollo-doc" id="bollo-doc" hidden>docente</span>
     <div class="chi-chip" id="chi-chip" hidden></div>
     <button class="tondo" id="b-aiuto" aria-label="Aiuto" title="Chiedi un aiuto" hidden></button>
@@ -636,6 +700,7 @@ a.btn,a.tondo{text-decoration:none}
       <div class="angolo"><a class="tondo" href="ippo-docenti.html" title="Scheda per i docenti" aria-label="Scheda per i docenti"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.300" stroke-linecap="round" stroke-linejoin="round" d="M4 5.500C6.500 4 9.500 4 12 5.500 14.500 4 17.500 4 20 5.500v13c-2.500-1.500-5.500-1.500-8 0-2.500-1.500-5.500-1.500-8 0zM12 5.500v13"/></svg></a><button class="tondo b-suoni" aria-label="Suoni"></button><button class="tondo b-musica" aria-label="Musica"></button></div>
       <div class="titolo-basso">
         <button class="btn legno grande" id="b-gioca">GIOCA</button>
+        <button class="b-trailer" id="b-trailer"></button>
         <p class="crediti">Scuola Sacra Famiglia · Orzinuovi (BS)<br>© 2026 Andrea Cerioli — Animatore Digitale · serie del coding · gioco 5<br>L&rsquo;avatar del Maestro di scuderia è un&rsquo;immagine generata con IA (Reg. UE 2024/1689, art. 50).</p>
       </div>
     </section>
@@ -652,7 +717,7 @@ a.btn,a.tondo{text-decoration:none}
         <section class="cornice" id="p-codice"><div class="targa">CODICE</div><div class="dentro" id="codice-dentro"></div><div class="comandi" id="comandi"></div></section>
         <section class="cornice" id="p-campo"><div class="targa">CAMPO DI GARA</div><div class="dentro"><div id="campo"></div></div></section>
       </main>
-      <footer id="messaggio"><img class="volto-a" src="img/andrea-volto.webp" alt="Andrea, il Maestro di scuderia"><div class="testo" id="msg-testo" aria-live="polite"></div><span class="seme" id="msg-seme"></span></footer>
+      <footer id="messaggio"><img class="volto-a" src="img/andrea-volto.webp" alt="Il Maestro di scuderia"><div class="testo" id="msg-testo" aria-live="polite"></div><span class="seme" id="msg-seme"></span></footer>
     </section>
   </div>
   <div id="strato-ov"></div>
@@ -1486,21 +1551,14 @@ const NOVITA = {
 };
 
 // ============================================================ STATO
-// Mai localStorage (Mac condivisi). La ripresa nella stessa scheda usa sessionStorage e scade dopo 20 minuti.
+// Niente dati nel browser (Andrea, 20/11/2026): lo stato vive solo in memoria, quindi Cmd+R o la chiusura del
+// browser riportano tutto a zero. Le stelle si ritrovano dal foglio della scuola con classe e Mac, o con il codice gara.
 const STATO = { chi: null, senza: false, casata: 'aquila', percorso: 0, livello: 0, stelle: [0, 0, 0, 0, 0, 0, 0, 0, 0], aperti: [0, 1, 1, 1, 1, 1, 1, 1, 1], docente: false, viste: {}, seme: '' };
 STATO.seme = PAR.get('seed') || Math.random().toString(36).slice(2, 7);
-const CHIAVE_STATO = 'ippo-stato';
-function ricorda() { try { sessionStorage.setItem(CHIAVE_STATO, JSON.stringify({ chi: STATO.chi, senza: STATO.senza, casata: STATO.casata, stelle: STATO.stelle, aperti: STATO.aperti, viste: STATO.viste, ora: Date.now() })); } catch (e) {} }
-function ripresa() {
-  try {
-    const d = JSON.parse(sessionStorage.getItem(CHIAVE_STATO));
-    if (!d || Date.now() - d.ora > 20 * 60000) return;
-    if (d.chi && classeValida(d.chi.classe) && d.chi.mac >= 1 && d.chi.mac <= MAC_MAX) STATO.chi = d.chi;
-    STATO.senza = !!d.senza; if (casataDi(d.casata)) STATO.casata = d.casata;
-    if (Array.isArray(d.stelle) && d.stelle.length === 9) STATO.stelle = d.stelle.map(n => n >>> 0);
-    if (Array.isArray(d.aperti) && d.aperti.length === 9) STATO.aperti = d.aperti;
-    STATO.viste = d.viste || {};
-  } catch (e) {}
+const CHIAVI_VECCHIE = ['ippo-stato', 'ippo-checkin'];   // lasciate dalle versioni precedenti, che riprendevano la partita
+function ricorda() {}                                     // volutamente vuota: nulla si salva nel browser
+function ripresa() {                                      // all'avvio: via ogni traccia rimasta nel browser
+  CHIAVI_VECCHIE.forEach(k => { try { sessionStorage.removeItem(k); } catch (e) {} try { localStorage.removeItem(k); } catch (e) {} });
 }
 const stelleDi = (p, l) => IPPO.stelleDaBits(STATO.stelle[p])[l - 1];
 /* Il cavallo cresce con i gradi (immagini di Andrea, 20/11/2026): puledro all'inizio, cavallo vero da Scudiero
@@ -1587,6 +1645,16 @@ const Suoni = (() => {
   }
   return {
     BATTITI, crescita,
+    // effetti da trailer (Trailer): suoni sintetizzati, come il resto, sincronizzati con i tagli dal codice del trailer
+    trailer: {
+      bordone(d) { ottone(41.2, 0, d, 0.07); ottone(61.7, 0.2, d - 0.2, 0.05); },                                  // Mi e Si gravi tenuti
+      braam() { ottone(41.2, 0, 2.4, 0.13); ottone(82.4, 0, 2.2, 0.1); ottone(123.5, 0.02, 2, 0.06); timpano(41.2, 0, 0.4); rumore(1.6, { f: 160, q: 0.6, vol: 0.3, filtro: 'lowpass' }); },
+      battito(v) { timpano(55, 0, v || 0.22); },
+      colpo() { timpano(65.4, 0, 0.32); rumore(0.35, { f: 3000, q: 0.5, vol: 0.12, filtro: 'highpass' }); },
+      folata() { rumore(0.9, { f: 900, q: 0.5, vol: 0.22 }); rumore(0.6, { f: 2400, q: 0.7, vol: 0.1, tra: 0.25 }); },
+      salita(d) { tono(110, d, { tipo: 'sawtooth', a: 880, vol: 0.035 }); tono(165, d, { tipo: 'triangle', a: 1320, vol: 0.03 }); rumore(d, { f: 4000, q: 0.4, vol: 0.06, filtro: 'highpass' }); },
+      lampo(n) { [MI.E5, MI.Gd5, MI.B5, MI.E6][n % 4] && campanella([MI.E5, MI.Gd5, MI.B5, MI.E6][n % 4], 0, 0.08); timpano(55 + n * 8, 0, 0.26); }
+    },
     /* «Squillo dell'araldo», circa 2,4 s. Galoppo d'attacco, una nota di tromba per ogni stella presa (le stelle
        mancanti restano mute), poi la chiamata ta-ta-TAA con timpano. Solo con tre stelle: cascata di campanelle.
        Sempre lo stesso per lo stesso risultato: nessuna sorpresa nella ricompensa. */
@@ -1695,7 +1763,7 @@ const Registro = {
   checkin() {
     if (!this.attivo() || !STATO.chi) return;
     const k = [STATO.chi.classe, STATO.chi.mac, new Date().toDateString()].join('|');
-    try { if (sessionStorage.getItem('ippo-checkin') === k) return; sessionStorage.setItem('ippo-checkin', k); } catch (e) {}
+    if (this.fatto === k) return; this.fatto = k;                      // in memoria: il foglio scarta comunque i doppioni del giorno
     this.tenta({ a: 'c', classe: STATO.chi.classe, mac: STATO.chi.mac }).catch(() => {});
   },
   async classifica(classe) {                        // null se il foglio non risponde o ha ancora lo script della versione 1
@@ -1809,7 +1877,7 @@ function crescita(da, a) {
       <div class="cr-titolo">Il tuo cavallo cresce</div>
       <div class="cr-carta"><img class="vecchia" src="${carta(da)}" alt=""><img class="nuova" src="${carta(a)}" alt="${esc(ETA_NOMI[a][0])}"></div>
       <div class="cr-fila">${[1, 2, 3, 4].map(e => `<figure class="${e > a ? 'chiusa' : ''} ${e === a ? 'qui' : ''}"><div class="mini"><img src="${carta(e)}" alt="">${e > a ? ico('lucchetto') : ''}</div>${esc(ETA_NOMI[e][0])}<small>${esc(ETA_NOMI[e][1])}</small></figure>`).join('')}</div>
-      <div class="cr-testo pergamena"><img class="volto-a" style="width:4.5rem;height:4.5rem" src="img/andrea-volto.webp" alt="Andrea, il Maestro di scuderia"><div class="t"><h2>${esc(CRESCITA[a].titolo)}</h2><p>${esc(CRESCITA[a].testo)}</p></div><button class="btn oro" id="cr-avanti" disabled>${ico('dx')}Avanti</button></div>
+      <div class="cr-testo pergamena"><img class="volto-a" style="width:4.5rem;height:4.5rem" src="img/andrea-volto.webp" alt="Il Maestro di scuderia"><div class="t"><h2>${esc(CRESCITA[a].titolo)}</h2><p>${esc(CRESCITA[a].testo)}</p></div><button class="btn oro" id="cr-avanti" disabled>${ico('dx')}Avanti</button></div>
       <div class="cr-lampo"></div>${NOTA_IA}</div>`);
     const box = $('.crescita', ov), cartaEl = $('.cr-carta', ov);
     const tempi = [];
@@ -1838,7 +1906,7 @@ function scena(o) {
   return new Promise(fatto => {
     const piccoli = STATO.percorso && STATO.percorso <= 2 && !o.grandi;
     const ov = apriOv('ov-scena', `<div class="fondo" style="background-image:url(img/${o.img}.webp)${o.figura ? ";filter:brightness(.5) blur(3px)" : ""}"></div>${o.figura ? `<div class="scena-alone"></div><img class="scena-figura" src="${o.figura}" alt="Il tuo cavaliere">` : ""}
-      <div class="scena-testo pergamena ${piccoli ? 'piccoli' : ''}">${o.busto ? '<img class="busto" src="img/andrea.webp" alt="Andrea, il Maestro di scuderia">' : '<img class="volto-a" style="width:6rem;height:6rem" src="img/andrea-volto.webp" alt="Andrea, il Maestro di scuderia">'}
+      <div class="scena-testo pergamena ${piccoli ? 'piccoli' : ''}">${o.busto ? '<img class="busto" src="img/andrea.webp" alt="Il Maestro di scuderia">' : '<img class="volto-a" style="width:6rem;height:6rem" src="img/andrea-volto.webp" alt="Il Maestro di scuderia">'}
       <div class="t">${o.titolo ? `<h2>${esc(o.titolo)}</h2>` : ''}<p>${esc(o.testo)}</p></div>
       <button class="btn oro" id="scena-avanti">${ico('dx')}${esc(o.bottone || 'Avanti')}</button></div>${o.busto ? NOTA_IA : ""}`);
     $('#scena-avanti', ov).onclick = () => { Suoni.click(); ov.remove(); fatto(); };
@@ -1906,7 +1974,7 @@ function vaiCastello() {
       return `<button class="stendardo ${p === mio ? 'tuo' : ''}" data-p="${p}" style="--tinta:${TINTE[p][0]};--tinta-s:${TINTE[p][1]}">${p === mio ? '<span class="tuo-l">tocca a te</span>' : ''}
         <span class="scuola">Grado</span><span class="anno">${p}</span><span class="grado">${esc(P.grado)}</span>
         <span class="forma">${ico(p === 6 ? 'libro' : P.forma)}${p === 6 ? 'mattoncini e Python' : FORMA_TXT[P.forma]}</span><span class="conto">${ico('stella', 'stella')}${n} di 30</span></button>`; }).join('')}</div>
-    <div class="riga-codice pergamena">${direttoreAperto() ? `<button class="btn carta piccolo" id="b-direttore">${ico('matita')}Direttore di campo</button><span class="sep"></span>` : ''}<label for="in-codice">Hai un codice gara?</label><input id="in-codice" maxlength="14" placeholder="TROTTO-47" autocomplete="off" spellcheck="false"><button class="btn piccolo" id="b-codice">Riprendi</button><span class="esito" id="codice-esito" aria-live="polite"></span></div>`;
+    <div class="riga-codice pergamena"><label for="in-codice">Hai un codice gara?</label><input id="in-codice" maxlength="14" placeholder="TROTTO-47" autocomplete="off" spellcheck="false"><button class="btn piccolo" id="b-codice">Riprendi</button><span class="esito" id="codice-esito" aria-live="polite"></span></div>`;
   $$('.stendardo', corpo).forEach(b => b.onclick = () => { Suoni.pop(); vaiStalla(+b.dataset.p); });
   const usa = () => {
     const c = IPPO.leggiCodice($('#in-codice').value);
@@ -1915,9 +1983,8 @@ function vaiCastello() {
   };
   $('#b-codice').onclick = usa;
   const cl = Classifica.pannello(); if (cl) corpo.append(cl);
-  const bd = $('#b-direttore'); if (bd) bd.onclick = () => { Suoni.pop(); Direttore.apri(IPPO.stelleDaBits(STATO.stelle[4]).filter(s => s.t).length === 10 || STATO.docente ? 4 : 2); };
   $('#in-codice').onkeydown = e => { if (e.key === 'Enter') usa(); };
-  if (!STATO.viste.apertura) { STATO.viste.apertura = 1; ricorda(); scena({ img: 'castello', titolo: 'Ciao, sono Andrea', testo: APERTURA, grandi: true, busto: true }); }
+  if (!STATO.viste.apertura) { STATO.viste.apertura = 1; ricorda(); scena({ img: 'castello', titolo: 'Il Maestro di scuderia', testo: APERTURA, grandi: true, busto: true }); }
 }
 
 // ---------- la stalla: i dieci livelli del percorso
@@ -1926,7 +1993,7 @@ function vaiStalla(p) {
   const P = PERCORSI[p], tot = IPPO.contaStelle(STATO.stelle[p]);
   barra(`La Stalla · Grado ${p} di 8`, `${P.grado} — ${P.titolo}`);
   const fatte = IPPO.stelleDaBits(STATO.stelle[p]).filter(s => s.t).length;
-  $('#stalla-corpo').innerHTML = `<div class="stalla-su"><img class="volto-a" style="width:7rem;height:7rem" src="img/andrea-volto.webp" alt="Andrea, il Maestro di scuderia"><div class="fumetto pergamena"><h2>${esc(P.titolo)}</h2>
+  $('#stalla-corpo').innerHTML = `<div class="stalla-su"><img class="volto-a" style="width:7rem;height:7rem" src="img/andrea-volto.webp" alt="Il Maestro di scuderia"><div class="fumetto pergamena"><h2>${esc(P.titolo)}</h2>
       <p>${esc(fatte === 10 ? STORIA[p].chiude : fatte >= 5 ? STORIA[p].meta : STORIA[p].apre)}</p><p class="su-carta" style="display:flex;align-items:center;gap:.5rem;font-weight:700">${ico('stella', 'stella si')} ${tot} stelle su 30${Registro.attivo() && STATO.chi ? ' · ' + esc(Registro.frase()) : ''}</p></div></div>
     <div class="targhe">${P.livelli.map((g, i) => { const l = i + 1, si = aperto(p, l), st = stelleDi(p, l);
       return `<button class="targa-l su-carta ${si ? '' : 'chiusa'} ${l === 10 ? 'prova' : ''}" data-l="${l}" ${si ? '' : 'aria-disabled="true"'}>${si ? '' : ico('lucchetto', 'lucchetto')}
@@ -2025,7 +2092,7 @@ const Campo = (() => {
 
   function consegna(tipo, frase, o) {
     o = o || {};
-    cart.innerHTML = `<img class="volto-a" src="img/andrea-volto.webp" alt="Andrea, il Maestro di scuderia"><span class="tipo">${ico(TIPI[tipo].ico)}${o.soloIcona ? '' : TIPI[tipo].nome}</span><span class="frase">${esc(frase)}</span>${o.ascolta && Voce.c_e() ? `<button class="ascolta" id="b-ascolta" aria-label="Ascolta la consegna">${ico('suono')}</button>` : ''}`;
+    cart.innerHTML = `<img class="volto-a" src="img/andrea-volto.webp" alt="Il Maestro di scuderia"><span class="tipo">${ico(TIPI[tipo].ico)}${o.soloIcona ? '' : TIPI[tipo].nome}</span><span class="frase">${esc(frase)}</span>${o.ascolta && Voce.c_e() ? `<button class="ascolta" id="b-ascolta" aria-label="Ascolta la consegna">${ico('suono')}</button>` : ''}`;
     const b = $('#b-ascolta', cart); if (b) b.onclick = () => Voce.leggi(frase, b);
   }
   function misure(s) {
@@ -2592,7 +2659,7 @@ const Gioco = (() => {
     Campo.manche(lista, vista, vedi);
   }
   function apri(p, l) {
-    stop(false); Voce.taci(); if (Direttore.attivo) Direttore.chiudi(); Registro.checkin();
+    stop(false); Voce.taci(); Registro.checkin();
     STATO.percorso = p; STATO.livello = l; liv = livello(p, l);
     aiuti = 0; falliti = 0; previsione = null; variante = 0; aPassi = false; $("#b-aiuto").classList.remove("chiama");
     const P = PERCORSI[p];
@@ -2722,7 +2789,7 @@ const Gioco = (() => {
     else f = `Il cavallo arriva, ma con ${pen} penalità. ${primaPenalita(corse) || 'Guarda dove ha sbagliato e correggi quel punto.'}`;
     if (st.p && liv.l < 10) f += ` Nel prossimo livello: «${PERCORSI[liv.p].livelli[liv.l].n}».`;
     if (falliti >= 2) f += ` Ci sono volute ${falliti + 1} corse: ogni errore ti ha detto qualcosa.`;
-    return `<div class="vit-maestro"><img class="volto-a" src="img/andrea-volto.webp" alt="Andrea, il Maestro di scuderia"><p>${esc(f)}</p></div>`;
+    return `<div class="vit-maestro"><img class="volto-a" src="img/andrea-volto.webp" alt="Il Maestro di scuderia"><p>${esc(f)}</p></div>`;
   }
   // ---------- vittoria, stelle, codice gara
   function vittoria(st, v, tipo, ast) {
@@ -2752,7 +2819,7 @@ const Gioco = (() => {
       chiudi();
       if (l === 5 && primaVolta) await scena({ img: 'scena-campo', titolo: 'Si esce in campo', testo: STORIA[p].meta });
       if (l < 10) return apri(p, l + 1);
-      if (primaVolta) { Musica.fanfara(); await scena({ img: p === 8 ? 'finale' : 'castello', titolo: `Hai il grado di ${PERCORSI[p].grado}`, testo: STORIA[p].chiude }); await debrief(p); const eta = etaCavallo(); if (eta > etaPrima) await crescita(etaPrima, eta); if (p === 2 || p === 4) { await scena({ img: 'scena-campo', titolo: 'Il direttore di campo', testo: 'Prima del prossimo grado ti prendi una pausa: oggi il percorso lo disegni tu, e il cavallo lo corre.' }); return Direttore.apri(p); } }
+      if (primaVolta) { Musica.fanfara(); await scena({ img: p === 8 ? 'finale' : 'castello', titolo: `Hai il grado di ${PERCORSI[p].grado}`, testo: STORIA[p].chiude }); await debrief(p); const eta = etaCavallo(); if (eta > etaPrima) await crescita(etaPrima, eta); }
       vaiCastello();
     };
     $('#v-avanti', ov).focus();
@@ -2799,84 +2866,423 @@ const Gioco = (() => {
 })();
 
 // ============================================================ DOCENTE
-// ============================================================ DIRETTORE DI CAMPO: il bonus «disegna il tuo percorso»
-/* Momento di relax dopo i gradi 2 e 4 (decisione di Andrea, 20/11/2026): lo studente disegna un percorso e guarda il
-   cavallo correrlo con il programma del Maestro, già pronto. Niente stelle, niente codice da scrivere.
-   Nel salto ostacoli chi progetta il percorso è il direttore di campo (chef de piste).
-   Riusa la schermata di gara: a sinistra il tavolo del direttore, a destra il campo; si tocca una casella per
-   cambiare l'ostacolo (libera > tronco > barriera > muro > libera). Valgono le regole delle piste del gioco:
-   il salto si fa nella casella dell'ostacolo, quindi ostacoli vicini ammessi; l'ultima casella è il traguardo. */
-const Direttore = (() => {
-  const MAESTRO = 'while not traguardo():\n    if ostacolo_davanti():\n        salta(altezza())\n    else:\n        avanza(1)';
-  const GIRO = '.bma', NOMI = { b: 'tronco', m: 'barriera', a: 'muro' };
-  let attivo = false, celle = [], lunMax = 10, corre = false;
-  const str = () => celle.join('');
-  const avviso = (t, ti, te) => Gioco.avviso(t, ti, te);
-  function campo() {
-    Campo.mostra(IPPO.pista(str(), {}), { sfondo: 'campo2', casata: STATO.casata });
-    $('#campo').classList.add('disegna');
+// ============================================================ IL TRAILER D'INTRODUZIONE
+/* «La ciliegina sulla torta» (Andrea, 20/11/2026): un trailer di circa 32 secondi che motiva a imparare il coding.
+   Parte la prima volta che si preme GIOCA (i browser fanno partire l'audio solo dopo un tocco) e si rivede dal
+   pulsante «Guarda il trailer»; «Salta» è sempre visibile. ?trailer=0 lo esclude.
+   Materiali di Andrea: video/trailer.mp4 (il galoppo, 10 s, muto: la sua traccia audio non è stata ascoltata) e
+   video/scena1-3.mp4 (dalle GIF animata1-3: stalla, cortile del castello, i cavalieri in fila). Colonna sonora
+   sintetizzata (Suoni.trailer), fanfara CC0 sul titolo. Regia: una sequenza di passi con attese; «Salta» ferma tutto.
+   Sequenza: stalla > castello > galoppo con salto al rallentatore > tessere, mattoncini, Python > carte della
+   crescita > i cavalieri in fila > titolo. */
+const Trailer = (() => {
+  let visto = false;
+  const SALTO = [3.15, 4.7];                                      // secondi del video in cui i cavalieri saltano: rallentatore
+  function guarda() {
+    return new Promise(fatto => {
+      let vivo = true; const tempi = [];
+      const ov = apriOv('ov-trailer', `<div class="tr">
+        <video class="tr-video" data-v="scena1" src="video/scena1.mp4" muted playsinline loop preload="auto"></video>
+        <video class="tr-video" data-v="scena2" src="video/scena2.mp4" muted playsinline loop preload="auto"></video>
+        <video class="tr-video" data-v="galoppo" src="video/trailer.mp4" poster="img/trailer-poster.webp" muted playsinline preload="auto"></video>
+        <video class="tr-video" data-v="scena3" src="video/scena3.mp4" muted playsinline loop preload="auto"></video>
+        <img class="tr-img" src="img/titolo.webp" alt="">
+        <div class="tr-velo"></div><div class="tr-testo"></div>
+        <div class="tr-banda su"></div><div class="tr-banda giu"></div><div class="tr-lampo"></div>
+        <div class="tr-finale"><p>Programma il tuo cavallo. Conquista il torneo.</p><button class="btn legno grande" id="tr-entra">ENTRA NEL TORNEO</button></div>
+        <button class="tr-salta" id="tr-salta">Salta ${ico('dx')}</button></div>`);
+      const tr = $('.tr', ov), testo = $('.tr-testo', ov), S = Suoni.accesi ? Suoni.trailer : null;
+      const vid = n => $(`.tr-video[data-v="${n}"]`, ov);
+      const suona = (n, ...a) => { if (S && vivo) S[n](...a); };
+      const attendi = ms => new Promise((ok, ko) => tempi.push(setTimeout(() => vivo ? ok() : ko('fine'), ms)));
+      const scritta = (html, cls, ms) => { testo.innerHTML = `<div class="tr-t ${cls}">${html}</div>`; if (ms) tempi.push(setTimeout(() => { const t = $('.tr-t', testo); if (t) t.classList.add('esce'); }, ms)); };
+      const lampo = () => { const l = $('.tr-lampo', ov); l.classList.remove('via'); void l.offsetWidth; l.classList.add('via'); };
+      const pannello = html => { $$('.tr-pannello, .tr-carta', ov).forEach(x => x.remove()); if (html) tr.insertAdjacentHTML('beforeend', html); };
+      const scena = async (n, vel) => {                            // mostra un video e nasconde gli altri
+        $$('.tr-video', ov).forEach(v => { if (v.dataset.v !== n) { v.classList.remove('si', 'avvicina'); try { v.pause(); } catch (e) {} } });
+        const v = vid(n); if (!v) return null; v.currentTime = 0; v.playbackRate = vel || 1; v.classList.add('si');
+        try { await v.play(); } catch (e) {}
+        requestAnimationFrame(() => v.classList.add('avvicina'));
+        return v;
+      };
+      const fine = () => { if (!vivo) return; vivo = false; tempi.forEach(clearTimeout); $$('.tr-video', ov).forEach(v => { try { v.pause(); } catch (e) {} }); Musica.abbassa(1); ov.remove(); fatto(); };
+      $('#tr-salta', ov).onclick = () => { Suoni.click(); fine(); };
+      $('#tr-entra', ov).onclick = () => { Suoni.pop(); fine(); };
+      Musica.abbassa(45000);
+
+      (async () => {
+        // 1. la stalla e il castello: bordone e battito
+        suona('bordone', 5.6); [0, 1.1, 2.2, 3.2, 4.1, 4.9].forEach(t => tempi.push(setTimeout(() => suona('battito', 0.12 + t * 0.03), t * 1000)));
+        await scena('scena1', 0.85);
+        await attendi(400); scritta('Nel regno delle Quattro Casate…', 'piccolo', 2200);
+        await attendi(2700); lampo(); await scena('scena2', 0.85); scritta('…si prepara il Grande Torneo.', 'piccolo', 2200);
+        await attendi(2700);
+        // 2. colpo di trombe gravi, il galoppo
+        suona('braam'); lampo(); testo.innerHTML = '';
+        const video = await scena('galoppo', 1);
+        let rallenta = false;
+        const codice = () => {                                     // salta(ALTA) che si scrive da solo
+          const c = el('div', 'tr-codice'); tr.append(c); const s = 'salta(ALTA)';
+          for (let i = 1; i <= s.length; i++) tempi.push(setTimeout(() => { c.textContent = s.slice(0, i); }, i * 70));
+          tempi.push(setTimeout(() => c.remove(), 2600));
+        };
+        const guardia = () => {                                    // rallentatore sul salto della staccionata
+          if (!vivo) return;
+          const t = video.currentTime;
+          if (!rallenta && t >= SALTO[0] && t < SALTO[1]) { rallenta = true; video.playbackRate = 0.35; suona('folata'); scritta('Ogni salto…', 'medio', 1800); tempi.push(setTimeout(() => { scritta('…è un comando', 'medio'); codice(); }, 2200)); }
+          if (rallenta && t >= SALTO[1] && video.playbackRate !== 1) { video.playbackRate = 1; suona('colpo'); }
+          requestAnimationFrame(guardia);
+        };
+        requestAnimationFrame(guardia);
+        await attendi(900); scritta('Quattro casate', 'grande', 1300);
+        await attendi(1500); scritta('Un solo torneo', 'grande', 1100);
+        await new Promise((ok, ko) => { const v = () => { if (!vivo) return ko('fine'); if (video.currentTime >= 8.2 || video.ended) ok(); else requestAnimationFrame(v); }; v(); });
+        // 3. montaggio a tempo di timpani: tessere, mattoncini, Python
+        lampo(); suona('colpo'); video.classList.remove('si'); try { video.pause(); } catch (e) {} testo.innerHTML = '';
+        testo.style.alignItems = 'flex-end'; testo.style.paddingBottom = '16vh';
+        pannello(`<div class="tr-pannello"><div class="tr-tessere">${['blu:avanza', 'ara:salto', 'blu:avanza', 'blu:avanza', 'ara:salto'].map((x, i) => `<div class="tr-tessera ${x.split(':')[0]}" style="animation-delay:${i * 0.14}s">${ico(x.split(':')[1])}</div>`).join('')}</div></div>`);
+        scritta('Dalle tessere…', 'medio');
+        await attendi(2000); suona('colpo'); lampo();
+        pannello(`<div class="tr-pannello"><div class="tr-blocco">ripeti 3 volte<div class="dentro"><span style="background:#2F7FE0">avanza 1</span><span style="background:#EE8A1E">salta ALTA</span></div></div></div>`);
+        scritta('…ai mattoncini…', 'medio');
+        await attendi(2000); suona('colpo'); lampo();
+        pannello(`<div class="tr-pannello"><div class="tr-py" id="tr-py"></div></div>`);
+        scritta('…fino al codice vero.', 'medio');
+        const py = [['k', 'while not '], ['f', 'traguardo'], ['', '():\n    '], ['k', 'if '], ['f', 'ostacolo_davanti'], ['', '():\n        '], ['f', 'salta'], ['', '('], ['f', 'altezza'], ['', '())\n    '], ['k', 'else'], ['', ':\n        '], ['f', 'avanza'], ['', '('], ['c', '1'], ['', ')']];
+        const tot = py.map(p => p[1]).join('').length;
+        const disegna = n => { const b = $('#tr-py', ov); if (!b) return; let r = n, h = ''; for (const [k, t] of py) { if (r <= 0) break; const p = esc(t.slice(0, r)); h += k ? `<span class="${k}">${p}</span>` : p; r -= t.length; } b.innerHTML = h; };
+        for (let i = 1; i <= 24; i++) tempi.push(setTimeout(() => disegna(Math.ceil(tot * i / 24)), i * 80));
+        await attendi(2300);
+        // 4. le carte della crescita, una casata per lampo
+        testo.style.alignItems = ''; testo.style.paddingBottom = '';
+        const giro = [['aquila', 1, 'Da Stalliere…'], ['tasso', 2, ''], ['quercia', 3, ''], ['cero', 4, '…a Campione.']];
+        for (let i = 0; i < giro.length; i++) {
+          const [c, e, t] = giro[i]; suona('lampo', i); lampo();
+          pannello(`<img class="tr-carta" src="img/carta-${c}-${e}.webp" alt="">`);
+          if (t) scritta(t, 'grande'); else testo.innerHTML = '';
+          await attendi(i === 3 ? 1500 : 950);
+        }
+        // 5. i cavalieri in fila: il torneo ti aspetta
+        pannello(''); lampo(); suona('colpo'); await scena('scena3', 0.9);
+        scritta('Il torneo ti aspetta.', 'medio', 1900);
+        await attendi(2100);
+        // 6. un attimo di salita, poi il titolo
+        suona('salita', 1.1); testo.innerHTML = '';
+        await attendi(1100);
+        lampo(); $$('.tr-video', ov).forEach(v => { v.classList.remove('si'); try { v.pause(); } catch (e) {} });
+        tr.classList.add('titoli'); $('.tr-img', ov).classList.add('si', 'kb');
+        if (S) Musica.fanfara(); suona('braam');
+        await attendi(1300); $('.tr-finale', ov).classList.add('si'); $('#tr-entra', ov).focus();
+      })().catch(() => {});
+    });
   }
-  function lunghezza(n) {
-    n = Math.max(6, Math.min(lunMax, n));
-    while (celle.length < n) celle.push('.');
-    celle.length = n;
-    celle[n - 1] = '.';                                                       // la casella N è il traguardo
-    $('#dir-lun').textContent = n; campo();
-  }
-  function tocca(k) {                                                         // k = numero della casella (1..N)
-    if (corre) return;
-    const n = celle.length;
-    if (k < 1) return;
-    if (k > n - 1) { Suoni.no(); return avviso('ambra', 'Qui no', 'l\'ultima casella è il traguardo: lì non si mettono ostacoli.'); }
-    const i = k - 1, prossimo = GIRO[(GIRO.indexOf(celle[i]) + 1) % GIRO.length];
-    celle[i] = prossimo; Suoni.pop(); campo();
-    avviso('', '', prossimo === '.' ? `Casella ${k} libera.` : `Casella ${k}: ${NOMI[prossimo]}. Tocca ancora per cambiarlo.`);
-  }
-  async function corri() {
-    if (corre) return;
-    corre = true; $$('#codice-dentro button, #comandi button').forEach(b => b.disabled = true);
-    const p = IPPO.pista(str(), {}), esito = IPPO.esegui(IPPO.parse(MAESTRO).ast, p);
-    campo(); avviso('', '', 'Il cavallo parte!');
-    await Campo.riproduci(esito.frames, { vel: () => 1 });
-    corre = false; $$('#codice-dentro button, #comandi button').forEach(b => b.disabled = false);
-    if (!attivo) return;
-    avviso('verde', p.n ? `${p.n === 1 ? 'Un ostacolo' : p.n + ' ostacoli'} superati` : 'Solo galoppo', p.n ? 'il programma del Maestro guarda ogni ostacolo e sceglie il salto giusto. Cambia il percorso e rimettilo alla prova.' : 'tocca le caselle per mettere tronchi, barriere e muri.');
-  }
-  function apri(dopoGrado) {
-    Gioco.stop(false); Voce.taci();
-    attivo = true; corre = false; lunMax = dopoGrado >= 4 ? 14 : 10;
-    celle = (dopoGrado >= 4 ? '..b...m...a...' : '..b...m...').split('').slice(0, lunMax);
-    mostra('s-gara'); $('#b-aiuto').hidden = true; $('#barra-stelle').hidden = true;
-    barra('Direttore di campo', 'Disegna il tuo percorso');
-    $('#p-codice .targa').textContent = 'DIRETTORE DI CAMPO';
-    $('#app').dataset.disp = 'B';
-    $('#codice-dentro').innerHTML = `<div class="direttore">
-      <h2>${ico('matita')}Disegna il tuo percorso</h2>
-      <p>Tocca una casella del campo per mettere un ostacolo. Tocca ancora per cambiarlo.</p>
-      <div class="dir-ost">${['tronco', 'barriera', 'muro'].map((o, i) => `<div><img src="img/ost-${o}.webp" alt=""><b>${o}</b><small>${i + 1}° tocco</small></div>`).join('')}</div>
-      <div class="dir-lun"><span>Caselle</span><button class="btn carta piccolo" id="dir-meno" aria-label="Una casella in meno">−</button><b id="dir-lun">${celle.length}</b><button class="btn carta piccolo" id="dir-piu" aria-label="Una casella in più">+</button></div>
-      <p class="dir-nota">Il cavallo corre con il programma del Maestro: guarda se c'è un ostacolo e salta alto quanto serve.</p></div>`;
-    $('#comandi').hidden = false;
-    $('#comandi').innerHTML = `<button class="btn verde" id="dir-via">${ico('play')}FAI CORRERE</button><button class="btn carta piccolo" id="dir-pulisci">${ico('ricomincia')}Svuota</button><span class="spazio"></span><button class="btn oro piccolo" id="dir-esci">${ico('dx')}Al castello</button>`;
-    $('#dir-meno').onclick = () => { Suoni.click(); lunghezza(celle.length - 1); };
-    $('#dir-piu').onclick = () => { Suoni.click(); lunghezza(celle.length + 1); };
-    $('#dir-via').onclick = corri;
-    $('#dir-pulisci').onclick = () => { Suoni.togli(); celle = celle.map(() => '.'); campo(); avviso('', '', 'Percorso vuoto: disegnane uno nuovo.'); };
-    $('#dir-esci').onclick = () => { chiudi(); vaiCastello(); };
-    $('#msg-seme').textContent = '';
-    const io = ++montaggi; let fatto = false;
-    const monta = () => { if (fatto || io !== montaggi || !attivo) return; fatto = true; Campo.monta($('#campo')); Campo.consegna('crea', 'Disegna il tuo percorso, poi fallo correre.', { ascolta: true }); campo(); };
-    requestAnimationFrame(() => requestAnimationFrame(monta)); setTimeout(monta, 250);
-    avviso('', 'Sei il direttore di campo', 'oggi il percorso lo decidi tu. Niente stelle: è il tuo momento di relax.');
-  }
-  let montaggi = 0;
-  function chiudi() { attivo = false; corre = false; Campo.ferma(); $('#campo').classList.remove('disegna'); }
-  // un solo ascoltatore sul riquadro del campo: sopravvive ai ridisegni della pista
-  document.addEventListener('click', e => { if (!attivo) return; const c = e.target.closest('#campo .c-cella'); if (c) tocca(+c.dataset.k); });
-  return { apri, chiudi, get attivo() { return attivo; } };
+  return {
+    guarda,
+    // alla prima pressione di GIOCA della pagina: dopo un ricaricamento riparte (nulla si salva nel browser)
+    primaVolta() { if (visto || PAR.get('trailer') === '0') return Promise.resolve(); visto = true; return guarda(); }
+  };
 })();
-// il bonus si apre dopo il grado 2 e dopo il grado 4, e resta poi disponibile al castello
-const direttoreAperto = () => STATO.docente || [2, 4].some(p => IPPO.stelleDaBits(STATO.stelle[p]).filter(s => s.t).length === 10);
+
+// ============================================================ COSTRUISCI IL TUO PERCORSO (campo ostacoli 3D)
+/* Pausa che lo studente prende quando vuole, dal pulsante nella barra (Andrea, 20/11/2026: niente pause imposte).
+   Stile Setting Aula: magazzino a sinistra, campo in 3D, ostacoli da trascinare, ruotare (R/E, 15°) ed eliminare
+   (Canc); come nelle gare vere i numeri seguono l'ordine in cui gli ostacoli si piazzano. Poi il cavallo corre il
+   percorso: dal VIA, ostacolo per ostacolo nell'ordine dei numeri, fino all'ARRIVO. Niente stelle, niente codice.
+   Si apre sopra il gioco: chiudendo, il livello in corso resta com'era. Il percorso resta finché la pagina è aperta
+   (nulla nel browser). Three.js r128 (dipendenza ammessa) si carica solo alla prima apertura.
+   Interazione ripresa da Setting Aula: orbita scritta a mano, soglia di 4 px fra click e trascinamento, oggetto che
+   segue il puntatore e si posa al rilascio, anello di selezione a terra, barra flottante sopra l'oggetto. */
+const Percorso3D = (() => {
+  const TIPI3 = [
+    { id: 'tronco', nome: 'Tronco', alt: 'basso', h: 0.6 }, { id: 'siepe', nome: 'Siepe', alt: 'basso', h: 0.9 },
+    { id: 'barriera', nome: 'Barriera', alt: 'medio', h: 1.3 }, { id: 'cancello', nome: 'Cancello', alt: 'medio', h: 1.2 },
+    { id: 'muro', nome: 'Muro', alt: 'alto', h: 1.4 }
+  ];
+  const W = 36, D = 24, MAX = 12, VIA = { x: -14, z: 7.5 }, ARRIVO = { x: -14, z: -7.5 };
+  const ostacoli = [];                 // { tipo, x, z, ry, g }: l'ordine dell'array è l'ordine del percorso
+  let T = null, ov = null, renderer, scena, camera, ray, piano, radice, anello, cavallo, ombra, sel = null, rafId = 0, corre = false, vista = 'orbita';
+  const CAM = { theta: 0.3, phi: 0.9, r: 42, target: null };
+  const PTR = { giu: false, x: 0, y: 0, mosso: false, modo: null, piazza: null, start: null };
+
+  function caricaThree() {
+    if (window.THREE) return Promise.resolve(window.THREE);
+    return new Promise((ok, ko) => { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'; s.onload = () => ok(window.THREE); s.onerror = ko; document.head.appendChild(s); });
+  }
+  const tela = (w, h, f) => { const c = document.createElement('canvas'); c.width = w; c.height = h; f(c.getContext('2d'), w, h); return new T.CanvasTexture(c); };
+  const mat = (col, o) => new T.MeshStandardMaterial(Object.assign({ color: col, roughness: 0.85 }, o));
+  function scatola(w, h, d, m, x, y, z) { const b = new T.Mesh(new T.BoxGeometry(w, h, d), m); b.position.set(x || 0, y || 0, z || 0); b.castShadow = b.receiveShadow = true; return b; }
+  function cilindro(r, l, m, x, y, z) { const c = new T.Mesh(new T.CylinderGeometry(r, r, l, 18), m); c.rotation.z = Math.PI / 2; c.position.set(x || 0, y || 0, z || 0); c.castShadow = true; return c; }
+
+  // ---------- gli ostacoli: asse lungo su x, si saltano lungo z
+  function modello(tipo) {
+    const g = new T.Group(), legno = mat('#8B5A2B'), bianco = mat('#F4F1EA');
+    const strisce = tela(256, 16, (c, w, h) => { for (let i = 0; i < 8; i++) { c.fillStyle = i % 2 ? '#F4F1EA' : '#C8423A'; c.fillRect(i * w / 8, 0, w / 8, h); } });
+    const ritti = m => { [-1.75, 1.75].forEach(x => { g.add(scatola(0.18, 1.7, 0.18, m, x, 0.85, 0)); g.add(scatola(0.5, 0.08, 0.5, m, x, 0.04, 0)); }); };
+    if (tipo === 'tronco') {
+      g.add(cilindro(0.3, 3.2, mat('#7A4A22'), 0, 0.32, 0));
+      [-1.2, 1.2].forEach(x => g.add(scatola(0.25, 0.18, 0.8, legno, x, 0.09, 0)));
+    } else if (tipo === 'siepe') {
+      g.add(scatola(3.2, 0.25, 0.8, legno, 0, 0.12, 0));
+      g.add(scatola(3.1, 0.75, 0.65, mat('#3E7A35', { roughness: 1 }), 0, 0.62, 0));
+    } else if (tipo === 'barriera') {
+      ritti(bianco);
+      [0.7, 1.2].forEach(y => g.add(cilindro(0.06, 3.3, new T.MeshStandardMaterial({ map: strisce, roughness: 0.6 }), 0, y, 0)));
+    } else if (tipo === 'cancello') {
+      ritti(legno);
+      for (let i = 0; i < 6; i++) g.add(scatola(0.13, 1.0, 0.06, mat('#A9763E'), -1.3 + i * 0.52, 0.65, 0));
+      [0.35, 1.05].forEach(y => g.add(scatola(3.3, 0.12, 0.08, mat('#2F5FB8'), 0, y, 0.03)));
+    } else {
+      const mattoni = tela(256, 128, (c, w, h) => { c.fillStyle = '#9C9282'; c.fillRect(0, 0, w, h); for (let r = 0; r < 6; r++) for (let k = -1; k < 6; k++) { c.fillStyle = ['#B4553A', '#A84B33', '#BE6044'][(r + k) % 3 < 0 ? 0 : (r + k) % 3]; c.fillRect(k * 48 + (r % 2) * 24 + 2, r * 21 + 2, 44, 18); } });
+      g.add(new T.Mesh(new T.BoxGeometry(3.2, 1.3, 0.6), new T.MeshStandardMaterial({ map: mattoni, roughness: 0.95 })));
+      g.children[0].position.y = 0.65; g.children[0].castShadow = g.children[0].receiveShadow = true;
+      g.add(scatola(3.35, 0.12, 0.72, mat('#C9C3B6'), 0, 1.36, 0));
+    }
+    return g;
+  }
+  function numero(n) {                                                       // cartello con il numero d'ordine, come nelle gare
+    const t = tela(128, 128, (c) => { c.fillStyle = '#FFFDF8'; c.beginPath(); c.arc(64, 64, 56, 0, 7); c.fill(); c.lineWidth = 10; c.strokeStyle = casataDi(STATO.casata).col; c.stroke(); c.fillStyle = '#1A1712'; c.font = '800 64px "Baloo 2", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(String(n), 64, 70); });
+    const s = new T.Sprite(new T.SpriteMaterial({ map: t, depthTest: false })); s.scale.set(1.1, 1.1, 1); s.renderOrder = 10; s.userData.numero = true; return s;
+  }
+  function rinumera() {
+    ostacoli.forEach((o, i) => { const vecchio = o.g.children.find(c => c.userData.numero); if (vecchio) o.g.remove(vecchio); const n = numero(i + 1); n.position.set(0, TIPI3.find(t => t.id === o.tipo).h + 1.1, 0); o.g.add(n); });
+  }
+  function applica(o) { o.g.position.set(o.x, 0, o.z); o.g.rotation.y = o.ry; }
+  const dentro = (x, z) => [Math.max(-W / 2 + 2.5, Math.min(W / 2 - 2.5, x)), Math.max(-D / 2 + 2.5, Math.min(D / 2 - 2.5, z))];
+
+  // ---------- il campo
+  function costruisciCampo() {
+    scena = new T.Scene(); scena.background = new T.Color('#BFE3F7'); scena.fog = new T.Fog('#BFE3F7', 70, 140);
+    camera = new T.PerspectiveCamera(45, 1, 0.1, 300); CAM.target = new T.Vector3(0, 0, 0);
+    scena.add(new T.HemisphereLight('#FFFFFF', '#8C7A55', 0.55));
+    const sole = new T.DirectionalLight('#FFF1D8', 0.95); sole.position.set(-18, 30, 14); sole.castShadow = true;
+    sole.shadow.mapSize.set(2048, 2048); sole.shadow.bias = -0.0004; sole.shadow.normalBias = 0.02;
+    Object.assign(sole.shadow.camera, { left: -24, right: 24, top: 18, bottom: -18, near: 1, far: 90 }); scena.add(sole);
+    const prato = new T.Mesh(new T.PlaneGeometry(220, 220), mat('#6FA34A', { roughness: 1 })); prato.rotation.x = -Math.PI / 2; prato.receiveShadow = true; scena.add(prato);
+    const sabbia = tela(512, 512, (c, w, h) => { c.fillStyle = '#D3BC8E'; c.fillRect(0, 0, w, h); c.strokeStyle = 'rgba(150,115,60,.18)'; c.lineWidth = 3; for (let y = 6; y < h; y += 14) { c.beginPath(); c.moveTo(0, y); c.lineTo(w, y + (y % 28 ? 3 : -3)); c.stroke(); } });
+    sabbia.wrapS = sabbia.wrapT = T.RepeatWrapping; sabbia.repeat.set(3, 2);
+    piano = new T.Mesh(new T.PlaneGeometry(W, D), new T.MeshStandardMaterial({ map: sabbia, roughness: 1 })); piano.rotation.x = -Math.PI / 2; piano.position.y = 0.01; piano.receiveShadow = true; scena.add(piano);
+    // staccionata bianca
+    const bianco = mat('#F4F1EA');
+    for (let x = -W / 2; x <= W / 2; x += 4) [-D / 2, D / 2].forEach(z => scena.add(scatola(0.16, 1.2, 0.16, bianco, x, 0.6, z)));
+    for (let z = -D / 2; z <= D / 2; z += 4) [-W / 2, W / 2].forEach(x => scena.add(scatola(0.16, 1.2, 0.16, bianco, x, 0.6, z)));
+    [0.55, 1.05].forEach(y => { [-D / 2, D / 2].forEach(z => scena.add(scatola(W, 0.1, 0.08, bianco, 0, y, z))); [-W / 2, W / 2].forEach(x => scena.add(scatola(0.08, 0.1, D, bianco, x, y, 0))); });
+    // VIA e ARRIVO: due paletti e uno striscione
+    const porta = (p, testo, scacchi) => {
+      const t = tela(256, 64, (c, w, h) => { if (scacchi) for (let i = 0; i < 16; i++) for (let j = 0; j < 4; j++) { c.fillStyle = (i + j) % 2 ? '#1A1712' : '#FFFDF8'; c.fillRect(i * 16, j * 16, 16, 16); } else { c.fillStyle = '#1E7A4C'; c.fillRect(0, 0, w, h); } c.fillStyle = scacchi ? '#C8423A' : '#FFFDF8'; if (scacchi) c.fillRect(72, 12, 112, 40); c.fillStyle = '#FFFDF8'; c.font = '800 34px "Baloo 2", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(testo, w / 2, h / 2 + 2); });
+      const g = new T.Group();
+      [-1.6, 1.6].forEach(z => g.add(scatola(0.14, 2.6, 0.14, mat('#5A3716'), 0, 1.3, z)));
+      const st = new T.Mesh(new T.PlaneGeometry(3.2, 0.8), new T.MeshStandardMaterial({ map: t, side: T.DoubleSide })); st.position.set(0, 2.25, 0); st.rotation.y = Math.PI / 2; g.add(st);
+      g.position.set(p.x, 0, p.z); scena.add(g);
+    };
+    porta(VIA, 'VIA', false); porta(ARRIVO, 'ARRIVO', true);
+    radice = new T.Group(); scena.add(radice);
+    const forma = new T.Shape(); forma.absarc(0, 0, 2.6, 0, Math.PI * 2); const buco = new T.Path(); buco.absarc(0, 0, 2.3, 0, Math.PI * 2, true); forma.holes.push(buco);
+    anello = new T.Mesh(new T.ShapeGeometry(forma, 48), new T.MeshBasicMaterial({ color: '#E0A91B', depthTest: false, transparent: true, opacity: 0.95 })); anello.rotation.x = -Math.PI / 2; anello.position.y = 0.03; anello.renderOrder = 999; anello.visible = false; scena.add(anello);
+    // il cavallo: l'immagine del cavaliere della casata, all'età conquistata, come cartonato sempre rivolto alla telecamera
+    const tex = new T.TextureLoader().load(imgCav(STATO.casata), t => cavallo.scale.set(3.1 * t.image.width / t.image.height, 3.1, 1));   // proporzioni vere: il puledro è quasi quadrato
+    cavallo = new T.Sprite(new T.SpriteMaterial({ map: tex })); cavallo.center.set(0.5, 0.02); cavallo.scale.set(3.6, 3.1, 1); cavallo.visible = false; scena.add(cavallo);
+    ombra = new T.Mesh(new T.CircleGeometry(1.2, 24), new T.MeshBasicMaterial({ color: '#000000', transparent: true, opacity: 0.25 })); ombra.rotation.x = -Math.PI / 2; ombra.scale.set(1.3, 0.6, 1); ombra.position.y = 0.03; ombra.visible = false; scena.add(ombra);
+    ostacoli.forEach(o => { o.g = modello(o.tipo); radice.add(o.g); applica(o); });
+    rinumera();
+  }
+
+  // ---------- telecamera: orbita a mano, come in Setting Aula
+  function camera3() {
+    const { theta, phi, r, target } = CAM;
+    camera.position.set(target.x + r * Math.sin(phi) * Math.sin(theta), target.y + r * Math.cos(phi), target.z + r * Math.sin(phi) * Math.cos(theta));
+    camera.lookAt(target);
+  }
+  function setVista(v) {
+    vista = v; Object.assign(CAM, v === 'alto' ? { theta: 0, phi: 0.06, r: 44 } : { theta: 0.3, phi: 0.9, r: 42 }); CAM.target.set(0, 0, 0);
+    $$('.p3-viste button', ov).forEach(b => b.classList.toggle('si', b.dataset.v === v));
+  }
+  function ndc(ev) { const r = renderer.domElement.getBoundingClientRect(); ray.setFromCamera({ x: ((ev.clientX - r.left) / r.width) * 2 - 1, y: -((ev.clientY - r.top) / r.height) * 2 + 1 }, camera); }
+  const suPiano = () => { const p = new T.Vector3(); return ray.ray.intersectPlane(new T.Plane(new T.Vector3(0, 1, 0), 0), p) ? p : null; };
+  function prendi() { const h = ray.intersectObjects(ostacoli.map(o => o.g), true)[0]; if (!h) return null; let g = h.object; while (g.parent && g.parent !== radice) g = g.parent; return ostacoli.find(o => o.g === g) || null; }
+
+  // ---------- selezione e comandi
+  function seleziona(o) {
+    sel = o; anello.visible = !!o; if (o) anello.position.set(o.x, 0.03, o.z);
+    $('.p3-selbar', ov).hidden = !o;
+    if (o) msg('', `Ostacolo ${ostacoli.indexOf(o) + 1}: ${TIPI3.find(t => t.id === o.tipo).nome.toLowerCase()}. Trascinalo per spostarlo, R ed E lo ruotano.`);
+  }
+  function ruota(d) { if (!sel || corre) return; sel.ry = Math.round((sel.ry + d) / (Math.PI / 12)) * (Math.PI / 12); applica(sel); Suoni.click(); }
+  function elimina() {
+    if (!sel || corre) return; const i = ostacoli.indexOf(sel); radice.remove(sel.g); ostacoli.splice(i, 1); seleziona(null); rinumera(); Suoni.togli();
+    msg('', ostacoli.length ? 'Ostacolo tolto: gli altri si sono rinumerati.' : 'Il campo è vuoto: trascina un ostacolo dal magazzino.');
+  }
+  function msg(tono, testo) { const m = $('.p3-msg', ov); m.className = 'p3-msg ' + (tono || ''); $('span', m).textContent = testo; }
+
+  // ---------- puntatore: piazzare, spostare, orbitare
+  function armaPiazza(tipo, ev) {
+    if (corre) return;
+    if (ostacoli.length >= MAX) { Suoni.no(); return msg('ambra', `Al massimo ${MAX} ostacoli: per metterne un altro, togline uno.`); }
+    const o = { tipo, x: 0, z: 0, ry: 0, g: modello(tipo) }; o.g.visible = false; radice.add(o.g);
+    PTR.piazza = o; $('.p3-vista', ov).classList.add('piazza');
+    msg('', 'Porta l\'ostacolo sul campo e lascialo dove vuoi.');
+  }
+  function muoviPiazza(ev) {
+    const o = PTR.piazza, r = renderer.domElement.getBoundingClientRect();
+    const sopra = ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom;
+    if (!sopra) { o.g.visible = false; return; }
+    ndc(ev); const p = suPiano(); if (!p) return;
+    [o.x, o.z] = dentro(Math.round(p.x * 2) / 2, Math.round(p.z * 2) / 2); applica(o); o.g.visible = true;
+  }
+  function finePiazza(ev) {
+    const o = PTR.piazza; PTR.piazza = null; $('.p3-vista', ov).classList.remove('piazza');
+    if (!o.g.visible) { radice.remove(o.g); return msg('', 'Trascina l\'ostacolo fin dentro il campo.'); }
+    const prec = ostacoli.length ? ostacoli[ostacoli.length - 1] : VIA;     // nasce già girato verso chi arriva: si salta di fronte
+    o.ry = Math.round(Math.atan2(o.x - prec.x, o.z - prec.z) / (Math.PI / 12)) * (Math.PI / 12); applica(o);
+    ostacoli.push(o); rinumera(); seleziona(o); Suoni.pop();
+    msg('', `Ostacolo ${ostacoli.length}: ${TIPI3.find(t => t.id === o.tipo).nome.toLowerCase()}. Il numero dice l'ordine del percorso.`);
+  }
+  function giu(ev) {
+    if (corre || PTR.piazza) return;
+    renderer.domElement.focus();
+    Object.assign(PTR, { giu: true, x: ev.clientX, y: ev.clientY, mosso: false, modo: null });
+    ndc(ev); const o = prendi();
+    if (o && ev.button === 0 && !ev.shiftKey) { seleziona(o); PTR.modo = 'sposta'; PTR.start = { x: o.x, z: o.z, p: suPiano() }; }
+    else PTR.modo = (ev.button === 2 || ev.shiftKey || vista === 'alto') ? 'pan' : 'orbita';
+  }
+  function muovi(ev) {
+    if (PTR.piazza) return muoviPiazza(ev);
+    if (!PTR.giu) return;
+    const dx = ev.clientX - PTR.x, dy = ev.clientY - PTR.y;
+    if (!PTR.mosso && Math.hypot(dx, dy) < 4) return;                       // sotto i 4 px è un click
+    PTR.mosso = true;
+    if (PTR.modo === 'sposta' && sel) {
+      ndc(ev); const p = suPiano(); if (!p || !PTR.start.p) return;
+      [sel.x, sel.z] = dentro(Math.round((PTR.start.x + p.x - PTR.start.p.x) * 2) / 2, Math.round((PTR.start.z + p.z - PTR.start.p.z) * 2) / 2);
+      applica(sel); anello.position.set(sel.x, 0.03, sel.z);
+    } else if (PTR.modo === 'orbita') {
+      CAM.theta -= (ev.clientX - PTR.x) * 0.006; CAM.phi = Math.max(0.06, Math.min(1.35, CAM.phi - (ev.clientY - PTR.y) * 0.005));
+      PTR.x = ev.clientX; PTR.y = ev.clientY; vista = 'orbita'; $$('.p3-viste button', ov).forEach(b => b.classList.toggle('si', b.dataset.v === 'orbita'));
+    } else if (PTR.modo === 'pan') {
+      const k = CAM.r * 0.0016, c = Math.cos(CAM.theta), s = Math.sin(CAM.theta), mx = ev.clientX - PTR.x, my = ev.clientY - PTR.y;
+      CAM.target.x = Math.max(-W / 2, Math.min(W / 2, CAM.target.x - (mx * c + my * s) * k)); CAM.target.z = Math.max(-D / 2, Math.min(D / 2, CAM.target.z - (-mx * s + my * c) * k));
+      PTR.x = ev.clientX; PTR.y = ev.clientY;
+    }
+  }
+  function su(ev) {
+    if (PTR.piazza) return finePiazza(ev);
+    if (!PTR.giu) return; PTR.giu = false;
+    if (!PTR.mosso && PTR.modo !== 'sposta') seleziona(null);              // click a vuoto: deseleziona
+  }
+  function tasto(ev) {
+    if (!ov || !ov.isConnected) return;
+    if (ev.key === 'Escape') { if (sel) seleziona(null); else chiudi(); return; }
+    if (corre || !sel) return;
+    if (ev.key === 'r' || ev.key === 'R') ruota(ev.shiftKey ? Math.PI / 2 : Math.PI / 12);
+    else if (ev.key === 'e' || ev.key === 'E') ruota(ev.shiftKey ? -Math.PI / 2 : -Math.PI / 12);
+    else if (ev.key === 'Delete' || ev.key === 'Backspace') { ev.preventDefault(); elimina(); }
+  }
+
+  // ---------- la corsa: dal VIA agli ostacoli in ordine, poi all'ARRIVO
+  function corri() {
+    if (corre) return;
+    seleziona(null); corre = true; $$('.p3-mag button, .p3-carta', ov).forEach(b => b.style.pointerEvents = 'none'); $('#p3-via', ov).disabled = true;
+    const punti = [new T.Vector3(VIA.x - 2, 0, VIA.z)], salti = [];
+    let prima = new T.Vector3(VIA.x, 0, VIA.z);
+    ostacoli.forEach(o => {
+      const dir = new T.Vector3(Math.sin(o.ry), 0, Math.cos(o.ry)), c = new T.Vector3(o.x, 0, o.z);
+      if (dir.dot(c.clone().sub(prima)) < 0) dir.negate();                  // si salta nel verso da cui si arriva
+      punti.push(c.clone().addScaledVector(dir, -3.2), c.clone(), c.clone().addScaledVector(dir, 3.2));
+      salti.push({ i: punti.length - 3, h: TIPI3.find(t => t.id === o.tipo).h }); prima = c;
+    });
+    punti.push(new T.Vector3(ARRIVO.x + 1.5, 0, ARRIVO.z), new T.Vector3(ARRIVO.x - 2, 0, ARRIVO.z));
+    const curva = new T.CatmullRomCurve3(punti, false, 'centripetal'), lung = curva.getLength(), durata = Math.max(4, lung / 9) * 1000;
+    // a quale frazione della curva cade ogni punto di controllo: serve per sapere quando il cavallo è in volo
+    const frazioni = punti.map((p, i) => i / (punti.length - 1));
+    const tappe = curva.getSpacedPoints(400);
+    const fraz = p => { let best = 0, bd = 1e9; tappe.forEach((q, k) => { const d = q.distanceToSquared(p); if (d < bd) { bd = d; best = k; } }); return best / 400; };
+    const voli = salti.map(s => ({ da: fraz(punti[s.i]), a: fraz(punti[s.i + 2]), h: s.h + 0.6, fatto: false }));
+    cavallo.visible = ombra.visible = true; cavallo.material.map.repeat.set(1, 1); cavallo.material.map.offset.set(0, 0);
+    msg('', 'Il cavallo parte!'); Suoni.pop();
+    const t0 = performance.now(); let zoccoli = 0;
+    return new Promise(fatto => {
+      const passo = () => {
+        if (!ov || !ov.isConnected) { corre = false; return fatto(); }
+        const u = Math.min(1, (performance.now() - t0) / durata), p = curva.getPointAt(u), q = curva.getPointAt(Math.min(1, u + 0.01));
+        let y = Math.abs(Math.sin(u * lung * 1.4)) * 0.12;                   // il galoppo
+        const v = voli.find(v => u >= v.da && u <= v.a);
+        if (v) { const k = (u - v.da) / (v.a - v.da); y = Math.sin(Math.PI * k) * v.h; if (!v.fatto) { v.fatto = true; Suoni.salto(); setTimeout(() => Suoni.atterra(), (v.a - v.da) * durata); } }
+        else if (performance.now() - zoccoli > 330) { zoccoli = performance.now(); Suoni.zoccoli(); }
+        cavallo.position.set(p.x, y, p.z); ombra.position.set(p.x, 0.03, p.z); ombra.material.opacity = 0.25 - Math.min(0.15, y * 0.06);
+        // il cartonato guarda a destra: se sullo schermo il cavallo va a sinistra, lo si specchia
+        const a = p.clone().project(camera), b = q.clone().project(camera), sx = b.x < a.x;
+        cavallo.material.map.repeat.x = sx ? -1 : 1; cavallo.material.map.offset.x = sx ? 1 : 0;
+        CAM.target.lerp(new T.Vector3(p.x, 0, p.z), 0.04);                     // la telecamera segue il cavallo
+        if (u < 1) return requestAnimationFrame(passo);
+        corre = false; Suoni.traguardo(); $$('.p3-mag button, .p3-carta', ov).forEach(b => b.style.pointerEvents = ''); $('#p3-via', ov).disabled = false;
+        msg('verde', ostacoli.length ? `Arrivato! ${ostacoli.length === 1 ? 'Un ostacolo superato' : ostacoli.length + ' ostacoli superati'} in ${(durata / 1000).toFixed(1).replace('.', ',')} secondi. Cambia il percorso e rimettilo alla prova.` : 'Solo galoppo dal VIA all\'ARRIVO: trascina qualche ostacolo sul campo.');
+        setTimeout(() => { if (!corre && cavallo) { cavallo.visible = ombra.visible = false; } }, 2500);
+        fatto();
+      };
+      requestAnimationFrame(passo);
+    });
+  }
+
+  // ---------- apertura e chiusura
+  function ciclo() {
+    rafId = requestAnimationFrame(ciclo);
+    camera3();
+    if (sel) { const p = new T.Vector3(sel.x, TIPI3.find(t => t.id === sel.tipo).h + 0.4, sel.z).project(camera), r = renderer.domElement.getBoundingClientRect(), b = $('.p3-selbar', ov); b.style.left = ((p.x + 1) / 2 * r.width) + 'px'; b.style.top = ((1 - p.y) / 2 * r.height) + 'px'; }
+    renderer.render(scena, camera);
+  }
+  function dimensiona() { const v = $('.p3-vista', ov); if (!v || !renderer) return; const w = v.clientWidth, h = v.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / Math.max(1, h); camera.updateProjectionMatrix(); }
+  async function apri() {
+    if (ov && ov.isConnected) return;
+    Gioco.stop(false); Voce.taci(); Suoni.pop();
+    ov = apriOv('ov-percorso', `<div class="p3">
+      <aside class="p3-mag">
+        <h2>Costruisci il tuo percorso</h2>
+        <p>Sei il direttore di campo: trascina gli ostacoli sul campo, spostali e girali. I numeri dicono l'ordine in cui il cavallo li salterà.</p>
+        <h3>Magazzino</h3>
+        <div class="p3-carte">${TIPI3.map(t => `<div class="p3-carta" data-tipo="${t.id}" role="button" tabindex="0"><img src="img/ost-${t.id}.webp" alt=""><b>${t.nome}</b><small>salto ${t.alt}</small></div>`).join('')}</div>
+        <h3>Percorso</h3>
+        <div class="p3-tasti"><button class="btn verde" id="p3-via">${ico('play')}FAI CORRERE</button><button class="btn carta piccolo" id="p3-svuota">${ico('ricomincia')}Svuota il campo</button></div>
+        <p style="font-size:.9rem">Trascina sul prato per girare la vista, con la rotella avvicini. Ostacolo scelto: R ed E lo ruotano, Canc lo toglie.</p>
+      </aside>
+      <div class="p3-vista"><div class="p3-carica">Preparo il campo…</div>
+        <div class="p3-viste"><button data-v="orbita" class="si">In prospettiva</button><button data-v="alto">Dall'alto</button></div>
+        <button class="btn oro p3-chiudi" id="p3-chiudi">${ico('sx')}Torna al gioco</button>
+        <div class="p3-selbar" hidden><button data-a="e">${ico('ricomincia')}Ruota</button><button data-a="r" style="transform:scaleX(-1)">${ico('ricomincia')}</button><button data-a="x">${ico('no')}Togli</button></div>
+        <div class="p3-msg"><img class="volto-a" style="width:2.6rem;height:2.6rem" src="img/andrea-volto.webp" alt="Il Maestro di scuderia"><span>Oggi il percorso lo decidi tu. Niente stelle: è la tua pausa.</span></div>
+      </div></div>`);
+    $('#p3-chiudi', ov).onclick = chiudi;
+    try { T = await caricaThree(); }
+    catch (e) { $('.p3-carica', ov).textContent = 'Il campo 3D non si carica: serve la rete. Riprova più tardi.'; return; }
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));   // la finestra deve avere le sue misure
+    if (!ov.isConnected) return;
+    $('.p3-carica', ov).remove();
+    renderer = new T.WebGLRenderer({ antialias: true }); renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    // niente sRGB né tone mapping: in r128 i colori esadecimali sono lineari e uscirebbero slavati
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap; renderer.domElement.tabIndex = 0;
+    $('.p3-vista', ov).prepend(renderer.domElement);
+    ray = new T.Raycaster(); costruisciCampo(); setVista('orbita'); dimensiona();
+    new ResizeObserver(dimensiona).observe($('.p3-vista', ov));
+    const cv = renderer.domElement;
+    cv.addEventListener('pointerdown', giu); cv.addEventListener('contextmenu', e => e.preventDefault());
+    cv.addEventListener('wheel', e => { e.preventDefault(); CAM.r = Math.max(14, Math.min(70, CAM.r * Math.pow(1.1, Math.sign(e.deltaY)))); }, { passive: false });
+    $$('.p3-carta', ov).forEach(c => c.addEventListener('pointerdown', e => { e.preventDefault(); armaPiazza(c.dataset.tipo, e); }));
+    $$('.p3-viste button', ov).forEach(b => b.onclick = () => { Suoni.click(); setVista(b.dataset.v); });
+    $$('.p3-selbar button', ov).forEach(b => b.onclick = () => b.dataset.a === 'x' ? elimina() : ruota(b.dataset.a === 'e' ? Math.PI / 12 : -Math.PI / 12));
+    $('#p3-via', ov).onclick = corri;
+    $('#p3-svuota', ov).onclick = () => { if (corre) return; ostacoli.splice(0).forEach(o => radice.remove(o.g)); seleziona(null); Suoni.togli(); msg('', 'Campo vuoto: disegna un percorso nuovo.'); };
+    ciclo();
+  }
+  function chiudi() {
+    cancelAnimationFrame(rafId); corre = false; sel = null; PTR.piazza = null; PTR.giu = false;
+    if (renderer) { renderer.dispose(); renderer = null; }
+    ostacoli.forEach(o => { o.g = null; });                                 // il percorso resta, i modelli si rifanno alla prossima apertura
+    if (ov) { ov.remove(); ov = null; }
+    Suoni.click();
+  }
+  window.addEventListener('pointermove', e => { if (ov && renderer) muovi(e); });
+  window.addEventListener('pointerup', e => { if (ov && renderer) su(e); });
+  window.addEventListener('keydown', tasto);
+  return { apri, chiudi, get aperto() { return !!(ov && ov.isConnected); }, get ostacoli() { return ostacoli; } };
+})();
 
 // Cinque tocchi sul logo: tutti i livelli aperti, pulsante Soluzione, prova del collegamento al foglio.
 function modalitaDocente() {
@@ -2885,7 +3291,7 @@ function modalitaDocente() {
   const ov = apriOv('ov-docente', `<div class="scheda pergamena docente"><h2>Modalità docente</h2>
     <ul><li>Tutti i livelli sono aperti, in tutti i percorsi.</li><li>In ogni livello compare il pulsante <b>Soluzione</b>.</li><li>Link diretto a un livello: <code>?percorso=4&amp;livello=7</code>. Stesse manche a sorpresa per tutta la classe: <code>?seed=4A-martedi</code>.</li><li>Altri parametri: <code>?musica=0</code>, <code>?suoni=0</code>, <code>?registro=0</code>.</li></ul>
     <h3>Progressi per classe e Mac</h3>
-    <p>${Registro.attivo() ? 'Il foglio della scuola è collegato: si salvano classe, Mac e stelle, mai un nome.' : 'Il foglio della scuola non è collegato (REGISTRO_URL è vuoto in index.html): le stelle restano nella scheda del browser e per riprendere serve il codice gara. Le istruzioni per collegarlo sono nella scheda docenti.'}</p>
+    <p>${Registro.attivo() ? 'Il foglio della scuola è collegato: si salvano classe, Mac e stelle, mai un nome.' : 'Il foglio della scuola non è collegato (REGISTRO_URL è vuoto in index.html): le stelle valgono solo finché la pagina resta aperta e per riprendere serve il codice gara. Le istruzioni per collegarlo sono nella scheda docenti.'}</p>
     ${Registro.attivo() ? `<h3>Classifica delle casate sul proiettore</h3><p>Stelle della lezione di oggi, a testa sui Mac in gara. Si aggiorna da sola ogni 10 secondi.</p>
     <div class="azioni" style="justify-content:flex-start"><select id="doc-classe">${Object.keys(CLASSI).map(o => CLASSI[o].map(c => `<option value="${o[0]}${c}" ${STATO.chi && STATO.chi.classe === o[0] + c ? 'selected' : ''}>${c[0]}ª ${c[1]} ${o}</option>`).join('')).join('')}</select><button class="btn piccolo" id="doc-classifica">Apri la classifica</button></div>` : ''}
     <div class="azioni" style="justify-content:flex-start">${Registro.attivo() ? '<button class="btn piccolo" id="doc-prova">Prova il collegamento al foglio</button><span id="doc-esito"></span>' : ''}<a class="btn piccolo carta" href="ippo-docenti.html" target="_blank" rel="noopener">${ico('libro')}Scheda docenti</a><button class="btn oro" id="doc-ok">Chiudi</button></div></div>`);
@@ -2905,12 +3311,14 @@ function avvia() {
   $$('.b-suoni').forEach(b => b.onclick = () => { Suoni.cambia(); aggiornaAudio(); });
   $$('.b-musica').forEach(b => b.onclick = () => { Musica.cambia(); aggiornaAudio(); });
   $('#b-aiuto').innerHTML = ico('aiuto'); $('#b-aiuto').onclick = () => Gioco.aiuto();
+  $('#b-percorso').innerHTML = ico('matita') + 'Costruisci il tuo percorso'; $('#b-percorso').onclick = () => Percorso3D.apri();
   $('#b-indietro').innerHTML = ico('sx');
-  $('#b-indietro').onclick = () => { Suoni.click(); Voce.taci(); if (schermo === "s-gara" && Direttore.attivo) { Direttore.chiudi(); vaiCastello(); } else if (schermo === "s-gara") { Gioco.stop(false); vaiStalla(STATO.percorso); } else if (schermo === 's-stalla') vaiCastello(); else mostra('s-titolo'); };
+  $('#b-indietro').onclick = () => { Suoni.click(); Voce.taci(); if (schermo === "s-gara") { Gioco.stop(false); vaiStalla(STATO.percorso); } else if (schermo === 's-stalla') vaiCastello(); else mostra('s-titolo'); };
   $('#chi-chip').onclick = () => { if (schermo === 's-gara') return; mostra('s-titolo'); chiediChi(vaiCastello); };
   $('#chi-chip').style.cursor = 'pointer'; $('#chi-chip').title = 'Cambia classe e Mac';
   $('#b-gioca').textContent = 'GIOCA';
-  $('#b-gioca').onclick = () => { Suoni.pop(); if (STATO.chi || STATO.senza) vaiCastello(); else chiediChi(vaiCastello); };
+  $('#b-gioca').onclick = async () => { Suoni.pop(); await Trailer.primaVolta(); if (STATO.chi || STATO.senza) vaiCastello(); else chiediChi(vaiCastello); };
+  $('#b-trailer').innerHTML = ico('play') + 'Guarda il trailer'; $('#b-trailer').onclick = () => { Suoni.pop(); Trailer.guarda(); };
   cinqueTocchi($('#zona-logo')); cinqueTocchi($('#marchio'));
   window.addEventListener('keydown', e => { if (e.key === 'Escape') ['ov-aiuto', 'ov-docente'].forEach(chiudiOv); });
   // link diretto del docente: ?percorso=N&livello=M apre subito un livello, senza chiedere chi sei
