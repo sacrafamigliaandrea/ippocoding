@@ -1461,6 +1461,9 @@ const $ = (s, r) => (r || document).querySelector(s), $$ = (s, r) => [...(r || d
 const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const attendi = ms => new Promise(r => setTimeout(r, ms));
+/* Un audio o un video messo in pausa o tolto dalla pagina tiene aperto il suo caricamento, e la rotellina del
+   browser continua a girare (successo con il trailer, 20/11/2026). Per chiuderlo davvero: via la sorgente e load(). */
+function rilascia(m) { if (!m) return; try { m.pause(); m.removeAttribute('src'); m.load(); } catch (e) {} }
 const PAR = new URLSearchParams(location.search);
 const MOTO_RIDOTTO = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -1724,7 +1727,7 @@ const Musica = (() => {
     a.play().then(() => sfuma(a, VOLUME)).catch(() => {});
     brano = a;
   }
-  function ferma() { const a = brano; brano = null; if (a) sfuma(a, 0, () => a.pause()); }
+  function ferma() { const a = brano; brano = null; if (a) sfuma(a, 0, () => rilascia(a)); }
   return {
     get accesa() { return accesa; },
     cambia() { accesa = !accesa; if (accesa) parti(); else ferma(); return accesa; },
@@ -2941,7 +2944,7 @@ const Trailer = (() => {
         v.play().catch(() => {}); if (n !== 'galoppo') requestAnimationFrame(() => v.classList.add('avvicina'));
         return v;
       };
-      const fine = () => { if (!vivo) return; vivo = false; tempi.forEach(clearTimeout); try { musica.pause(); } catch (e) {} $$('.tr-video', ov).forEach(v => { try { v.pause(); } catch (e) {} }); Musica.abbassa(1); ov.remove(); fatto(); };
+      const fine = () => { if (!vivo) return; vivo = false; tempi.forEach(clearTimeout); rilascia(musica); $$('.tr-video', ov).forEach(rilascia); Musica.abbassa(1); ov.remove(); fatto(); };
       $('#tr-salta', ov).onclick = () => { Suoni.click(); fine(); };
       $('#tr-entra', ov).onclick = () => { Suoni.pop(); fine(); };
       Musica.abbassa(60000);
