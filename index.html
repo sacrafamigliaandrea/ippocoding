@@ -662,14 +662,14 @@ svg{display:block}
 @keyframes d-salto{0%,15%{transform:translate(2.4rem,0)}40%{transform:translate(7rem,-3.3rem) rotate(-10deg)}60%{transform:translate(9.6rem,-3rem) rotate(8deg)}80%,100%{transform:translate(13rem,0)}}
 .vittoria{width:min(92vw,40rem);text-align:center}
 .vittoria h2{font-size:2.3rem}
-/* le stelle spuntano una alla volta, a tempo con le note dello squillo (Suoni.BATTITI: 0,30 / 0,62 / 0,94 s) */
+/* le stelle spuntano una alla volta, a tempo con le note dello squillo (Suoni.BATTITI: 0,30 / 0,90 / 1,50 s) */
 .stelle-vittoria{display:flex;justify-content:center;margin:.6rem 0}
 .stelle-vittoria .stelle{display:flex;align-items:flex-end;gap:.5rem}
 .stelle-vittoria .stella{width:3.4rem;height:3.4rem;transform:scale(0) rotate(-35deg);animation:spunta .45s var(--molla) forwards}
 .stelle-vittoria .stella:nth-child(2){width:4.2rem;height:4.2rem}
 .stelle-vittoria .stella:nth-child(1){animation-delay:.22s}
-.stelle-vittoria .stella:nth-child(2){animation-delay:.54s}
-.stelle-vittoria .stella:nth-child(3){animation-delay:.86s}
+.stelle-vittoria .stella:nth-child(2){animation-delay:.82s}
+.stelle-vittoria .stella:nth-child(3){animation-delay:1.42s}
 .stelle-vittoria .stella.si{filter:drop-shadow(0 0 .5rem rgba(224,169,27,.75))}
 @keyframes spunta{to{transform:scale(1) rotate(0)}}
 .traguardi{display:flex;flex-direction:column;gap:.45rem;margin:1rem 0;text-align:left}
@@ -1657,7 +1657,7 @@ const Suoni = (() => {
     s.connect(f); f.connect(g); g.connect(bus); s.start(t);
   }
   /* Timbri per lo squillo di vittoria. La tecnica viene da Controcorrente (timbro costruito a mano, motivo vero,
-     stelle a tempo con le note), la musica no: lì una marimba pentatonica, qui una tromba d'araldo in Re maggiore. */
+     stelle a tempo con le note), la musica no: lì una marimba pentatonica, qui il tema dell'inno delle case. */
   function ottone(f, t0, dur, vol) {             // tromba: due seghe appena scordate, filtro che si apre all'attacco, vibrato sulle note lunghe
     if (!accesi) return; const c = ac(); if (!c) return;
     const t = c.currentTime + t0, fl = c.createBiquadFilter(), g = c.createGain();
@@ -1674,26 +1674,42 @@ const Suoni = (() => {
     tono(f * 1.12, 0.8, { tipo: 'sine', a: f, vol, tra: t0 });
     rumore(0.14, { f: 180, q: 0.8, vol: vol * 1.6, filtro: 'lowpass', tra: t0 });
   }
+  /* IL TEMA DEL GIOCO viene dall'inno delle case della scuola (20/11/2026). Nell'inno la voce è parlata: il motivo
+     che si riconosce è l'arpeggio degli strumenti, trascritto seguendo l'altezza delle note nella registrazione
+     (voce tolta con Demucs). Tonalità Re bemolle maggiore; ogni cella è «nota alta, due note sotto» (Re♭ La♭ Fa);
+     il ritmo è 3+3+3+3+2+2 crome; la nota alta sale di cella in cella: Re♭, Mi♭, Fa.
+     Tutti i suoni musicali del gioco sono variazioni di questo: la vittoria lo fa salire fino all'ottava
+     (più stelle, più in alto), il traguardo ne suona l'attacco, la crescita lo allarga con le trombe, il rifiuto lo
+     fa scendere in minore. Le note stanno in DB; il timbro delle celle è pizzico(), un suono pizzicato morbido. */
+  const DB = { Db2: 69.3, Ab2: 103.8, C3: 130.8, Db3: 138.6, F3: 174.6, Gb3: 185, Ab3: 207.7, Bb3: 233.1, C4: 261.6, Db4: 277.2, Eb4: 311.1, F4: 349.2, Gb4: 370,
+    Ab4: 415.3, C5: 523.3, Db5: 554.4, Eb5: 622.3, F5: 698.5, Ab5: 830.6, Db6: 1108.7, F6: 1396.9, Ab6: 1661.2, Db7: 2217.5 };
+  function pizzico(f, t0, dur, vol) {            // corda pizzicata: triangolo con due armonici, attacco secco, coda che si scurisce
+    if (!accesi) return; const c = ac(); if (!c) return;
+    const t = c.currentTime + t0, g = c.createGain(), fl = c.createBiquadFilter();
+    fl.type = 'lowpass'; fl.frequency.setValueAtTime(Math.min(9000, f * 8), t); fl.frequency.exponentialRampToValueAtTime(Math.max(600, f * 2.5), t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.006); g.gain.exponentialRampToValueAtTime(vol * 0.35, t + dur * 0.3); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    fl.connect(g); g.connect(bus);
+    [[1, 'triangle', 1], [2, 'sine', 0.4], [3, 'sine', 0.15]].forEach(([m, tipo, a]) => { const o = c.createOscillator(), og = c.createGain(); o.type = tipo; o.frequency.value = f * m; og.gain.value = a; o.connect(og); og.connect(fl); o.start(t); o.stop(t + dur + 0.03); });
+  }
   function campanella(f, t0, vol) { tono(f, 0.7, { vol, tra: t0 }); tono(f * 2.76, 0.25, { vol: vol * 0.35, tra: t0 }); }
-  const RE = { A3: 220, D4: 294, Fd4: 370, A4: 440, D5: 587, E5: 659, Fd5: 740, A5: 880, D6: 1175, E6: 1319, Fd6: 1480, A6: 1760, D7: 2349, D2: 73.4 };
   // istanti in cui spuntano le tre stelle: li usa anche l'animazione della scheda di vittoria (CSS --ritardo)
-  const BATTITI = [0.3, 0.62, 0.94];
-  /* «Squillo della crescita», circa 3,7 s, in Mi maggiore (lo squillo di vittoria è in Re): dura quanto l'effetto
-     della carta. Rullo di timpani che cresce mentre la carta si carica, accordo di trombe sul lampo (1,45 s, come
-     nell'animazione), fanfara che sale e cascata di campanelle. */
-  const MI = { E2: 82.4, E4: 329.6, Gd4: 415.3, B4: 493.9, E5: 659.3, Gd5: 830.6, B5: 987.8, E6: 1318.5, Gd6: 1661, B6: 1975.5, E7: 2637 };
+  const BATTITI = [0.3, 0.9, 1.5];
+
+  /* «Squillo della crescita», circa 3,7 s: dura quanto l'effetto della carta. Variazione solenne del tema: rullo di
+     timpani sul La♭ (la dominante) che cresce mentre la carta si carica, accordo di Re♭ sul lampo (1,45 s, come
+     nell'animazione), poi le trombe fanno la salita del tema, Re♭ Mi♭ Fa, fino al La♭, e cascata di campanelle. */
   function crescita() {
     let t = 0, passo = 0.13;
-    while (t < 1.38) { timpano(MI.E2, t, 0.05 + 0.17 * t / 1.38); t += passo; passo = Math.max(0.045, passo * 0.9); }   // rullo che accelera
-    [MI.E4, MI.Gd4, MI.B4, MI.E5, MI.Gd5, MI.B5, MI.E6].forEach((f, i) => campanella(f, 0.25 + i * 0.16, 0.035 + i * 0.006));
+    while (t < 1.38) { timpano(DB.Ab2, t, 0.05 + 0.17 * t / 1.38); t += passo; passo = Math.max(0.045, passo * 0.9); }   // rullo che accelera
+    [DB.Ab3, DB.Db4, DB.F4, DB.Ab4, DB.Db5, DB.F5, DB.Ab5].forEach((f, i) => campanella(f, 0.25 + i * 0.16, 0.035 + i * 0.006));
     const L = 1.45;                                                                                          // il lampo
-    rumore(0.9, { f: 5000, q: 0.4, vol: 0.12, filtro: 'highpass', tra: L }); timpano(MI.E2, L, 0.3);
-    [MI.E4, MI.Gd4, MI.B4, MI.E5].forEach((f, i) => ottone(f, L, 0.45, i === 3 ? 0.1 : 0.06));
+    rumore(0.9, { f: 5000, q: 0.4, vol: 0.12, filtro: 'highpass', tra: L }); timpano(DB.Db2, L, 0.3);
+    [DB.Db4, DB.F4, DB.Ab4, DB.Db5].forEach((f, i) => ottone(f, L, 0.45, i === 3 ? 0.1 : 0.06));
     const F = 1.95;
-    ottone(MI.B4, F, 0.12, 0.1); ottone(MI.E5, F + 0.13, 0.12, 0.1); ottone(MI.Gd5, F + 0.26, 0.12, 0.1);
-    [MI.B5, MI.Gd5, MI.E5, MI.E4].forEach((f, i) => ottone(f, F + 0.41, 1.3, i ? 0.055 : 0.1));
-    timpano(MI.E2, F + 0.41, 0.26); timpano(MI.E2, F + 0.66, 0.14);
-    [MI.E6, MI.Gd6, MI.B6, MI.E7].forEach((f, i) => campanella(f, F + 0.55 + i * 0.08, 0.06));
+    ottone(DB.Db5, F, 0.12, 0.1); ottone(DB.Eb5, F + 0.13, 0.12, 0.1); ottone(DB.F5, F + 0.26, 0.12, 0.1);
+    [DB.Ab5, DB.F5, DB.Db5, DB.Db4].forEach((f, i) => ottone(f, F + 0.41, 1.3, i ? 0.055 : 0.1));
+    timpano(DB.Db2, F + 0.41, 0.26); timpano(DB.Db2, F + 0.66, 0.14);
+    [DB.Db6, DB.F6, DB.Ab6, DB.Db7].forEach((f, i) => campanella(f, F + 0.55 + i * 0.08, 0.06));
   }
   return {
     BATTITI, crescita,
@@ -1705,26 +1721,32 @@ const Suoni = (() => {
       colpo() { timpano(65.4, 0, 0.32); rumore(0.35, { f: 3000, q: 0.5, vol: 0.12, filtro: 'highpass' }); },
       folata() { rumore(0.9, { f: 900, q: 0.5, vol: 0.22 }); rumore(0.6, { f: 2400, q: 0.7, vol: 0.1, tra: 0.25 }); },
       salita(d) { tono(110, d, { tipo: 'sawtooth', a: 880, vol: 0.035 }); tono(165, d, { tipo: 'triangle', a: 1320, vol: 0.03 }); rumore(d, { f: 4000, q: 0.4, vol: 0.06, filtro: 'highpass' }); },
-      lampo(n) { [MI.E5, MI.Gd5, MI.B5, MI.E6][n % 4] && campanella([MI.E5, MI.Gd5, MI.B5, MI.E6][n % 4], 0, 0.08); timpano(55 + n * 8, 0, 0.26); }
+      lampo(n) { campanella([659.3, 830.6, 987.8, 1318.5][n % 4], 0, 0.08); timpano(55 + n * 8, 0, 0.26); }
     },
-    /* «Squillo dell'araldo», circa 2,4 s. Galoppo d'attacco, una nota di tromba per ogni stella presa (le stelle
-       mancanti restano mute), poi la chiamata ta-ta-TAA con timpano. Solo con tre stelle: cascata di campanelle.
-       Sempre lo stesso per lo stesso risultato: nessuna sorpresa nella ricompensa. */
+    /* Vittoria: il tema in salita. Le celle dell'inno una dopo l'altra, ogni volta con la nota alta un grado più su
+       (Re♭, Mi♭, Fa, Sol♭), poi le due coppie (La♭, Do) e l'arrivo sul Re♭ dell'ottava sopra: una scala intera in
+       salita. Più stelle, più in alto: 1 stella = una cella e la chiusa sul Re♭ di partenza (2,4 s); 2 = tre celle e
+       arrivo sul Fa (3,7 s); 3 = tutta la salita fino all'ottava, con campanelle (5 s). Gli accenti delle prime tre
+       celle sono i BATTITI, dove spuntano le stelle. Sempre uguale per lo stesso risultato: nessuna sorpresa. */
     vittoria(st) {
-      const n = ['t', 'n', 'p'].filter(k => st && st[k]).length;
-      [0, 0.09, 0.18].forEach((x, i) => rumore(0.07, { f: 520 - i * 60, q: 2.5, vol: 0.45, tra: x }));          // ta-ta-tam degli zoccoli
-      timpano(RE.D2, 0.18, 0.2);
-      [RE.A4, RE.D5, RE.Fd5].forEach((f, i) => { if (st && st[['t', 'n', 'p'][i]]) ottone(f, BATTITI[i], 0.26, 0.11); });
+      const n = ['t', 'n', 'p'].filter(k => st && st[k]).length, E = 0.2, T = BATTITI[0];          // E: una croma
       if (!n) return;
-      const T = 1.22;
-      if (n === 1) { ottone(RE.A4, T, 0.12, 0.1); ottone(RE.D5, T + 0.14, 0.7, 0.11); ottone(RE.A3, T + 0.14, 0.7, 0.06); timpano(RE.D2, T + 0.14, 0.2); return; }
-      ottone(RE.A5, T, 0.11, 0.1); ottone(RE.A5, T + 0.13, 0.11, 0.1);                                           // ta-ta
-      [RE.D6, RE.A5, RE.Fd5, RE.D5].forEach((f, i) => ottone(f, T + 0.27, 1, i ? 0.06 : 0.1));                    // TAA: accordo di Re
-      timpano(RE.D2, T + 0.27, 0.26); timpano(RE.D2, T + 0.5, 0.12);
-      if (n === 3) {
-        [RE.D6, RE.E6, RE.Fd6, RE.A6, RE.D7].forEach((f, i) => campanella(f, T + 0.55 + i * 0.075, 0.07));
-        rumore(0.5, { f: 6000, q: 0.5, vol: 0.05, filtro: 'highpass', tra: T + 0.6 });
-      }
+      const cella = (i, note, basso) => {            // i: croma d'inizio. La prima nota è l'accento
+        note.forEach((f, k) => pizzico(f, T + (i + k) * E, k ? 0.5 : 0.75, k ? 0.11 : 0.17));
+        if (n === 3) pizzico(note[0] * 2, T + i * E, 0.6, 0.05);                                   // con tre stelle l'accento brilla un'ottava sopra
+        tono(basso, 0.6, { vol: 0.13, tra: T + i * E });
+      };
+      const arrivo = (i, note, dur) => {
+        note.forEach((f, k) => { pizzico(f, T + i * E, dur, k ? 0.1 : 0.16); ottone(f, T + i * E, dur * 0.85, k ? 0.022 : 0.04); });
+        tono(DB.Db3, dur, { vol: 0.14, tra: T + i * E }); timpano(DB.Db2, T + i * E, 0.22);
+      };
+      cella(0, [DB.Db4, DB.Ab3, DB.F3], DB.Db3);
+      if (n === 1) { cella(3, [DB.Eb4, DB.C4], DB.Ab2); return arrivo(5, [DB.Db4, DB.Ab3, DB.F3], 1.1); }
+      cella(3, [DB.Eb4, DB.C4, DB.Ab3], DB.C3); cella(6, [DB.F4, DB.Db4, DB.Ab3], DB.Db3);
+      if (n === 2) { cella(9, [DB.Eb4, DB.C4], DB.Ab2); return arrivo(11, [DB.F4, DB.Db4, DB.Ab3], 1.2); }
+      cella(9, [DB.Gb4, DB.Db4, DB.Bb3], DB.Gb3); cella(12, [DB.Ab4, DB.Eb4], DB.Ab2); cella(14, [DB.C5, DB.Ab4], DB.Ab2);
+      arrivo(16, [DB.Db5, DB.Ab4, DB.F4, DB.Db4], 1.5);
+      [DB.Db6, DB.F6, DB.Ab6, DB.Db7].forEach((f, k) => campanella(f, T + 16 * E + 0.15 + k * 0.09, 0.055));
     },
     get accesi() { return accesi; }, cambia() { accesi = !accesi; if (accesi) this.click(); return accesi; }, sveglia: ac,
     click() { tono(660, 0.06, { tipo: 'triangle', vol: 0.1 }); },
@@ -1734,12 +1756,12 @@ const Suoni = (() => {
     salto() { tono(300, 0.3, { tipo: 'sine', a: 820, vol: 0.13 }); rumore(0.25, { f: 1800, q: 0.6, vol: 0.12, filtro: 'highpass' }); },
     atterra() { rumore(0.12, { f: 260, q: 1.5, vol: 0.55 }); },
     abbattuto() { rumore(0.16, { f: 1100, q: 3, vol: 0.6 }); tono(190, 0.2, { tipo: 'square', a: 110, vol: 0.09, tra: 0.05 }); rumore(0.1, { f: 700, q: 3, vol: 0.35, tra: 0.18 }); },
-    impunta() { tono(260, 0.16, { tipo: 'sawtooth', a: 170, vol: 0.09 }); tono(200, 0.22, { tipo: 'sawtooth', a: 130, vol: 0.09, tra: 0.17 }); },
-    riposa() { tono(392, 0.25, { vol: 0.09 }); tono(523, 0.3, { vol: 0.09, tra: 0.12 }); },
-    annuncia() { [523, 659, 784].forEach((f, i) => tono(f, 0.16, { tipo: 'triangle', vol: 0.13, tra: i * 0.09 })); },
-    stella() { tono(880, 0.22, { tipo: 'triangle', vol: 0.15 }); tono(1320, 0.3, { tipo: 'triangle', vol: 0.12, tra: 0.08 }); },
-    traguardo() { [523, 659, 784, 1047].forEach((f, i) => tono(f, 0.28, { tipo: 'triangle', vol: 0.15, tra: i * 0.11 })); tono(1047, 0.5, { tipo: 'sine', vol: 0.1, tra: 0.44 }); },
-    no() { tono(300, 0.12, { tipo: 'triangle', a: 240, vol: 0.1 }); }
+    impunta() { pizzico(DB.F4, 0, 0.3, 0.12); pizzico(DB.Db4, 0.13, 0.3, 0.12); pizzico(DB.Bb3, 0.26, 0.55, 0.14); tono(DB.Bb3 / 2, 0.5, { vol: 0.1, tra: 0.26 }); },   // la cella che scende, in minore (Si♭ minore)
+    riposa() { tono(DB.Ab4, 0.25, { vol: 0.09 }); tono(DB.Db5, 0.3, { vol: 0.09, tra: 0.12 }); },
+    annuncia() { [DB.Ab4, DB.Db5, DB.F5].forEach((f, i) => tono(f, 0.16, { tipo: 'triangle', vol: 0.13, tra: i * 0.09 })); },
+    stella() { tono(DB.Ab5, 0.22, { tipo: 'triangle', vol: 0.15 }); tono(DB.Db6, 0.3, { tipo: 'triangle', vol: 0.12, tra: 0.08 }); },
+    traguardo() { [DB.Db5, DB.Ab4, DB.F4].forEach((f, i) => pizzico(f, i * 0.1, 0.35, 0.15)); pizzico(DB.Db5, 0.3, 0.6, 0.16); pizzico(DB.F5, 0.3, 0.6, 0.09); },   // l'attacco del tema: una cella e il ritorno
+    no() { tono(DB.Db4, 0.12, { tipo: 'triangle', a: DB.Bb3, vol: 0.1 }); }
   };
 })();
 const Musica = (() => {
@@ -2901,6 +2923,7 @@ const Gioco = (() => {
     return `<div class="vit-maestro"><img class="volto-a" src="img/andrea-volto.webp" alt="Il Maestro di scuderia"><p>${esc(f)}</p></div>`;
   }
   // ---------- vittoria, stelle, codice gara
+  const tutteTre = s => s.t && s.n && s.p;          // più stelle, più lungo il tema: la musica di fondo resta bassa più a lungo
   function vittoria(st, v, tipo, ast) {
     const p = liv.p, l = liv.l, primaVolta = !stelleDi(p, l).t, era = stelleDi(p, l);
     const etaPrima = etaCavallo();                   // per accorgersi che il cavallo è appena cresciuto
@@ -2908,7 +2931,7 @@ const Gioco = (() => {
     if (l < 10) STATO.aperti[p] = Math.max(STATO.aperti[p], l + 1);
     Registro.salva();
     const ora = stelleDi(p, l); $('#barra-stelle').innerHTML = stelline(ora);
-    if (Suoni.accesi) { Musica.abbassa(2800); Suoni.vittoria(ora); }
+    if (Suoni.accesi) { Musica.abbassa(tutteTre(ora) ? 5600 : ora.n ? 4200 : 2900); Suoni.vittoria(ora); }
     const corse = v.manche.filter(m => m.esito), pen = corse.reduce((n, m) => n + m.esito.pen, 0), parola = liv.forma === 'testo' ? 'istruzioni' : liv.forma === 'tessere' ? 'tessere' : 'mattoncini';
     const righe = tipo === 'osserva' || tipo === 'prevedi' ? '' : `<div class="traguardi">
         <div class="traguardo ${st.t ? 'si' : ''}">${ico('stella', 'stella ' + (st.t ? 'si' : ''))}<div><b>${piccoli() ? 'TRAGUARDO' : corse.length > 1 ? 'Traguardo in tutte le manche' : 'Traguardo'}</b></div></div>
