@@ -219,19 +219,35 @@ svg{display:block}
 .tr-t.esce{animation:tr-esce .5s ease-in both}
 @keyframes tr-entra{from{opacity:0;transform:scale(1.25);filter:blur(.6rem)}to{opacity:1;transform:none;filter:none}}
 @keyframes tr-esce{to{opacity:0;transform:scale(.92);filter:blur(.4rem)}}
+/* seconda regia (Fable 5.2, 20/11/2026): parole che entrano una alla volta, scosse sui colpi, zoom sui cavalieri, timbri */
+.tr-t .p{display:inline-block;margin:0 .14em;animation:tr-parola .55s cubic-bezier(.2,1.4,.4,1) both}
+.tr-t .p.oro{color:#FFD45C;text-shadow:0 0 1.6rem rgba(255,212,92,.75),0 .3rem 1.2rem rgba(0,0,0,.85)}
+.tr-t.parole{animation:none}
+@keyframes tr-parola{from{opacity:0;transform:translateY(.5em) scale(1.5);filter:blur(.3rem)}}
+.tr.scossa{animation:tr-scossa .38s linear}
+@keyframes tr-scossa{15%{transform:translate(-.6rem,.35rem) scale(1.02)}35%{transform:translate(.5rem,-.3rem) scale(1.02)}55%{transform:translate(-.3rem,.2rem)}75%{transform:translate(.2rem,-.1rem)}}
+.tr-video.zoom{transition:opacity .5s,transform .22s cubic-bezier(.2,.9,.3,1)}
+.tr-casata{position:absolute;left:0;right:0;bottom:14vh;z-index:4;display:flex;justify-content:center;pointer-events:none}
+.tr-casata b{font:800 min(8.5vw,8rem)/1 var(--f-display);letter-spacing:.03em;color:#fff;padding:.05em .45em;background:var(--c);transform:skewX(-8deg);box-shadow:0 .5rem 1.6rem rgba(0,0,0,.55);animation:tr-timbro .28s cubic-bezier(.2,1.5,.4,1) both}
+.tr-timbro{position:absolute;top:15vh;left:6vw;z-index:4;font:800 min(2.6vw,2rem) var(--f-display);letter-spacing:.12em;color:#FFD45C;border:.22rem solid #FFD45C;border-radius:.6rem;padding:.15em .7em;transform:rotate(-6deg);animation:tr-timbro .3s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes tr-timbro{from{opacity:0;transform:scale(2.4) rotate(-14deg)}}
+.tr-pannello{background:linear-gradient(rgba(6,13,34,.80),rgba(6,13,34,.93)),url(img/trailer-poster.webp) center/cover !important}
+.tr-nome{position:absolute;left:0;right:0;bottom:15vh;z-index:4;text-align:center;font:800 min(8vw,7.4rem)/1 var(--f-display);letter-spacing:.05em;text-transform:uppercase;color:#fff;text-shadow:0 .4rem 1.6rem rgba(0,0,0,.9),0 0 2.4rem var(--c);animation:tr-timbro .3s cubic-bezier(.2,1.5,.4,1) both}
+.tr-nome small{display:block;font-size:.3em;letter-spacing:.3em;color:#FFD45C;margin-bottom:.4em}
+.tr .cr-stella{z-index:6;top:42%}
 .tr-codice{position:absolute;left:50%;top:66%;transform:translateX(-50%);z-index:4;font:700 min(4vw,3rem) var(--f-mono);color:#7CFFB0;text-shadow:0 0 1rem rgba(124,255,176,.7);white-space:pre}
 .tr-codice::after{content:"";display:inline-block;width:.55em;height:1em;margin-left:.08em;vertical-align:-.12em;background:#7CFFB0;animation:tr-cursore .7s steps(1) infinite}
 @keyframes tr-cursore{50%{opacity:0}}
 .tr-pannello{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4vh;z-index:3;background:radial-gradient(circle at 50% 45%,#1C3F86,#060D22 75%)}
 .tr-tessere{display:flex;gap:1.4vw}
-.tr-tessera{width:min(9vw,8rem);height:min(9vw,8rem);border-radius:1.4rem;display:flex;align-items:center;justify-content:center;box-shadow:0 .5rem 0 rgba(0,0,0,.35);animation:tr-scatta .45s cubic-bezier(.3,1.6,.5,1) both}
+.tr-tessera{width:min(11.5vw,10.5rem);height:min(11.5vw,10.5rem);border-radius:1.4rem;display:flex;align-items:center;justify-content:center;box-shadow:0 .5rem 0 rgba(0,0,0,.35);animation:tr-scatta .45s cubic-bezier(.3,1.6,.5,1) both}
 .tr-tessera svg{width:55%;height:55%;color:#fff}
 .tr-tessera.blu{background:#2F7FE0}.tr-tessera.ara{background:#EE8A1E}
 @keyframes tr-scatta{from{opacity:0;transform:translateY(-3rem) scale(.6)}}
-.tr-blocco{font:800 min(3.4vw,2.6rem) var(--f-display);color:#fff;border-radius:1rem;padding:1.2vw 1.8vw;background:#2E9B5A;box-shadow:0 .4rem 0 rgba(0,0,0,.3);animation:tr-scatta .45s cubic-bezier(.3,1.6,.5,1) both}
+.tr-blocco{font:800 min(5vw,4rem) var(--f-display);color:#fff;border-radius:1rem;padding:1.2vw 1.8vw;background:#2E9B5A;box-shadow:0 .4rem 0 rgba(0,0,0,.3);animation:tr-scatta .45s cubic-bezier(.3,1.6,.5,1) both}
 .tr-blocco .dentro{display:flex;flex-direction:column;gap:.8vw;margin:1vw 0 0 2.4vw}
 .tr-blocco .dentro span{border-radius:.7rem;padding:.6vw 1.2vw;font-size:.85em}
-.tr-py{font:700 min(3vw,2.3rem)/1.45 var(--f-mono);color:#E8EEF8;background:#0B1530;border:.15rem solid #2C4A8A;border-radius:1rem;padding:2vw 3vw;white-space:pre;min-width:40vw;min-height:12em}
+.tr-py{font:700 min(3.5vw,2.8rem)/1.45 var(--f-mono);color:#E8EEF8;background:#0B1530;border:.15rem solid #2C4A8A;border-radius:1rem;padding:2vw 3vw;white-space:pre;min-width:40vw;min-height:12em}
 .tr-py .k{color:#FF9F43}.tr-py .f{color:#7CC8FF}.tr-py .c{color:#FFE066}
 .tr-carta{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:3;animation:tr-carta 1s ease-out both}
 @keyframes tr-carta{from{transform:scale(1.25);filter:brightness(2.2)}to{transform:scale(1.04);filter:none}}
@@ -2873,15 +2889,20 @@ const Gioco = (() => {
    Parte la prima volta che si preme GIOCA (i browser fanno partire l'audio solo dopo un tocco) e si rivede dal
    pulsante «Guarda il trailer»; «Salta» è sempre visibile. ?trailer=0 lo esclude.
    Musica: «Determined Pursuit» di Emma_MA (OpenGameArt.org, CC0), scelta da Andrea. audio/trailer.mp3 è il tratto
-   12-50 s del brano: 120 battiti al minuto, battute da 2 s, l'orchestra entra piena a 6,0 s del trailer.
-   REGIA SULL'OROLOGIO DELLA MUSICA: ogni taglio aspetta un istante della musica (secondi qui sotto, sempre su un
-   battito), così resta a tempo anche se il computer rallenta. Con la musica spenta lo stesso orologio corre da solo.
-   Immagini di Andrea: video/trailer.mp4 (il galoppo, muto) e video/scena1-3.mp4 (dalle GIF animata1-3).
-   Sequenza: stalla 0 > castello 3 > galoppo 6 (salto al rallentatore) > tessere 18, mattoncini 20, Python 22 >
-   carte della crescita 24-27 > i cavalieri in fila 28 > titolo 32 > dissolvenza fino a 38. */
+   12-50,5 s del brano: l'orchestra entra piena a 6,0 s e resta piena fino a 36 s, poi sfuma.
+   SECONDA REGIA (rifatta con Fable 5.2 su richiesta di Andrea: la prima era corretta ma piatta). Idea: «c'è un torneo
+   che non si vince con la forza: si vince con il codice». Ogni taglio cade su un accento misurato del brano:
+   6,0 · 8,5 · 11,5 · 13,9 · 16,3 · 24 · 25 · 26 · 27,2 · 28,2 · 29,9 · 32,0.
+   REGIA SULL'OROLOGIO DELLA MUSICA: ogni passo aspetta un istante della musica, così resta a tempo anche se il
+   computer rallenta; con la musica spenta lo stesso orologio corre da solo. Anche il video del galoppo segue
+   l'orologio (MAPPA): il salto della staccionata comincia esattamente sull'accento a 11,5 s e va al rallentatore.
+   Immagini di Andrea: video/trailer.mp4 (il galoppo, muto) e video/scena1-3.mp4 (dalle GIF animata1-3). */
 const Trailer = (() => {
   let visto = false;
-  const SALTO = [3.15, 4.7];                                      // secondi del video in cui i cavalieri saltano: rallentatore
+  // orologio del trailer -> secondo del video del galoppo (il salto è fra 3,15 e 4,8 s del video)
+  const MAPPA = [[6, 0], [10.5, 2.7], [11.5, 3.15], [16.3, 4.83], [18, 6.5]];
+  // i cavalieri nel video, da sinistra: dove puntare lo zoom
+  const CAVALIERI = [['quercia', 14], ['aquila', 38], ['cero', 61], ['tasso', 85]];
   function guarda() {
     return new Promise(fatto => {
       let vivo = true; const tempi = [];
@@ -2889,7 +2910,7 @@ const Trailer = (() => {
         <audio class="tr-musica" src="audio/trailer.mp3" preload="auto"></audio>
         <video class="tr-video" data-v="scena1" src="video/scena1.mp4" muted playsinline loop preload="auto"></video>
         <video class="tr-video" data-v="scena2" src="video/scena2.mp4" muted playsinline loop preload="auto"></video>
-        <video class="tr-video" data-v="galoppo" src="video/trailer.mp4" poster="img/trailer-poster.webp" muted playsinline preload="auto"></video>
+        <video class="tr-video zoom" data-v="galoppo" src="video/trailer.mp4" poster="img/trailer-poster.webp" muted playsinline preload="auto"></video>
         <video class="tr-video" data-v="scena3" src="video/scena3.mp4" muted playsinline loop preload="auto"></video>
         <img class="tr-img" src="img/titolo.webp" alt="">
         <div class="tr-velo"></div><div class="tr-testo"></div>
@@ -2898,18 +2919,26 @@ const Trailer = (() => {
         <button class="tr-salta" id="tr-salta">Salta ${ico('dx')}</button></div>`);
       const tr = $('.tr', ov), testo = $('.tr-testo', ov), musica = $('.tr-musica', ov), S = Suoni.accesi ? Suoni.trailer : null;
       const vid = n => $(`.tr-video[data-v="${n}"]`, ov);
-      const suona = (n, ...a) => { if (S && vivo) S[n](...a); };
+      const suona = (n, ...x) => { if (S && vivo) S[n](...x); };
       // l'orologio: la musica se suona, altrimenti il tempo trascorso
       let t0 = performance.now(), conMusica = false;
       const ora = () => conMusica && !musica.paused ? musica.currentTime : (performance.now() - t0) / 1000;
       const a = sec => new Promise((ok, ko) => { const g = () => { if (!vivo) return ko('fine'); if (ora() >= sec) ok(); else requestAnimationFrame(g); }; g(); tempi.push(setTimeout(g, Math.max(0, (sec - ora()) * 1000 + 30))); });
-      const scritta = (html, cls, dura) => { testo.innerHTML = `<div class="tr-t ${cls}">${html}</div>`; if (dura) tempi.push(setTimeout(() => { const t = $('.tr-t', testo); if (t) t.classList.add('esce'); }, dura)); };
+      // scritte: «*parola*» diventa dorata; con «parole» entrano una alla volta
+      const scritta = (txt, cls, dura, parole) => {
+        const html = parole ? txt.split(' ').map((w, i) => `<span class="p ${/^\*/.test(w) ? 'oro' : ''}" style="animation-delay:${i * 0.11}s">${esc(w.replace(/\*/g, ''))}</span>`).join('') : esc(txt.replace(/\*/g, ''));
+        testo.innerHTML = `<div class="tr-t ${cls} ${parole ? 'parole' : ''}">${html}</div>`;
+        if (dura) tempi.push(setTimeout(() => { const t = $('.tr-t', testo); if (t) t.classList.add('esce'); }, dura));
+      };
       const lampo = () => { const l = $('.tr-lampo', ov); l.classList.remove('via'); void l.offsetWidth; l.classList.add('via'); };
-      const pannello = html => { $$('.tr-pannello, .tr-carta', ov).forEach(x => x.remove()); if (html) tr.insertAdjacentHTML('beforeend', html); };
+      const scossa = () => { tr.classList.remove('scossa'); void tr.offsetWidth; tr.classList.add('scossa'); };
+      const colpo = () => { lampo(); scossa(); };
+      const togli = sel => $$(sel, ov).forEach(x => x.remove());
+      const pannello = html => { togli('.tr-pannello, .tr-carta, .tr-nome, .tr-timbro, .tr-casata'); if (html) tr.insertAdjacentHTML('beforeend', html); };
       const scena = (n, vel) => {                                  // mostra un video e ferma gli altri
         $$('.tr-video', ov).forEach(v => { if (v.dataset.v !== n) { v.classList.remove('si', 'avvicina'); try { v.pause(); } catch (e) {} } });
         const v = vid(n); if (!v) return null; v.currentTime = 0; v.playbackRate = vel || 1; v.classList.add('si');
-        v.play().catch(() => {}); requestAnimationFrame(() => v.classList.add('avvicina'));
+        v.play().catch(() => {}); if (n !== 'galoppo') requestAnimationFrame(() => v.classList.add('avvicina'));
         return v;
       };
       const fine = () => { if (!vivo) return; vivo = false; tempi.forEach(clearTimeout); try { musica.pause(); } catch (e) {} $$('.tr-video', ov).forEach(v => { try { v.pause(); } catch (e) {} }); Musica.abbassa(1); ov.remove(); fatto(); };
@@ -2920,59 +2949,76 @@ const Trailer = (() => {
       (async () => {
         if (Musica.accesa) { musica.volume = 0.9; try { await musica.play(); conMusica = true; } catch (e) {} }
         t0 = performance.now();
-        // stalla e castello: l'introduzione del brano che cresce
+        // ---- 0-6: l'idea, sull'introduzione che cresce
         scena('scena1', 0.85);
-        await a(0.4); scritta('Nel regno delle Quattro Casate…', 'piccolo', 2300);
-        await a(3); lampo(); scena('scena2', 0.85); scritta('…si prepara il Grande Torneo.', 'piccolo', 2400);
-        // 6,0: l'orchestra entra piena, entra il galoppo
-        await a(6); suona('braam'); lampo(); testo.innerHTML = '';
-        const video = scena('galoppo', 1);
-        let rallenta = false;
-        const codice = () => {                                     // salta(ALTA) che si scrive da solo
-          const c = el('div', 'tr-codice'); tr.append(c); const s = 'salta(ALTA)';
-          for (let i = 1; i <= s.length; i++) tempi.push(setTimeout(() => { c.textContent = s.slice(0, i); }, i * 70));
-          tempi.push(setTimeout(() => c.remove(), 2600));
-        };
-        const guardia = () => {                                    // rallentatore sul salto della staccionata
+        await a(0.4); scritta('Al castello delle Quattro Casate…', 'piccolo', 2300, true);
+        await a(3); lampo(); scena('scena2', 0.85); scritta('…c\'è un torneo che *non *si *vince *con *la *forza.', 'piccolo', 2600, true);
+        // ---- 6,0: l'orchestra esplode
+        await a(6); suona('braam'); colpo(); testo.innerHTML = '';
+        const video = scena('galoppo', 0.6);
+        const guardia = () => {                                    // il video segue l'orologio della musica
           if (!vivo) return;
-          const t = video.currentTime;
-          if (!rallenta && t >= SALTO[0] && t < SALTO[1]) { rallenta = true; video.playbackRate = 0.35; suona('folata'); scritta('Ogni salto…', 'medio', 1800); tempi.push(setTimeout(() => { scritta('…è un comando', 'medio'); codice(); }, 2200)); }
-          if (rallenta && t >= SALTO[1] && video.playbackRate !== 1) video.playbackRate = 1;
-          requestAnimationFrame(guardia);
+          const t = ora();
+          for (let i = 0; i < MAPPA.length - 1; i++) if (t >= MAPPA[i][0] && t < MAPPA[i + 1][0]) {
+            const vel = (MAPPA[i + 1][1] - MAPPA[i][1]) / (MAPPA[i + 1][0] - MAPPA[i][0]), atteso = MAPPA[i][1] + (t - MAPPA[i][0]) * vel;
+            if (Math.abs(video.playbackRate - vel) > 0.01) video.playbackRate = vel;
+            if (Math.abs(video.currentTime - atteso) > 0.25) video.currentTime = atteso;
+          }
+          if (t < 18) requestAnimationFrame(guardia);
         };
         requestAnimationFrame(guardia);
-        await a(7); scritta('Quattro casate', 'grande', 1300);
-        await a(8.5); scritta('Un solo torneo', 'grande', 1100);
-        // 18,0: montaggio, un pannello per battuta
-        await a(18); lampo(); video.classList.remove('si'); try { video.pause(); } catch (e) {} testo.innerHTML = '';
-        testo.style.alignItems = 'flex-end'; testo.style.paddingBottom = '16vh';
-        pannello(`<div class="tr-pannello"><div class="tr-tessere">${['blu:avanza', 'ara:salto', 'blu:avanza', 'blu:avanza', 'ara:salto'].map((x, i) => `<div class="tr-tessera ${x.split(':')[0]}" style="animation-delay:${i * 0.25}s">${ico(x.split(':')[1])}</div>`).join('')}</div></div>`);
-        scritta('Dalle tessere…', 'medio');
-        await a(20); lampo();
-        pannello(`<div class="tr-pannello"><div class="tr-blocco">ripeti 3 volte<div class="dentro"><span style="background:#2F7FE0">avanza 1</span><span style="background:#EE8A1E">salta ALTA</span></div></div></div>`);
-        scritta('…ai mattoncini…', 'medio');
-        await a(22); lampo();
-        pannello(`<div class="tr-pannello"><div class="tr-py" id="tr-py"></div></div>`);
-        scritta('…fino al codice vero.', 'medio');
+        scritta('Si vince con il *codice.', 'grande', 2100, true);
+        // ---- 8,5: le quattro casate, mezzo secondo l'una
+        for (let i = 0; i < 4; i++) {
+          await a(8.5 + i * 0.5); const [id, x] = CAVALIERI[i], k = casataDi(id);
+          testo.innerHTML = ''; scossa(); video.style.transformOrigin = `${x}% 42%`; video.style.transform = 'scale(2.1)';
+          togli('.tr-casata'); tr.insertAdjacentHTML('beforeend', `<div class="tr-casata" style="--c:${k.col}"><b>${esc(k.nome)}</b></div>`);
+        }
+        await a(10.5); togli('.tr-casata'); video.style.transform = 'scale(1.06)'; video.style.transformOrigin = '50% 50%';
+        scritta('Quattro casate. *Un *solo *torneo.', 'medio', 900, true);
+        // ---- 11,5: il salto, al rallentatore, sull'accento
+        await a(11.5); suona('folata'); scossa(); video.style.transform = 'scale(1.18)';
+        scritta('Ogni salto…', 'grande', 2000, true);
+        await a(13.9); scossa(); scritta('…è un *comando.', 'grande', 2100, true);
+        const c = el('div', 'tr-codice'); tr.append(c); const cmd = 'salta(ALTA)';
+        for (let i = 1; i <= cmd.length; i++) tempi.push(setTimeout(() => { c.textContent = cmd.slice(0, i); }, i * 70));
+        await a(16.3); colpo(); c.remove(); video.style.transform = 'scale(1)';
+        scritta('E il comando lo scrivi *tu.', 'medio', 1500, true);
+        // ---- 18-24: dalle tessere al codice vero, un pannello per battuta
+        await a(18); colpo(); video.classList.remove('si'); try { video.pause(); } catch (e) {}
+        testo.style.alignItems = 'flex-end'; testo.style.paddingBottom = '15vh';
+        pannello(`<div class="tr-pannello"><div class="tr-tessere">${['blu:avanza', 'ara:salto', 'blu:avanza', 'blu:avanza', 'ara:salto'].map((x, i) => `<div class="tr-tessera ${x.split(':')[0]}" style="animation-delay:${i * 0.25}s">${ico(x.split(':')[1])}</div>`).join('')}</div></div><div class="tr-timbro">si comincia così</div>`);
+        scritta('Dalle *tessere…', 'medio', 0, true);
+        await a(20); colpo();
+        pannello(`<div class="tr-pannello"><div class="tr-blocco">ripeti 3 volte<div class="dentro"><span style="background:#2F7FE0">avanza 1</span><span style="background:#EE8A1E">salta ALTA</span></div></div></div><div class="tr-timbro">poi si cresce</div>`);
+        scritta('…ai *mattoncini…', 'medio', 0, true);
+        await a(22); colpo();
+        pannello(`<div class="tr-pannello"><div class="tr-py" id="tr-py"></div></div><div class="tr-timbro">Python vero</div>`);
+        scritta('…fino al *codice *vero.', 'medio', 0, true);
         const py = [['k', 'while not '], ['f', 'traguardo'], ['', '():\n    '], ['k', 'if '], ['f', 'ostacolo_davanti'], ['', '():\n        '], ['f', 'salta'], ['', '('], ['f', 'altezza'], ['', '())\n    '], ['k', 'else'], ['', ':\n        '], ['f', 'avanza'], ['', '('], ['c', '1'], ['', ')']];
         const tot = py.map(p => p[1]).join('').length;
         const disegna = n => { const b = $('#tr-py', ov); if (!b) return; let r = n, h = ''; for (const [k, t] of py) { if (r <= 0) break; const p = esc(t.slice(0, r)); h += k ? `<span class="${k}">${p}</span>` : p; r -= t.length; } b.innerHTML = h; };
-        for (let i = 1; i <= 24; i++) tempi.push(setTimeout(() => disegna(Math.ceil(tot * i / 24)), i * 70));
-        // 24-27: le carte della crescita, una per secondo (due battiti)
-        await a(24); testo.style.alignItems = ''; testo.style.paddingBottom = '';
-        const giro = [['aquila', 1, 'Da Stalliere…'], ['tasso', 2, ''], ['quercia', 3, ''], ['cero', 4, '…a Campione.']];
-        for (let i = 0; i < giro.length; i++) {
-          await a(24 + i); const [c, e, t] = giro[i]; lampo();
-          pannello(`<img class="tr-carta" src="img/carta-${c}-${e}.webp" alt="">`);
-          if (t) scritta(t, 'grande'); else testo.innerHTML = '';
+        for (let i = 1; i <= 22; i++) tempi.push(setTimeout(() => disegna(Math.ceil(tot * i / 22)), i * 70));
+        // ---- 24-28: il cavallo cresce con te, una carta per accento
+        testo.style.alignItems = ''; testo.style.paddingBottom = '';
+        const giro = [[24, 'aquila', 1, 'Stalliere'], [25, 'tasso', 2, 'Scudiero'], [26, 'quercia', 3, 'Cavaliere'], [27.2, 'cero', 4, 'Campione']];
+        for (const [t, casata, eta, grado] of giro) {
+          await a(t); colpo(); testo.innerHTML = '';
+          pannello(`<img class="tr-carta" src="img/carta-${casata}-${eta}.webp" alt=""><div class="tr-nome" style="--c:${casataDi(casata).col}"><small>${eta === 1 ? 'parti da' : eta === 4 ? 'fino a' : 'poi'}</small>${grado}</div>`);
         }
-        // 28: i cavalieri in fila
-        await a(28); pannello(''); lampo(); scena('scena3', 0.9);
-        scritta('Il torneo ti aspetta.', 'medio', 3400);
-        // 32: il titolo, mentre la musica sfuma fino a 38
-        await a(32); lampo(); $$('.tr-video', ov).forEach(v => { v.classList.remove('si'); try { v.pause(); } catch (e) {} });
-        tr.classList.add('titoli'); $('.tr-img', ov).classList.add('si', 'kb'); testo.innerHTML = ''; suona('braam');
-        await a(33.5); $('.tr-finale', ov).classList.add('si'); $('#tr-entra', ov).focus();
+        // ---- 28,2: la sfida
+        await a(28.2); pannello(''); colpo(); scena('scena3', 0.9);
+        scritta('8 gradi. 80 sfide.', 'grande', 1500, true);
+        await a(29.9); scossa(); scritta('Fin dove arrivi *tu?', 'grande', 1900, true);
+        // ---- 32,0: il titolo, con l'orchestra ancora piena
+        await a(32); suona('braam'); colpo(); $$('.tr-video', ov).forEach(v => { v.classList.remove('si'); try { v.pause(); } catch (e) {} });
+        tr.classList.add('titoli'); $('.tr-img', ov).classList.add('si', 'kb'); testo.innerHTML = '';
+        for (let i = 0; i < 44; i++) {                             // esplosione di stelle dorate
+          const s = el('div', 'cr-stella'), ang = Math.random() * Math.PI * 2, d = 260 + Math.random() * 620;
+          s.style.cssText = `--c:${['#FFD45C', '#FFF1C2', '#2F7FE0', '#EE8A1E'][i % 4]};--dx:${Math.cos(ang) * d}px;--dy:${Math.sin(ang) * d}px;--r:${Math.random() * 540 - 270}deg;animation-delay:${Math.random() * 150}ms`;
+          tr.append(s); tempi.push(setTimeout(() => s.remove(), 2000));
+        }
+        await a(33.4); $('.tr-finale', ov).classList.add('si'); $('#tr-entra', ov).focus();
       })().catch(() => {});
     });
   }
