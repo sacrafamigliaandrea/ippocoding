@@ -2889,8 +2889,8 @@ const Gioco = (() => {
 // ============================================================ DOCENTE
 // ============================================================ IL TRAILER D'INTRODUZIONE
 /* «La ciliegina sulla torta» (Andrea, 20/11/2026): un trailer di circa 36 secondi che motiva a imparare il coding.
-   Parte la prima volta che si preme GIOCA (i browser fanno partire l'audio solo dopo un tocco) e si rivede dal
-   pulsante «Guarda il trailer»; «Salta» è sempre visibile. ?trailer=0 lo esclude.
+   Parte solo dal pulsante «Guarda il trailer» della schermata iniziale: GIOCA entra subito nel gioco.
+   «Salta» è sempre visibile.
    Musica: «Determined Pursuit» di Emma_MA (OpenGameArt.org, CC0), scelta da Andrea. audio/trailer.mp3 è il tratto
    12-50,5 s del brano: l'orchestra entra piena a 6,0 s e resta piena fino a 36 s, poi sfuma.
    SECONDA REGIA (rifatta con Fable 5.2 su richiesta di Andrea: la prima era corretta ma piatta). Idea: «c'è un torneo
@@ -2901,13 +2901,11 @@ const Gioco = (() => {
    l'orologio (MAPPA): il salto della staccionata comincia esattamente sull'accento a 11,5 s e va al rallentatore.
    Immagini di Andrea: video/trailer.mp4 (il galoppo, muto) e video/scena1-3.mp4 (dalle GIF animata1-3). */
 const Trailer = (() => {
-  let visto = false;
   // orologio del trailer -> secondo del video del galoppo (il salto è fra 3,15 e 4,8 s del video)
   const MAPPA = [[6, 0], [10.5, 2.7], [11.5, 3.15], [16.3, 4.83], [18, 6.5]];
   // i cavalieri nel video, da sinistra: dove puntare lo zoom
   const CAVALIERI = [['quercia', 14], ['aquila', 38], ['cero', 61], ['tasso', 85]];
   function guarda() {
-    visto = true;                                                // visto comunque lo si apra: GIOCA non lo fa ripartire
     return new Promise(fatto => {
       let vivo = true; const tempi = [];
       const ov = apriOv('ov-trailer', `<div class="tr">
@@ -3026,11 +3024,7 @@ const Trailer = (() => {
       })().catch(() => {});
     });
   }
-  return {
-    guarda,
-    // alla prima pressione di GIOCA della pagina: dopo un ricaricamento riparte (nulla si salva nel browser)
-    primaVolta() { if (visto || PAR.get('trailer') === '0') return Promise.resolve(); return guarda(); }
-  };
+  return { guarda };                                             // parte solo dal pulsante «Guarda il trailer»
 })();
 
 // ============================================================ COSTRUISCI IL TUO PERCORSO (campo ostacoli 3D)
@@ -3368,7 +3362,8 @@ function avvia() {
   $('#chi-chip').style.cursor = 'pointer'; $('#chi-chip').title = 'Cambia classe e Mac';
   $('#b-gioca').textContent = 'GIOCA';
   const entra = () => { if (STATO.chi || STATO.senza) vaiCastello(); else chiediChi(vaiCastello); };
-  $('#b-gioca').onclick = async () => { Suoni.pop(); await Trailer.primaVolta(); entra(); };
+  // GIOCA entra e basta: il trailer parte solo da «Guarda il trailer» (richiesta di Andrea, 20/11/2026)
+  $('#b-gioca').onclick = () => { Suoni.pop(); entra(); };
   $('#b-trailer').innerHTML = ico('play') + 'Guarda il trailer'; $('#b-trailer').onclick = async () => { Suoni.pop(); if (await Trailer.guarda() === 'entra') entra(); };
   cinqueTocchi($('#zona-logo')); cinqueTocchi($('#marchio'));
   window.addEventListener('keydown', e => { if (e.key === 'Escape') ['ov-aiuto', 'ov-docente'].forEach(chiudiOv); });
