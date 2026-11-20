@@ -114,6 +114,9 @@ svg{display:block}
 #barra .b-percorso{display:inline-flex;align-items:center;gap:.45rem;height:2.7rem;padding:0 1rem;border-radius:.75rem;background:var(--oro);color:#3A2A00;font-family:var(--f-display);font-weight:800;font-size:1rem;box-shadow:0 .16rem 0 var(--oro-scuro);white-space:nowrap}
 #barra .b-percorso:hover{transform:translateY(-.1rem)}
 #barra .b-percorso svg{width:1.3rem;height:1.3rem}
+#barra .b-classi{display:inline-flex;align-items:center;gap:.45rem;height:2.7rem;padding:0 1rem;border-radius:.75rem;background:rgba(255,255,255,.16);border:.12rem solid rgba(255,255,255,.45);color:#fff;font-family:var(--f-display);font-weight:800;font-size:1rem;white-space:nowrap}
+#barra .b-classi:hover{background:rgba(255,255,255,.28)}
+#barra .b-classi svg{width:1.3rem;height:1.3rem;color:var(--oro)}
 .chi-chip{display:flex;align-items:center;gap:.5rem;padding:.3rem .8rem .3rem .35rem;border-radius:2rem;background:rgba(255,255,255,.14);font-size:.95rem;white-space:nowrap}
 .chi-chip img{width:2.1rem;height:2.1rem;border-radius:50%;border:.14rem solid var(--casa);object-fit:cover}
 .stelle{display:inline-flex;gap:.15rem;align-items:center}
@@ -322,6 +325,14 @@ svg{display:block}
 .cl-righe.grande .cl-val b{font-size:2rem}
 .cl-righe.grande .cl-val small{font-size:1rem}
 .cl-regola{margin:.9rem 0 0;font-size:1rem;color:var(--inchiostro-soft)}
+/* le sfide di oggi nelle classi (pulsante «Classifica» della barra): un riquadro per classe, dentro le quattro casate */
+.classifica.di-classi{width:min(96vw,84rem);max-height:92vh;overflow:auto;padding:1.3rem 1.6rem}
+.di-classi .cl-testa b{font-size:1.5rem}
+.cl-classi{display:grid;grid-template-columns:repeat(auto-fill,minmax(25rem,1fr));gap:.9rem}
+.cl-classe{padding:.6rem .7rem .7rem;border-radius:.8rem;background:rgba(255,255,255,.45);border:.12rem solid rgba(18,62,144,.18)}
+.cl-classe.mia{border-color:var(--oro);background:var(--oro-chiaro)}
+.cl-classe h3{margin:0 0 .45rem;font-family:var(--f-display);font-size:1.2rem;color:var(--blu);display:flex;align-items:center;gap:.6rem}
+.cl-classe h3 em{font-style:normal;font-weight:700;font-size:.8rem;padding:.1rem .6rem;border-radius:1rem;background:var(--oro);color:#3A2A00}
 .riga-codice input{width:13rem;padding:.4rem .7rem;border-radius:.6rem;border:.14rem solid var(--carta-bordo);font:700 1.15rem var(--f-mono);text-transform:uppercase;background:#fff;color:var(--inchiostro)}
 .riga-codice .esito{font-size:1rem;color:var(--ambra-scuro);min-width:10rem}
 
@@ -665,7 +676,12 @@ svg{display:block}
 .codice-gara b{font:700 1.7rem var(--f-mono);color:var(--blu)}
 .codice-gara small{font-size:.88rem;color:var(--inchiostro-soft)}
 .azioni{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;margin-top:.8rem}
-.aiuto{width:min(92vw,38rem)}
+.aiuto{width:min(92vw,42rem);max-height:92vh;overflow:auto}
+.aiuto .passo-a>span{flex:1;min-width:0}
+.aiuto .passo-a ol{margin:.35rem 0 0;padding-left:1.3rem}
+.aiuto .passo-a li{margin:.3rem 0}
+.aiuto .sol-a{margin-top:.6rem;padding:.6rem;border-radius:.7rem;background:rgba(255,255,255,.75);overflow:auto;text-align:left}
+.aiuto .nota-a{margin:.2rem 0 0;font-size:.98rem;color:var(--inchiostro-soft)}
 .aiuto .passo-a{display:flex;gap:.8rem;align-items:flex-start;margin:.7rem 0;padding:.7rem 1rem;border-radius:.8rem;background:rgba(255,255,255,.6);border-left:.4rem solid var(--blu-medio);font-size:1.12rem}
 .aiuto .passo-a b{font-family:var(--f-display);color:var(--blu)}
 .debrief .domanda{margin:.8rem 0;padding:.9rem 1.2rem;border-radius:.9rem;background:var(--blu-chiaro);border-left:.45rem solid var(--blu);font-size:1.3rem;font-family:var(--f-display);font-weight:700;color:var(--blu-notte)}
@@ -704,6 +720,7 @@ a.btn,a.tondo{text-decoration:none}
     <div class="marchio" id="marchio" aria-hidden="true"><i>IPPO</i><u>CODING</u></div>
     <span class="spazio"></span>
     <button class="b-percorso" id="b-percorso" title="Costruisci il tuo percorso: una pausa quando ne hai bisogno"></button>
+    <button class="b-classi" id="b-classi" title="Il torneo delle casate: com'è andata oggi nelle classi" hidden></button>
     <span class="bollo-doc" id="bollo-doc" hidden>docente</span>
     <div class="chi-chip" id="chi-chip" hidden></div>
     <button class="tondo" id="b-aiuto" aria-label="Aiuto" title="Chiedi un aiuto" hidden></button>
@@ -1286,26 +1303,26 @@ const PERCORSI = [null,
 { grado: 'Scudiero', titolo: 'Il ritmo del trotto', forma: 'mattoncini', cmd: ['avanza', 'salta', 'ripeti'], livelli: [
   { n: 'Tessere con le parole', k: 'osserva', c: 'Le tessere ora hanno le parole: premi ESEGUI e osserva.', m: ['..b.m.'], e: 0, ini: 'avanza(2)|salta(BASSA)|avanza(1)|salta(MEDIA)|avanza(1)', nov: 'mattoncini',
     dopo: 'Ogni mattoncino è una tessera che conosci già: AVANZA con il numero dei passi, SALTA con la sua potenza.' },
-  { n: 'Pezzi mancanti', k: 'completa', c: 'Completa i pezzi mancanti per arrivare al traguardo.', m: ['...a.b..'], e: 0, ini: 'avanza(3)|salta(___)|___|salta(BASSA)|avanza(___)', sol: 'avanza(3)|salta(ALTA)|avanza(1)|salta(BASSA)|avanza(2)',
-    a: ['Guarda gli ostacoli: il primo è un muro. Che potenza serve per un muro?', 'Dopo il muro sei alla casella 4: per arrivare davanti al tronco manca un passo. Alla fine servono 2 passi.'] },
-  { n: 'Troppo lungo', k: 'accorcia', c: 'Funziona, ma è lungo: accorcialo con RIPETI (4 mattoncini).', m: ['.b.b.b.b.'], e: 0, nov: 'ripeti-m',
+  { n: 'Pezzi mancanti', k: 'completa', c: 'Completa i pezzi mancanti per arrivare al traguardo.', m: ['...a.b..'], e: 0, ini: 'avanza(3)|salta(___)|avanza(1)|salta(BASSA)|avanza(___)', sol: 'avanza(3)|salta(ALTA)|avanza(1)|salta(BASSA)|avanza(2)',
+    a: ['I pezzi che mancano sono due, segnati in giallo: una potenza e un numero. Guarda la pista: che ostacolo c\'è al primo salto, e quante caselle restano alla fine?', 'Primo SALTA: tocca la potenza finché dice «alta», perché lì davanti c\'è un muro.|Ultimo AVANZA: premi + fino a 2, le caselle che restano fino al traguardo.|Premi ESEGUI e segui il cavallo casella per casella.'] },
+  { n: 'Dentro il ciclo', k: 'completa', c: 'Nel ciclo manca un mattoncino: quale?', m: ['..m..m..m.'], e: 0, nov: 'ripeti-m', ini: 'for i in range(3):|>avanza(2)|>___|avanza(1)', sol: 'for i in range(3):|>avanza(2)|>salta(MEDIA)|avanza(1)',
+    a: ['Segui un solo giro del ciclo con il dito sulla pista: dopo AVANZA 2 il cavallo è davanti a una barriera. Che cosa deve fare lì?', 'Tocca SALTA a sinistra: va a riempire il pezzo giallo dentro il RIPETI.|Tocca la sua potenza finché dice «media»: la barriera è un ostacolo medio.|Premi ESEGUI e conta i giri: tre barriere, tre giri.'] },
+  { n: 'Troppo lungo', k: 'accorcia', c: 'Funziona, ma è lungo: accorcialo con RIPETI (4 mattoncini).', m: ['.b.b.b.b.'], e: 0,
     ini: 'avanza(1)|salta(BASSA)|avanza(1)|salta(BASSA)|avanza(1)|salta(BASSA)|avanza(1)|salta(BASSA)|avanza(1)', sol: 'for i in range(4):|>avanza(1)|>salta(BASSA)|avanza(1)',
-    a: ['Cerca i mattoncini che si ripetono uguali: AVANZA 1 e SALTA basso tornano quattro volte.', 'Metti AVANZA 1 e SALTA basso dentro un RIPETI 4 VOLTE; l\'ultimo passo resta fuori dal ciclo.'] },
-  { n: 'Dentro il ciclo', k: 'completa', c: 'Nel ciclo manca un mattoncino: quale?', m: ['..m..m..m.'], e: 0, ini: 'for i in range(3):|>avanza(2)|>___|avanza(1)', sol: 'for i in range(3):|>avanza(2)|>salta(MEDIA)|avanza(1)',
-    a: ['Guarda che cosa c\'è dopo due passi: una barriera.', 'Dentro il ciclo, dopo AVANZA 2, serve SALTA a potenza media.'] },
+    a: ['Leggi il programma dall\'alto: la coppia «AVANZA 1, SALTA bassa» torna quattro volte di fila. Un RIPETI la scrive una volta sola e la fa quattro volte.', 'Togli tutti i mattoncini con la ×: si riparte da capo.|Tocca RIPETI a sinistra e premi + fino a 4 volte.|Tocca AVANZA e poi SALTA: entrano dentro il RIPETI.|Tocca «continua qui sotto» in fondo al programma, poi AVANZA: l\'ultimo passo resta fuori dal ciclo.'] },
   { n: 'Ciclo e rettilineo', k: 'crea', c: 'Tre muri in fila, poi un rettilineo: usa RIPETI.', m: ['.a.a.a....'], e: 0, sol: 'for i in range(3):|>avanza(1)|>salta(ALTA)|avanza(4)',
-    a: ['I tre muri hanno lo stesso ritmo: un passo e un salto. Quante volte si ripete?', 'RIPETI 3 VOLTE con AVANZA 1 e SALTA alto; poi, fuori dal ciclo, AVANZA 4.'] },
+    a: ['Guarda la pista: «un passo e un muro» torna tre volte. Poi restano quattro caselle libere fino al traguardo, e quelle non fanno parte del ritmo.', 'Tocca RIPETI a sinistra: è già a 3 volte, come i muri.|Tocca AVANZA e poi SALTA: entrano dentro il RIPETI. Tocca la potenza del SALTA finché dice «alta».|Tocca «continua qui sotto» in fondo al programma: così esci dal ciclo.|Tocca AVANZA e premi + fino a 4.'] },
   { n: 'Cavallo stanco', k: 'correggi', c: 'Il cavallo si stanca: scegli per ogni salto la potenza giusta.', m: ['..b.m.b.'], e: 0,
     ini: 'avanza(2)|salta(ALTA)|avanza(1)|salta(ALTA)|avanza(1)|salta(ALTA)|avanza(1)', sol: 'avanza(2)|salta(BASSA)|avanza(1)|salta(MEDIA)|avanza(1)|salta(BASSA)|avanza(1)',
-    a: ['Guarda le carote: bastano appena per i salti giusti. Tronco 1, barriera 2, muro 3.', 'Il primo e il terzo ostacolo sono tronchi (potenza bassa), il secondo è una barriera (media).'] },
+    a: ['Ogni salto consuma carote: potenza bassa 1, media 2, alta 3. Il programma salta sempre alto e le carote finiscono prima del traguardo. Ogni ostacolo vuole la sua potenza, non di più.', 'Guarda il primo ostacolo sulla pista: è un tronco. Tocca la potenza del primo SALTA finché dice «bassa».|Il secondo ostacolo è una barriera: porta il secondo SALTA su «media».|Il terzo è di nuovo un tronco: porta il terzo SALTA su «bassa».'] },
   { n: 'Due ritmi', k: 'crea', c: 'Due ritmi diversi: servono due cicli, uno dopo l\'altro.', m: ['.b.b..m..m.'], e: 0, sol: 'for i in range(2):|>avanza(1)|>salta(BASSA)|for i in range(2):|>avanza(2)|>salta(MEDIA)|avanza(1)',
-    a: ['La pista ha due ritmi: prima due tronchi vicini, poi due barriere più distanti.', 'Primo ciclo: 2 volte AVANZA 1 e SALTA basso. Secondo ciclo: 2 volte AVANZA 2 e SALTA medio. Poi un passo.'] },
-  { n: 'Ciclo dentro ciclo', k: 'completa', c: 'Un ciclo dentro un altro ciclo: completa quello interno.', m: ['.bbb..bbb.'], e: 0, ini: 'for i in range(2):|>avanza(1)|>for j in range(___):|>>___|>avanza(1)', sol: 'for i in range(2):|>avanza(1)|>for j in range(3):|>>salta(BASSA)|>avanza(1)',
-    a: ['Conta i tronchi in fila dopo il primo passo: sono tre, uno dopo l\'altro.', 'Il ciclo interno ripete 3 volte un solo mattoncino: SALTA basso.'] },
+    a: ['La pista ha due parti. Prima «un passo e un tronco», due volte. Poi «due passi e una barriera», due volte. Ogni parte vuole il suo RIPETI.', 'Tocca RIPETI e premi − fino a 2 volte. Dentro metti AVANZA 1 e SALTA bassa.|Tocca «continua qui sotto» in fondo al programma, poi di nuovo RIPETI, sempre a 2.|Dentro il secondo RIPETI metti AVANZA 2 e SALTA media.|Tocca ancora «continua qui sotto» e aggiungi AVANZA 1: è il passo verso il traguardo.'] },
+  { n: 'Ciclo dentro ciclo', k: 'completa', c: 'Un ciclo dentro un altro: quante volte gira quello interno?', m: ['.bbb..bbb.'], e: 0, ini: 'for i in range(2):|>avanza(1)|>for j in range(___):|>>salta(BASSA)|>avanza(1)', sol: 'for i in range(2):|>avanza(1)|>for j in range(3):|>>salta(BASSA)|>avanza(1)',
+    a: ['Il RIPETI di fuori fa due volte la stessa cosa: un passo, una fila di tronchi, un passo. Quello di dentro pensa solo alla fila, un salto per ogni tronco: quanti tronchi ha?', 'Conta i tronchi in fila dopo il primo passo: sono tre.|Nel RIPETI di dentro premi + finché il numero è 3.|Premi ESEGUI e guarda i giri: il ciclo di dentro ne fa 3 per ogni giro di quello di fuori.'] },
   { n: 'Un giro di meno', k: 'correggi', c: 'Il ciclo fa un giro di meno: trova il numero giusto.', m: ['.m.m.m.m..'], e: 0, ini: 'for i in range(3):|>avanza(1)|>salta(MEDIA)|avanza(2)', sol: 'for i in range(4):|>avanza(1)|>salta(MEDIA)|avanza(2)',
-    a: ['Segui il cavallo: dopo tre giri è alla casella 6. Quante barriere restano?', 'Le barriere sono quattro: il ciclo deve fare 4 giri.'] },
-  { n: 'La prova dello Scudiero', k: 'crea', c: 'La prova dello Scudiero: ritmo, energia giusta, pochi mattoncini.', m: ['.bb.a.bb.a.'], e: 0, sol: 'for i in range(2):|>avanza(1)|>for j in range(2):|>>salta(BASSA)|>avanza(1)|>salta(ALTA)|avanza(1)',
-    a: ['La pista è fatta di due metà uguali. Che cosa si ripete dentro ogni metà?', 'RIPETI 2 VOLTE: AVANZA 1, due SALTA basso, AVANZA 1, SALTA alto. Alla fine, fuori dal ciclo, un passo.'] }
+    a: ['Premi ESEGUI e conta i salti: il cavallo supera tre barriere, poi esce dal ciclo e la quarta resta senza salto. Quante sono le barriere sulla pista?', 'Conta le barriere sulla pista: sono quattro.|Nel RIPETI premi + una volta: da 3 a 4 volte.|Non toccare altro: dopo quattro giri restano proprio i 2 passi finali.'] },
+  { n: 'La prova dello Scudiero', k: 'crea', c: 'La prova dello Scudiero: ritmo, energia giusta, pochi mattoncini.', m: ['.bb.a.bb.a.'], e: 0, sol: 'for i in range(2):|>avanza(1)|>salta(BASSA)|>salta(BASSA)|>avanza(1)|>salta(ALTA)|avanza(1)',
+    a: ['Copri con la mano metà pista: le due metà sono uguali. In ognuna ci sono un passo, due tronchi, un passo, un muro. Basta descrivere una metà e ripeterla 2 volte.', 'Tocca RIPETI a sinistra e premi − fino a 2: è il ciclo delle due metà.|Tocca in ordine: AVANZA, SALTA, SALTA, AVANZA, SALTA. Entrano tutti nel RIPETI.|Tocca la potenza dell\'ultimo SALTA finché dice «alta»: è il muro. Gli altri due restano su «bassa».|Tocca «continua qui sotto» in fondo al programma e aggiungi AVANZA: è il passo verso il traguardo.'] }
 ] },
 { grado: 'Cavaliere apprendista', titolo: 'Occhi aperti', forma: 'mattoncini', cmd: ['avanza', 'salta', 'ripeti', 'se', 'sealt'], livelli: [
   { n: 'Ripasso: il ritmo', k: 'osserva', c: 'Ripasso: il ciclo ripete lo stesso ritmo. Premi ESEGUI.', m: ['.b.b.b.'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], ini: 'for i in range(3):|>avanza(1)|>salta(BASSA)|avanza(1)',
@@ -1314,26 +1331,28 @@ const PERCORSI = [null,
     dopo: 'In A il tronco è alla casella 3, in B alla 5: contare le caselle non basta più. Serve un programma che guardi dove sono gli ostacoli.' },
   { n: 'Se ostacolo davanti', k: 'completa', c: 'Completa il SE: quando deve saltare il cavallo?', m: ['..b...', '....b.'], e: 0, cmd: ['avanza', 'salta', 'ripeti', 'se'], nov: 'se',
     ini: 'for i in range(5):|>if ___:|>>salta(BASSA)|>avanza(1)', sol: 'for i in range(5):|>if ostacolo_davanti():|>>salta(BASSA)|>avanza(1)',
-    a: ['Il SE fa saltare il cavallo solo quando serve. Che cosa deve vedere davanti a sé?', 'Tocca il punto di domanda nel SE finché compare «ostacolo davanti».'] },
-  { n: 'Un programma, due piste', k: 'crea', c: 'Scrivi un solo programma che superi tutte e due le manche.', m: ['.b...b.', '...b.b.'], e: 0, cmd: ['avanza', 'salta', 'ripeti', 'se'], sol: 'for i in range(5):|>if ostacolo_davanti():|>>salta(BASSA)|>avanza(1)',
-    a: ['Usa un RIPETI con dentro un SE: se c\'è un ostacolo davanti salta, poi fai sempre un passo.', 'RIPETI 5 VOLTE: SE ostacolo davanti, SALTA basso; sotto il SE, sempre AVANZA 1.'] },
+    a: ['Il tronco è in un posto diverso in A e in B: contare i passi non basta più. Il SE fa una domanda al cavallo a ogni giro. Quale domanda gli serve per sapere quando saltare?', 'Nel mattoncino SE tocca il punto di domanda giallo: compare «ostacolo davanti».|Leggi il programma a voce: «5 volte: se c\'è un ostacolo davanti salta, poi fai un passo».|Premi ESEGUI e guarda il SÌ e il NO accanto al SE, in tutte e due le manche.'] },
+  { n: 'Un programma, due piste', k: 'completa', c: 'Che cosa fa il cavallo dentro il SE? E che cosa fa sempre?', m: ['.b...b.', '...b.b.'], e: 0, cmd: ['avanza', 'salta', 'ripeti', 'se'],
+    ini: 'for i in range(5):|>if ostacolo_davanti():|>>___|>___', sol: 'for i in range(5):|>if ostacolo_davanti():|>>salta(BASSA)|>avanza(1)',
+    a: ['Leggi il programma: per 5 volte il cavallo guarda davanti. Dentro il SE va quello che fa solo quando c\'è un tronco. Sotto il SE va quello che fa a ogni giro, in ogni caso.', 'Tocca SALTA a sinistra: riempie il primo pezzo giallo, quello dentro il SE.|Tocca AVANZA: riempie il secondo pezzo giallo, sotto il SE.|Leggi a voce: «5 volte: se c\'è un ostacolo davanti salta, poi fai un passo». Premi ESEGUI e guarda tutte e due le manche.'] },
   { n: 'Altrimenti', k: 'completa', c: 'Ostacoli vicini: completa il ramo ALTRIMENTI.', m: ['.bb..', '..bb.'], e: 0, nov: 'altrimenti',
     ini: 'for i in range(5):|>if ostacolo_davanti():|>>salta(BASSA)|>else:|>>___', sol: 'for i in range(5):|>if ostacolo_davanti():|>>salta(BASSA)|>else:|>>avanza(1)',
-    a: ['Dopo un salto potrebbe esserci subito un altro tronco: il passo va fatto solo se la via è libera.', 'Nel ramo ALTRIMENTI metti AVANZA 1.'] },
+    a: ['Con due tronchi vicini, dopo un salto non c\'è posto per un passo: c\'è subito l\'altro tronco. A ogni giro il cavallo deve fare una cosa sola: saltare oppure avanzare.', 'Guarda il ramo ALTRIMENTI: è quello che il cavallo fa quando davanti NON c\'è un ostacolo.|Tocca AVANZA a sinistra: riempie il pezzo giallo nel ramo ALTRIMENTI.|Lascialo a 1 passo: a ogni giro, una casella.'] },
   { n: 'Barriere sparse', k: 'crea', c: 'Stesso programma per A e B: usa SE e ALTRIMENTI.', m: ['..mm..m.', '.m..mm..'], e: 0, sol: 'for i in range(8):|>if ostacolo_davanti():|>>salta(MEDIA)|>else:|>>avanza(1)',
-    a: ['A ogni giro il cavallo fa una cosa sola: salta oppure avanza di un passo.', 'RIPETI 8 VOLTE: SE ostacolo davanti, SALTA medio; ALTRIMENTI AVANZA 1.'] },
+    a: ['A ogni giro il cavallo fa una mossa sola: salta se c\'è una barriera, altrimenti avanza di un passo. Una mossa per casella: quante caselle ha la pista?', 'Tocca RIPETI a sinistra e premi + fino a 8: una mossa per ognuna delle 8 caselle.|Tocca il SE che ha anche ALTRIMENTI: entra nel RIPETI.|Tocca SALTA: entra nel ramo di sopra. Tocca la sua potenza finché dice «media».|Tocca «continua qui dentro» sotto la parola ALTRIMENTI, poi tocca AVANZA.'] },
   { n: 'Tronco o muro?', k: 'completa', c: 'Tronchi e muri: completa il SE che sceglie la potenza.', m: ['..b.a..', '..a.b..'], e: 0, cond: ['ost', 'a', 'b'],
     ini: 'for i in range(7):|>if ostacolo_davanti():|>>if ___:|>>>salta(ALTA)|>>else:|>>>salta(BASSA)|>else:|>>avanza(1)', sol: 'for i in range(7):|>if ostacolo_davanti():|>>if altezza() == ALTA:|>>>salta(ALTA)|>>else:|>>>salta(BASSA)|>else:|>>avanza(1)',
-    a: ['Il SE interno deve riconoscere il muro: per lui serve il salto alto.', 'Tocca il punto di domanda finché compare «ostacolo ALTO davanti».'] },
+    a: ['Ora gli ostacoli sono di due tipi. Il SE di dentro sceglie il salto: nel suo ramo di sopra c\'è SALTA alta. Per quale ostacolo serve il salto alto?', 'Trova il SE di dentro: è quello con il punto di domanda giallo.|Toccalo più volte: la domanda cambia. Fermati su «ostacolo ALTO davanti».|Leggi a voce: «se l\'ostacolo è alto salta alto, altrimenti salta basso». Poi premi ESEGUI.'] },
   { n: 'Condizione sbagliata', k: 'correggi', c: 'Il programma abbatte i muri: che cosa non va nel SE?', m: ['.a..b..', '...b.a.'], e: 0, cond: ['ost', 'a', 'b'],
     ini: 'for i in range(7):|>if ostacolo_davanti():|>>if altezza() == BASSA:|>>>salta(ALTA)|>>else:|>>>salta(BASSA)|>else:|>>avanza(1)', sol: 'for i in range(7):|>if ostacolo_davanti():|>>if altezza() == ALTA:|>>>salta(ALTA)|>>else:|>>>salta(BASSA)|>else:|>>avanza(1)',
-    a: ['Leggi il SE interno: quando l\'ostacolo è basso, che salto fa il cavallo? E quando è alto?', 'Le potenze sono scambiate: cambia la condizione in «ostacolo ALTO davanti», oppure scambia i due SALTA.'] },
-  { n: 'Barriere e muri', k: 'crea', c: 'Barriere e muri in ordine diverso: un programma per A e B.', m: ['.m.a..m.', '..am..a.'], e: 0, cond: ['ost', 'a', 'm'],
+    a: ['Leggi il SE di dentro a voce: «se l\'ostacolo è BASSO salta alto, altrimenti salta basso». Così davanti a un muro il cavallo fa il salto basso e lo abbatte.', 'Nel SE di dentro tocca la domanda «ostacolo BASSO davanti».|Continua a toccarla finché diventa «ostacolo ALTO davanti».|Rileggi a voce: «se è alto salta alto, altrimenti salta basso». I due SALTA vanno già bene così.'] },
+  { n: 'Barriere e muri', k: 'completa', c: 'Barriere e muri: costruisci tu il SE che sceglie il salto.', m: ['.m.a..m.', '..am..a.'], e: 0, cond: ['ost', 'a', 'm'], pot: 'ma',
+    ini: 'for i in range(8):|>if ostacolo_davanti():|>>___|>else:|>>avanza(1)',
     sol: 'for i in range(8):|>if ostacolo_davanti():|>>if altezza() == ALTA:|>>>salta(ALTA)|>>else:|>>>salta(MEDIA)|>else:|>>avanza(1)',
-    a: ['Serve un SE dentro l\'altro: quello fuori chiede se c\'è un ostacolo, quello dentro quale.', 'RIPETI 8: SE ostacolo davanti (SE ostacolo alto, SALTA alto; ALTRIMENTI SALTA medio); ALTRIMENTI AVANZA 1.'] },
+    a: ['Il programma sa già quando saltare, ma non quanto. Nel pezzo giallo serve un\'altra domanda: l\'ostacolo è alto? Se è alto salto alto, altrimenti salto medio.', 'Tocca a sinistra il SE che ha anche ALTRIMENTI: riempie il pezzo giallo.|Tocca la sua domanda finché dice «ostacolo ALTO davanti».|Tocca SALTA: entra nel ramo di sopra. Tocca la sua potenza finché dice «alta».|Tocca «continua qui dentro» sotto l\'ALTRIMENTI di questo SE, poi tocca SALTA e lascialo su «media».'] },
   { n: 'La prova del Cavaliere apprendista', k: 'crea', c: 'La prova: tre manche, due altezze, energia contata.', m: ['..ba...b.', '.a..b.a..', '...bba...'], e: 0, cond: ['ost', 'a', 'b'],
     sol: 'for i in range(9):|>if ostacolo_davanti():|>>if altezza() == ALTA:|>>>salta(ALTA)|>>else:|>>>salta(BASSA)|>else:|>>avanza(1)',
-    a: ['Tre manche da 9 caselle: quanti giri servono a un cavallo che fa una mossa, passo o salto, per ogni casella?', 'RIPETI 9: SE ostacolo davanti (SE ostacolo alto, SALTA alto; ALTRIMENTI SALTA basso); ALTRIMENTI AVANZA 1.'] }
+    a: ['È il programma del livello 9, con i tronchi al posto delle barriere. Le piste hanno 9 caselle e il cavallo fa una mossa per casella. Le carote sono contate: un salto alto su un tronco le spreca.', 'Tocca RIPETI e premi + fino a 9. Dentro metti il SE con ALTRIMENTI, su «ostacolo davanti».|Nel ramo di sopra metti un altro SE con ALTRIMENTI e tocca la sua domanda finché dice «ostacolo ALTO davanti».|Nel SE di dentro metti sopra SALTA alta e, sotto il suo ALTRIMENTI, SALTA bassa.|Nell\'ALTRIMENTI del SE di fuori, l\'ultimo in basso, tocca «continua qui dentro» e metti AVANZA 1.'] }
 ] },
 { grado: 'Cavaliere', titolo: 'Percorso a sorpresa', forma: 'mattoncini', cmd: ['avanza', 'salta', 'ripeti', 'finche', 'se', 'sealt'], livelli: [
   { n: 'Ripasso: i due rami', k: 'completa', c: 'Ripasso: completa i due rami del SE.', m: ['..mm..', '.m..m.'], e: 0, cmd: ['avanza', 'salta', 'ripeti', 'se', 'sealt'],
@@ -1495,6 +1514,7 @@ const FORME = {
   forbici: `<circle ${TRATTO} cx="6" cy="6.500" r="2.800"/><circle ${TRATTO} cx="6" cy="17.500" r="2.800"/><path ${TRATTO} d="M8.300 8.300L20 19M8.300 15.700L20 5"/>`,
   mirino: `<circle ${TRATTO} cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.200" fill="currentColor"/><path ${TRATTO} d="M12 2v3.500M12 18.500V22M2 12h3.500M18.500 12H22"/>`,
   matita: `<path ${TRATTO} d="M4 20l1-4.500L16.500 4l3.500 3.500L8.500 19z"/><path ${TRATTO} d="M14 6.500l3.500 3.500"/>`,
+  coppa: `<path ${TRATTO} d="M7 4h10v5a5 5 0 0 1-10 0z"/><path ${TRATTO} d="M7 6H4v1.500A3 3 0 0 0 7 10.500"/><path ${TRATTO} d="M17 6h3v1.500a3 3 0 0 1-3 3"/><path ${TRATTO} d="M12 14v3.500"/><path ${TRATTO} d="M8 20h8"/><path ${TRATTO} d="M9.500 17.500h5"/>`,
   tessere: `<rect ${TRATTO} x="3" y="7" width="8" height="10" rx="2"/><rect ${TRATTO} x="13" y="7" width="8" height="10" rx="2"/>`,
   mattoncini: `<rect ${TRATTO} x="3" y="4" width="12" height="5" rx="1.500"/><rect ${TRATTO} x="6" y="10" width="13" height="5" rx="1.500"/><rect ${TRATTO} x="3" y="16" width="9" height="5" rx="1.500"/>`,
   testo: `<path ${TRATTO} d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.500 5l-3 14"/>`,
@@ -1790,6 +1810,10 @@ const Registro = {
     if (!this.attivo() || !classe) return null;
     try { const d = await this.tenta({ a: 'k', classe }); return d.ok && Array.isArray(d.casate) ? d.casate : 'vecchio'; } catch (e) { return null; }   // «vecchio»: lo script del foglio è ancora la versione 1
   },
+  async classi() {                                  // le casate di ogni classe che ha giocato oggi: null se il foglio non risponde, «vecchio» se lo script è prima della versione 3
+    if (!this.attivo()) return null;
+    try { const d = await this.tenta({ a: 'g' }); return d.ok && Array.isArray(d.classi) && d.classi.every(c => Array.isArray(c.casate)) ? d.classi : 'vecchio'; } catch (e) { return null; }
+  },
   frase() { return !this.attivo() || !STATO.chi ? '' : this.stato === 'rete' ? 'La rete non risponde: salvo appena torna.' : this.stato === 'errore' ? 'Il foglio della scuola non salva: segnati il codice gara.' : 'Salvato per questo Mac.'; }
 };
 
@@ -1848,7 +1872,42 @@ const Classifica = (() => {
     $('#cl-chiudi', ov).onclick = () => { quale++; ov.remove(); };
     segui($('.classifica', ov), classe, 10000, true);
   }
-  return { ordina, html, pannello, proiettore };
+  /* LE CLASSI DI OGGI (richiesta di Andrea, 20/11/2026): pulsante «Classifica» sempre nella barra. La classifica resta
+     PER CASATE: la scheda mostra com'è andata oggi la sfida in ogni classe che ha giocato, un riquadro per classe con
+     le sue quattro casate (stelle a testa, ex aequo: le stesse regole del pannello del castello). Per prima la classe
+     di chi guarda, poi le altre nell'ordine della scuola. Si azzera a mezzanotte senza fare nulla: il foglio conta
+     solo le righe con la data di oggi (azione «g» di ippo.gs, versione 3). */
+  function inFila(classi, mia) {          // solo le classi con qualcuno in gara; la propria per prima
+    const ordine = [...CLASSI.Primaria.map(c => 'P' + c), ...CLASSI.Secondaria.map(c => 'S' + c)];
+    return classi.filter(c => ordine.includes(c.classe) && c.casate.some(x => x.presenti > 0))
+      .sort((a, b) => ((b.classe === mia) - (a.classe === mia)) || (ordine.indexOf(a.classe) - ordine.indexOf(b.classe)));
+  }
+  function htmlClassi(classi, chi) {
+    if (!classi) return `<p class="cl-vuota">La classifica non risponde: si aggiorna appena torna la rete.</p>`;
+    const mia = chi ? chi.classe : null, fila = inFila(classi, mia);
+    if (!fila.length) return `<p class="cl-vuota">Oggi non ha ancora giocato nessuna classe: il torneo parte con il primo livello.</p>`;
+    return `<div class="cl-classi">${fila.map(c => `<section class="cl-classe ${c.classe === mia ? 'mia' : ''}"><h3>${esc(etichettaClasse(c.classe))}${c.classe === mia ? '<em>la tua classe</em>' : ''}</h3>${html(c.casate, c.classe === mia ? casataDiMac(chi.mac).id : null)}</section>`).join('')}</div>`;
+  }
+  let giroC = null, qualeC = 0;
+  function classi() {
+    if (!Registro.attivo() || document.getElementById('ov-classi')) return;
+    const data = new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
+    const ov = apriOv('ov-classi', `<div class="classifica pergamena di-classi"><div class="cl-testa"><b>Torneo delle casate · le sfide di oggi, ${esc(data)}</b><span class="cl-ora"></span><button class="btn carta piccolo" id="cc-chiudi">Chiudi</button></div>
+      <div class="cl-corpo"><p class="cl-vuota">Arrivano i risultati…</p></div><p class="cl-regola">In ogni classe: stelle conquistate oggi divise per i Mac in gara della casata. Vince chi gioca meglio, non chi è più numeroso. A mezzanotte si riparte da zero.</p></div>`);
+    const io = ++qualeC, box = $('.classifica', ov), chiudi = () => { qualeC++; clearTimeout(giroC); ov.remove(); };
+    $('#cc-chiudi', ov).onclick = chiudi; ov.addEventListener('pointerdown', e => { if (e.target === ov) chiudi(); });
+    const passo = async () => {
+      if (io !== qualeC || !box.isConnected) return;
+      const d = await Registro.classi();
+      if (io !== qualeC || !box.isConnected) return;
+      if (d === 'vecchio') { $('.cl-corpo', box).innerHTML = '<p class="cl-vuota">Le sfide delle altre classi non sono ancora attive: va pubblicata la versione 3 dello script del foglio (ippo.gs).</p>'; return; }
+      $('.cl-corpo', box).innerHTML = htmlClassi(d, STATO.chi);
+      $('.cl-ora', box).textContent = 'aggiornata alle ' + new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      giroC = setTimeout(passo, 15000);                // in tempo reale: ogni 15 secondi finché la scheda è aperta
+    };
+    passo();
+  }
+  return { ordina, html, pannello, proiettore, inFila, classi };
 })();
 
 // ============================================================ SCHERMATE E BARRA
@@ -2793,8 +2852,9 @@ const Gioco = (() => {
   /* Il Maestro si accorge di chi è bloccato: dalla terza corsa fallita sullo stesso livello offre un consiglio.
      Non apre niente da solo: accende la lampadina e mette un pulsante accanto al messaggio. Decide l'alunno. */
   const SOGLIA_CONSIGLIO = 3;
+  const maxAiuti = () => (liv.p === 3 || liv.p === 4) && liv.sol ? 3 : 2;      // nei gradi 3 e 4 c'è un terzo passo
   function offerta() {
-    if (falliti < SOGLIA_CONSIGLIO || aiuti >= 2 || fermoPerTipo()) return {};
+    if (falliti < (maxAiuti() === 3 ? 2 : SOGLIA_CONSIGLIO) || aiuti >= maxAiuti() || fermoPerTipo()) return {};   // gradi 3 e 4: offerta già alla seconda corsa fallita
     $('#b-aiuto').classList.add('chiama');
     return { bottone: piccoli() ? 'AIUTO' : 'Vuoi un consiglio?', classe: 'carta', alTocco: () => aiuto() };
   }
@@ -2862,11 +2922,21 @@ const Gioco = (() => {
       if (!Editor.aiutoVisivo(IPPO.parse(liv.sol).ast, aiuti, lista[0].pista)) Campo.bolla('PREMI VIA', { icona: 'play', classe: 'buona', durata: 1800 });
       return;
     }
-    aiuti = Math.min(2, aiuti + 1);
-    const ov = apriOv('ov-aiuto', `<div class="scheda pergamena aiuto"><h2><img class="volto-a" src="img/andrea-volto.webp" alt="">${aiuti === 1 ? 'Un consiglio del Maestro' : 'Ancora un consiglio'}</h2>
-      ${liv.a.slice(0, aiuti).map((t, i) => `<div class="passo-a"><b>${i + 1}.</b><span>${esc(t)}</span></div>`).join('')}
-      <div class="azioni">${aiuti < 2 ? `<button class="btn carta" id="a-altro">Un altro consiglio</button>` : ''}<button class="btn oro" id="a-ok">Ho capito</button></div></div>`);
-    $('#a-ok', ov).onclick = () => ov.remove();
+    /* Aiuti a scala (modello «suggerimento, suggerimento, soluzione»), sempre su richiesta dell'alunno.
+       1 che cosa guardare · 2 come si fa: se il testo ha «|» diventa un elenco di mosse · 3 (solo gradi 3 e 4, dove
+       gli alunni restavano bloccati, 20/11/2026) il programma disegnato dal Maestro, da ricostruire a mano.
+       Nei gradi 3 e 4, chiusa la scheda, lampeggia il punto del programma da sistemare (lo stesso aiuto dei gradi 1-2). */
+    const max = maxAiuti();
+    aiuti = Math.min(max, aiuti + 1);
+    const passo = (t, i) => { const m = t.split('|'); return `<div class="passo-a"><b>${i + 1}.</b>${m.length > 1 ? `<span>Come si fa, una mossa alla volta:<ol>${m.map(x => `<li>${esc(x)}</li>`).join('')}</ol></span>` : `<span>${esc(t)}</span>`}</div>`; };
+    const ov = apriOv('ov-aiuto', `<div class="scheda pergamena aiuto"><h2><img class="volto-a" src="img/andrea-volto.webp" alt="">${aiuti === 1 ? 'Un consiglio del Maestro' : aiuti === 2 ? 'Ancora un consiglio' : 'Il programma del Maestro'}</h2>
+      ${liv.a.slice(0, aiuti).map(passo).join('')}
+      ${aiuti === 3 ? `<div class="passo-a"><b>3.</b><span>Ecco un programma che funziona. Costruiscilo tu, un mattoncino alla volta, e per ognuno chiediti a che cosa serve.<div class="sol-a" id="a-sol"></div></span></div>` : ''}
+      ${max === 3 && aiuti >= 2 ? '<p class="nota-a">Quando chiudi, nel tuo programma lampeggia il punto da sistemare.</p>' : ''}
+      <div class="azioni">${aiuti < max ? `<button class="btn carta" id="a-altro">${aiuti === 1 ? 'Un altro consiglio' : 'Fammi vedere il programma'}</button>` : ''}<button class="btn oro" id="a-ok">Ho capito</button></div></div>`);
+    const sol = max === 3 ? IPPO.parse(liv.sol).ast : null;
+    if (aiuti === 3) $('#a-sol', ov).append(Editor.figura(sol, liv, 'mattoncini'));
+    $('#a-ok', ov).onclick = () => { ov.remove(); if (sol && aiuti >= 2) Editor.aiutoVisivo(sol, aiuti - 1, lista[0].pista); };
     const b = $('#a-altro', ov); if (b) b.onclick = () => { ov.remove(); aiuto(); };
   }
   function novita(chiave) {
@@ -3342,7 +3412,7 @@ function modalitaDocente() {
   $('#doc-ok', ov).onclick = () => { ov.remove(); if (schermo === 's-castello') vaiCastello(); else if (schermo === 's-stalla') vaiStalla(STATO.percorso); };
   const bc = $('#doc-classifica', ov); if (bc) bc.onclick = () => { const c = $('#doc-classe', ov).value; ov.remove(); Classifica.proiettore(c); };
   const b = $('#doc-prova', ov);
-  if (b) b.onclick = async () => { const e = $('#doc-esito', ov); e.textContent = 'Provo...'; try { const d = await Registro.chiama({ a: 'prova' }); e.textContent = d.ok && d.ippo ? (d.versione >= 2 ? 'Collegamento riuscito.' : 'Collegamento riuscito, ma lo script è la versione 1: per la classifica pubblica la nuova versione di ippo.gs.') : 'Il foglio risponde, ma non con lo script di Ippo Coding: controlla il deployment.'; } catch (err) { e.textContent = 'Il foglio non risponde: controlla l\'indirizzo e il deployment.'; } };
+  if (b) b.onclick = async () => { const e = $('#doc-esito', ov); e.textContent = 'Provo...'; try { const d = await Registro.chiama({ a: 'prova' }); e.textContent = d.ok && d.ippo ? (d.versione >= 3 ? 'Collegamento riuscito.' : 'Collegamento riuscito, ma lo script è la versione ' + (d.versione || 1) + ': per vedere le sfide delle altre classi pubblica la nuova versione di ippo.gs.') : 'Il foglio risponde, ma non con lo script di Ippo Coding: controlla il deployment.'; } catch (err) { e.textContent = 'Il foglio non risponde: controlla l\'indirizzo e il deployment.'; } };
 }
 function cinqueTocchi(elemento) {
   let n = 0, t = 0;
@@ -3356,6 +3426,7 @@ function avvia() {
   $$('.b-musica').forEach(b => b.onclick = () => { Musica.cambia(); aggiornaAudio(); });
   $('#b-aiuto').innerHTML = ico('aiuto'); $('#b-aiuto').onclick = () => Gioco.aiuto();
   $('#b-percorso').innerHTML = ico('matita') + 'Costruisci il tuo percorso'; $('#b-percorso').onclick = () => Percorso3D.apri();
+  $('#b-classi').innerHTML = ico('coppa') + 'Classifica'; $('#b-classi').hidden = !Registro.attivo(); $('#b-classi').onclick = () => { Suoni.click(); Classifica.classi(); };
   $('#b-indietro').innerHTML = ico('sx');
   $('#b-indietro').onclick = () => { Suoni.click(); Voce.taci(); if (schermo === "s-gara") { Gioco.stop(false); vaiStalla(STATO.percorso); } else if (schermo === 's-stalla') vaiCastello(); else mostra('s-titolo'); };
   $('#chi-chip').onclick = () => { if (schermo === 's-gara') return; mostra('s-titolo'); chiediChi(vaiCastello); };
@@ -3366,7 +3437,7 @@ function avvia() {
   $('#b-gioca').onclick = () => { Suoni.pop(); entra(); };
   $('#b-trailer').innerHTML = ico('play') + 'Guarda il trailer'; $('#b-trailer').onclick = async () => { Suoni.pop(); if (await Trailer.guarda() === 'entra') entra(); };
   cinqueTocchi($('#zona-logo')); cinqueTocchi($('#marchio'));
-  window.addEventListener('keydown', e => { if (e.key === 'Escape') ['ov-aiuto', 'ov-docente'].forEach(chiudiOv); });
+  window.addEventListener('keydown', e => { if (e.key === 'Escape') ['ov-aiuto', 'ov-docente', 'ov-classi'].forEach(chiudiOv); });
   // link diretto del docente: ?percorso=N&livello=M apre subito un livello, senza chiedere chi sei
   const dp = +PAR.get('percorso'), dl = +PAR.get('livello') || 1;
   if (dp >= 1 && dp <= 8 && dl >= 1 && dl <= 10) { if (!STATO.chi) STATO.senza = true; STATO.aperti[dp] = Math.max(STATO.aperti[dp], dl); Gioco.apri(dp, dl); }
