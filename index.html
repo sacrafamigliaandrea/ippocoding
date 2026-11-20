@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta property="og:title" content="Ippo Coding — Salto ad ostacoli">
-<meta property="og:description" content="Il gioco di coding del Grande Torneo delle Quattro Casate: otto percorsi dalla 1ª primaria alla 3ª secondaria, dalle tessere ai mattoncini fino a Python.">
+<meta property="og:description" content="Il gioco di coding del Grande Torneo delle Quattro Casate: otto gradi da Stalliere a Campione, per tutti dalla 1ª primaria alla 3ª secondaria: dalle tessere ai mattoncini fino a Python.">
 <meta property="og:type" content="website">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#123E90">
@@ -16,8 +16,9 @@
   Il Fontaniere e Coach!. Progettazione A. Cerioli, novembre 2026.
   Design: _lavoro/2026-11-19-ippo-coding-design.md. Scheda docenti: ippo-docenti.html.
   ------------------------------------------------------------------
-  - Otto percorsi, uno per classe (1ª primaria - 3ª secondaria), dieci livelli ciascuno. La forma del codice cresce
-    con l'età: tessere-icona (1-2), mattoncini (3-6), Python (6-8). Scaffolding: Usa, Modifica, Crea.
+  - Otto percorsi (gradi: Stalliere ... Campione), dieci livelli ciascuno, per tutti dalla 1ª primaria alla 3ª
+    secondaria: si parte dal grado 1, non dalla propria classe. La forma del codice cresce di grado in grado:
+    tessere-icona (1-2), mattoncini (3-6), Python (6-8). Scaffolding: Usa, Modifica, Crea.
   - Un file solo, HTML/CSS/JS vanilla. Unica dipendenza esterna: Google Fonts. Immagini in img/, musiche in audio/.
   - Motore puro, senza DOM, fra CORE-START e CORE-END: lo verifica in Node _lavoro/test_core.mjs.
     Livelli fra LEVELS-START e LEVELS-END: li verifica _lavoro/test_livelli.mjs (soluzioni, par, 500 piste a sorpresa).
@@ -1062,7 +1063,7 @@ const T_CICLI = ['for i in range(3):', 'while not traguardo():', 'if ostacolo_da
 const T_VAR = ['conta = 0', 'conta = conta + 1', 'annuncia(conta)'];
 
 const PERCORSI = [null,
-{ anno: 1, scuola: 'Primaria', grado: 'Stalliere', titolo: 'Primi passi', forma: 'tessere', cmd: ['passo', 'salto'], pot: 'b', livelli: [
+{ grado: 'Stalliere', titolo: 'Primi passi', forma: 'tessere', cmd: ['passo', 'salto'], pot: 'b', livelli: [
   { n: 'Due passi', k: 'osserva', c: 'PREMI VIA E GUARDA', m: ['..'], ini: 'avanza(1)|avanza(1)', nov: 'passo' },
   { n: 'Manca un passo', k: 'completa', c: 'MANCA UN PASSO', m: ['...'], ini: 'avanza(1)|avanza(1)|___', sol: 'avanza(1)|avanza(1)|avanza(1)' },
   { n: 'Fino alla bandiera', k: 'crea', c: 'PORTA IL CAVALLO ALLA BANDIERA', m: ['....'], sol: 'avanza(1)|avanza(1)|avanza(1)|avanza(1)' },
@@ -1074,7 +1075,7 @@ const PERCORSI = [null,
   { n: 'Pista lunga', k: 'crea', c: 'PISTA LUNGA: CONTA BENE', m: ['..b...b..'], sol: 'avanza(1)|avanza(1)|salta(BASSA)|avanza(1)|avanza(1)|salta(BASSA)|avanza(1)' },
   { n: 'La prova dello Stalliere', k: 'crea', c: 'LA PROVA DELLO STALLIERE', m: ['.b..b...b..'], sol: 'avanza(1)|salta(BASSA)|avanza(1)|salta(BASSA)|avanza(1)|avanza(1)|salta(BASSA)|avanza(1)' }
 ] },
-{ anno: 2, scuola: 'Primaria', grado: 'Paggio', titolo: 'Passi contati', forma: 'tessere', cmd: ['avanza', 'salta'], livelli: [
+{ grado: 'Paggio', titolo: 'Passi contati', forma: 'tessere', cmd: ['avanza', 'salta'], livelli: [
   { n: 'Un numero', k: 'osserva', c: 'UN NUMERO, TANTI PASSI', m: ['...'], cmd: ['avanza'], ini: 'avanza(3)', nov: 'numero' },
   { n: 'Quanti passi?', k: 'completa', c: 'QUANTI PASSI SERVONO?', m: ['......'], cmd: ['avanza'], ini: 'avanza(___)', sol: 'avanza(6)' },
   { n: 'Passi e tronco', k: 'crea', c: 'PASSI, SALTO, PASSI', m: ['...b...'], pot: 'b', sol: 'avanza(3)|salta(BASSA)|avanza(2)' },
@@ -1086,7 +1087,7 @@ const PERCORSI = [null,
   { n: 'Quante volte?', k: 'completa', c: 'QUANTE VOLTE SI RIPETE?', m: ['.m..m..m..m..'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], ini: 'for i in range(___):|>avanza(1)|>salta(MEDIA)|avanza(1)', sol: 'for i in range(4):|>avanza(1)|>salta(MEDIA)|avanza(1)' },
   { n: 'La prova del Paggio', k: 'crea', c: 'LA PROVA DEL PAGGIO', m: ['..m...m...m...'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], sol: 'for i in range(3):|>avanza(2)|>salta(MEDIA)|avanza(2)' }
 ] },
-{ anno: 3, scuola: 'Primaria', grado: 'Scudiero', titolo: 'Il ritmo del trotto', forma: 'mattoncini', cmd: ['avanza', 'salta', 'ripeti'], livelli: [
+{ grado: 'Scudiero', titolo: 'Il ritmo del trotto', forma: 'mattoncini', cmd: ['avanza', 'salta', 'ripeti'], livelli: [
   { n: 'Tessere con le parole', k: 'osserva', c: 'Le tessere ora hanno le parole: premi ESEGUI e osserva.', m: ['..b..m..'], e: 0, ini: 'avanza(2)|salta(BASSA)|avanza(1)|salta(MEDIA)|avanza(1)', nov: 'mattoncini',
     dopo: 'Ogni mattoncino è una tessera che conosci già: AVANZA con il numero dei passi, SALTA con la sua potenza.' },
   { n: 'Pezzi mancanti', k: 'completa', c: 'Completa i pezzi mancanti per arrivare al traguardo.', m: ['...a..b...'], e: 0, ini: 'avanza(3)|salta(___)|___|salta(BASSA)|avanza(___)', sol: 'avanza(3)|salta(ALTA)|avanza(1)|salta(BASSA)|avanza(2)',
@@ -1110,7 +1111,7 @@ const PERCORSI = [null,
   { n: 'La prova dello Scudiero', k: 'crea', c: 'La prova dello Scudiero: ritmo, energia giusta, pochi mattoncini.', m: ['.b.b..a..b.b..a..'], e: 0, sol: 'for i in range(2):|>avanza(1)|>for j in range(2):|>>salta(BASSA)|>avanza(1)|>salta(ALTA)|avanza(1)',
     a: ['La pista è fatta di due metà uguali. Che cosa si ripete dentro ogni metà?', 'RIPETI 2 VOLTE: AVANZA 1, due SALTA basso, AVANZA 1, SALTA alto. Alla fine, fuori dal ciclo, un passo.'] }
 ] },
-{ anno: 4, scuola: 'Primaria', grado: 'Cavaliere apprendista', titolo: 'Occhi aperti', forma: 'mattoncini', cmd: ['avanza', 'salta', 'ripeti', 'se', 'sealt'], livelli: [
+{ grado: 'Cavaliere apprendista', titolo: 'Occhi aperti', forma: 'mattoncini', cmd: ['avanza', 'salta', 'ripeti', 'se', 'sealt'], livelli: [
   { n: 'Ripasso: il ritmo', k: 'osserva', c: 'Ripasso: il ciclo ripete lo stesso ritmo. Premi ESEGUI.', m: ['.b..b..b..'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], ini: 'for i in range(3):|>avanza(1)|>salta(BASSA)|avanza(1)',
     dopo: 'Un ciclo funziona quando la pista ha un ritmo regolare. E se gli ostacoli cambiano posto da una manche all\'altra?' },
   { n: 'Due manche', k: 'osserva', c: 'Due manche, un solo programma: che cosa succede in B?', m: ['..b....', '....b..'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], ini: 'avanza(2)|salta(BASSA)|avanza(3)', nov: 'manche',
@@ -1138,7 +1139,7 @@ const PERCORSI = [null,
     sol: 'for i in range(9):|>if ostacolo_davanti():|>>if altezza() == ALTA:|>>>salta(ALTA)|>>else:|>>>salta(BASSA)|>else:|>>avanza(1)',
     a: ['Tre manche da 12 caselle con 3 ostacoli: quanti giri servono a un cavallo che fa una mossa per giro?', 'RIPETI 9: SE ostacolo davanti (SE ostacolo alto, SALTA alto; ALTRIMENTI SALTA basso); ALTRIMENTI AVANZA 1.'] }
 ] },
-{ anno: 5, scuola: 'Primaria', grado: 'Cavaliere', titolo: 'Percorso a sorpresa', forma: 'mattoncini', cmd: ['avanza', 'salta', 'ripeti', 'finche', 'se', 'sealt'], livelli: [
+{ grado: 'Cavaliere', titolo: 'Percorso a sorpresa', forma: 'mattoncini', cmd: ['avanza', 'salta', 'ripeti', 'finche', 'se', 'sealt'], livelli: [
   { n: 'Ripasso: i due rami', k: 'completa', c: 'Ripasso: completa i due rami del SE.', m: ['..m.m...', '.m...m..'], e: 0, cmd: ['avanza', 'salta', 'ripeti', 'se', 'sealt'],
     ini: 'for i in range(6):|>if ostacolo_davanti():|>>___|>else:|>>___', sol: 'for i in range(6):|>if ostacolo_davanti():|>>salta(MEDIA)|>else:|>>avanza(1)',
     a: ['Un ramo per quando c\'è la barriera, uno per quando la via è libera.', 'Nel primo ramo SALTA medio, nel ramo ALTRIMENTI AVANZA 1.'] },
@@ -1165,7 +1166,7 @@ const PERCORSI = [null,
   { n: 'La prova del Cavaliere', k: 'crea', c: 'La prova del Cavaliere: due manche a sorpresa, tre altezze.', m: ['.a..b.m...b..'], s: 2, fam: F_BMA, e: 0, cond: ['ost', 'a', 'm', 'b'], sol: CASCATA,
     a: ['È il programma del livello 9: deve reggere a qualunque pista scelga il giudice.', 'RIPETI FINO AL TRAGUARDO, SE ostacolo davanti, poi la cascata alto, medio, basso; ALTRIMENTI AVANZA 1.'] }
 ] },
-{ anno: 1, scuola: 'Secondaria', grado: 'Alfiere', titolo: 'Il Codice dei Cavalieri', forma: 'mattoncini', codice: true, cmd: ['avanza', 'salta', 'ripeti', 'finche', 'se', 'sealt'], cond: ['ost', 'a', 'm', 'b'], livelli: [
+{ grado: 'Alfiere', titolo: 'Il Codice dei Cavalieri', forma: 'mattoncini', codice: true, cmd: ['avanza', 'salta', 'ripeti', 'finche', 'se', 'sealt'], cond: ['ost', 'a', 'm', 'b'], livelli: [
   { n: 'Mattoncini e righe', k: 'osserva', c: 'Ogni mattoncino è una riga di codice: esegui e segui le righe.', m: ['.b..b..b..'], e: 0, ini: 'for i in range(3):|>avanza(1)|>salta(BASSA)|avanza(1)', nov: 'codice',
     dopo: 'Sotto i mattoncini c\'è lo stesso programma scritto in Python. RIPETI 3 VOLTE diventa «for i in range(3):» e ciò che sta dentro il ciclo è rientrato di quattro spazi.' },
   { n: 'Dal codice ai mattoncini', k: 'completa', c: 'Leggi il codice Python e costruiscilo con i mattoncini.', m: ['..b...b..', '.b..b....b..'], e: 0, leggi: GEN('BASSA'), ini: 'while not traguardo():|>___', sol: GEN('BASSA'),
@@ -1187,7 +1188,7 @@ const PERCORSI = [null,
     ini: 'while not traguardo():|>if ___:|>>salta(___)|>else:|>>___', sol: GEN('altezza()'),
     a: ['È il programma generale: la condizione chiede se c\'è un ostacolo, la potenza è l\'altezza letta dal sensore.', 'if ostacolo_davanti(): poi salta(altezza()); sotto else: la riga avanza(1).'] }
 ] },
-{ anno: 2, scuola: 'Secondaria', grado: 'Capitano', titolo: 'La pergamena', forma: 'testo', livelli: [
+{ grado: 'Capitano', titolo: 'La pergamena', forma: 'testo', livelli: [
   { n: 'Una riga, un comando', k: 'completa', c: 'Scrivi il resto del percorso: una riga per ogni comando.', m: ['..a...m..b..'], e: 0, tes: T_AZIONI,
     ini: 'avanza(2)|salta(ALTA)|___', sol: 'avanza(2)|salta(ALTA)|avanza(2)|salta(MEDIA)|avanza(1)|salta(BASSA)|avanza(1)',
     a: ['Scrivi un comando per riga. Dopo il muro sei alla casella 4: quanti passi fino alla barriera?', 'avanza(2), salta(MEDIA), avanza(1), salta(BASSA), avanza(1): cinque righe, una sotto l\'altra.'] },
@@ -1216,7 +1217,7 @@ const PERCORSI = [null,
   { n: 'La prova del Capitano', k: 'crea', c: 'La prova del Capitano: due sorprese, e annuncia gli ostacoli.', m: ['..m.b...a..'], s: 2, fam: F_BMA, e: 0, ann: 'ostacoli', tes: T_CICLI.concat(T_VAR, ['salta(altezza())', 'avanza(1)']), sol: CONTA,
     a: ['È il programma del contatore: parti da conta = 0 e annuncia alla fine, fuori dal ciclo.', 'conta = 0; nel ciclo, dopo salta(altezza()), conta = conta + 1; in fondo, senza rientro, annuncia(conta).'] }
 ] },
-{ anno: 3, scuola: 'Secondaria', grado: 'Campione', titolo: 'Il Gran Premio', forma: 'testo', livelli: [
+{ grado: 'Campione', titolo: 'Il Gran Premio', forma: 'testo', livelli: [
   { n: 'Ripasso: la sorpresa', k: 'crea', c: 'Ripasso: batti la sorpresa con while, if, else e altezza().', m: ['..m.b...a..'], s: 1, fam: F_BMA, e: 0, sol: GEN('altezza()'),
     a: ['Quattro istruzioni: un ciclo fino al traguardo, un if, un salto con altezza(), un passo.', 'while not traguardo(): if ostacolo_davanti(): salta(altezza()) ed else: avanza(1).'] },
   { n: 'Ripasso: il contatore', k: 'crea', c: 'Ripasso: salta tutto e annuncia quanti ostacoli hai superato.', m: ['..b.m..a..'], s: 1, fam: F_BMA, e: 0, ann: 'ostacoli', sol: CONTA,
@@ -1314,7 +1315,6 @@ const stelline = st => `<span class="stelle">${['t', 'n', 'p'].map(k => `<svg cl
 
 // ============================================================ DATI: classi, casate, tipi di livello
 const CLASSI = { Primaria: ['1A', '1B', '2A', '2B', '3A', '3B', '4A', '4B', '5A', '5B'], Secondaria: ['1A', '1B', '1C', '2A', '2B', '2C', '3A', '3B', '3C'] };
-const percorsoDi = id => id ? (id[0] === 'P' ? +id[1] : 5 + +id[1]) : 0;
 const etichettaClasse = id => id ? `${id[1]}ª ${id[2]} ${id[0] === 'P' ? 'Primaria' : 'Secondaria'}` : '';
 const classeValida = id => !!id && (CLASSI[id[0] === 'P' ? 'Primaria' : 'Secondaria'] || []).includes(id.slice(1)) && 'PS'.includes(id[0]);
 /* I 28 Mac del laboratorio: sette per casata (Andrea, 13/11/2026). Il numero del Mac decide casata e cavaliere. */
@@ -1340,12 +1340,12 @@ const STORIA = [null,
   { apre: 'IL PAGGIO CONTA I PASSI DEL SUO CAVALLO.', meta: 'TRONCO, BARRIERA, MURO: A OGNUNO IL SUO SALTO.', chiude: 'CONTI E SALTI SENZA ERRORI: HAI IL GRADO DI PAGGIO.', debrief: 'Quando hai usato RIPETI, come hai capito che cosa si ripeteva?' },
   { apre: 'In stalla si imparano le parole dei cavalieri: da oggi i comandi si leggono.', meta: 'Il trotto ha un ritmo. Chi lo riconosce scrive meno e arriva prima.', chiude: 'Il maestro di scuderia ti consegna lo stemma: hai il grado di Scudiero.', debrief: 'Che cosa hai guardato nella pista per decidere dove mettere un ciclo?' },
   { apre: 'Al torneo le piste cambiano a ogni manche. Un cavaliere guarda prima di saltare.', meta: 'Due manche, un solo programma: adesso è il cavallo a decidere quando saltare.', chiude: 'Sotto le mura del castello ricevi il grado di Cavaliere apprendista.', debrief: 'Che cosa cambia tra un programma che conta le caselle e uno che guarda gli ostacoli?' },
-  { apre: 'Quest\'anno il giudice nasconde una manche fino alla partenza. Contare le caselle non serve più.', meta: 'Il giudice sceglie sempre la pista più insidiosa per il tuo programma. Fallo ragionare.', chiude: 'Nessuna sorpresa ti ha fermato: hai il grado di Cavaliere.', debrief: 'Quando il giudice ha battuto il tuo programma, che cosa hai imparato da quella pista?' },
+  { apre: 'Da questo grado il giudice nasconde una manche fino alla partenza. Contare le caselle non serve più.', meta: 'Il giudice sceglie sempre la pista più insidiosa per il tuo programma. Fallo ragionare.', chiude: 'Nessuna sorpresa ti ha fermato: hai il grado di Cavaliere.', debrief: 'Quando il giudice ha battuto il tuo programma, che cosa hai imparato da quella pista?' },
   { apre: 'I cavalieri più esperti scrivono i comandi su pergamena. È il Codice dei Cavalieri, e si chiama Python.', meta: 'Ora sai leggere il Codice. È il momento di scriverne le prime righe.', chiude: 'Hai scritto il tuo primo codice: porti lo stendardo con il grado di Alfiere.', debrief: 'Che cosa ti ha aiutato di più a leggere il codice scritto: i mattoncini accanto, i rientri o provare?' },
   { apre: 'Niente più mattoncini: solo la pergamena. Ogni riga è un ordine, ogni rientro ha un significato.', meta: 'Il giudice ora fa domande: quanti ostacoli hai saltato? Serve una memoria: una variabile.', chiude: 'Sai scrivere, contare e annunciare: hai il grado di Capitano.', debrief: 'Qual è l\'errore che hai fatto più spesso scrivendo? Come lo riconosci adesso?' },
-  { apre: 'È l\'anno del Gran Premio. Il cavallo parte stanco e il tempo è contato: ogni riga pesa.', meta: 'Chi dà un nome alle proprie mosse scrive codice che si legge come un racconto: nascono le funzioni.', chiude: 'Il castello intero ti acclama: hai vinto il Gran Premio e il titolo di Campione del Torneo.', debrief: 'Tra le tue soluzioni, quale spiegheresti a un compagno come esempio di codice chiaro? Perché?' }
+  { apre: 'È il giorno del Gran Premio. Il cavallo parte stanco e il tempo è contato: ogni riga pesa.', meta: 'Chi dà un nome alle proprie mosse scrive codice che si legge come un racconto: nascono le funzioni.', chiude: 'Il castello intero ti acclama: hai vinto il Gran Premio e il titolo di Campione del Torneo.', debrief: 'Tra le tue soluzioni, quale spiegheresti a un compagno come esempio di codice chiaro? Perché?' }
 ];
-const APERTURA = 'Al castello delle Quattro Casate si prepara il Grande Torneo. Si comincia dalla stalla e si sale di grado, prova dopo prova: scegli lo stendardo della tua classe.';
+const APERTURA = 'Al castello delle Quattro Casate si prepara il Grande Torneo. Si comincia dalla stalla e si sale di grado, prova dopo prova: tutti cominciano da Stalliere, e chi arriva in fondo diventa Campione.';
 // schede «novità»: t titolo · d una frase · demo animazione (tessere) · bl mattoncini di esempio · py codice di esempio
 const NOVITA = {
   passo: { t: 'PASSO', demo: 'passo', bl: 'avanza(1)' },
@@ -1596,14 +1596,18 @@ function chiediChi(poi) {
   };
 }
 
-// ---------- il castello: otto stendardi, uno per classe
+// ---------- il castello: otto stendardi, uno per grado
+/* I percorsi non sono legati alla classe (decisione di Andrea, 20/11/2026): tutti partono dal grado 1 e salgono.
+   Una 3ª secondaria non conosce per forza Python. Gli stendardi restano tutti aperti; la coccarda «tocca a te»
+   segna il primo grado con livelli ancora da vincere. */
+const gradoDaFare = () => { for (let p = 1; p <= 8; p++) if (IPPO.stelleDaBits(STATO.stelle[p]).filter(s => s.t).length < 10) return p; return 0; };
 function vaiCastello() {
-  STATO.percorso = 0; mostra('s-castello'); barra('Il Castello', 'Scegli il tuo percorso');
-  const mio = STATO.chi ? percorsoDi(STATO.chi.classe) : 0, corpo = $('#castello-corpo');
-  corpo.innerHTML = `<div class="intesta"><h1>Il Grande Torneo delle Quattro Casate</h1><p>${mio ? 'Lo stendardo con la coccarda è quello della tua classe. Gli altri restano aperti, per ripassare o per metterti alla prova.' : 'Otto percorsi, uno per classe: dalle tessere al codice Python.'}</p></div>
+  STATO.percorso = 0; mostra('s-castello'); barra('Il Castello', 'Scegli il tuo grado');
+  const mio = gradoDaFare(), corpo = $('#castello-corpo');
+  corpo.innerHTML = `<div class="intesta"><h1>Il Grande Torneo delle Quattro Casate</h1><p>Otto gradi, da Stalliere a Campione: si parte dal primo e si sale, dalle tessere fino al codice Python. ${mio ? 'La coccarda segna il grado che tocca a te.' : 'Hai vinto tutti i gradi: ora puoi tornare dove vuoi.'}</p></div>
     <div class="stendardi">${PERCORSI.slice(1).map((P, i) => { const p = i + 1, n = IPPO.contaStelle(STATO.stelle[p]);
-      return `<button class="stendardo ${p === mio ? 'tuo' : ''}" data-p="${p}" style="--tinta:${TINTE[p][0]};--tinta-s:${TINTE[p][1]}">${p === mio ? '<span class="tuo-l">la tua classe</span>' : ''}
-        <span class="anno">${P.anno}ª</span><span class="scuola">${P.scuola}</span><span class="grado">${esc(P.grado)}</span>
+      return `<button class="stendardo ${p === mio ? 'tuo' : ''}" data-p="${p}" style="--tinta:${TINTE[p][0]};--tinta-s:${TINTE[p][1]}">${p === mio ? '<span class="tuo-l">tocca a te</span>' : ''}
+        <span class="scuola">Grado</span><span class="anno">${p}</span><span class="grado">${esc(P.grado)}</span>
         <span class="forma">${ico(p === 6 ? 'libro' : P.forma)}${p === 6 ? 'mattoncini e Python' : FORMA_TXT[P.forma]}</span><span class="conto">${ico('stella', 'stella')}${n} di 30</span></button>`; }).join('')}</div>
     <div class="riga-codice pergamena"><label for="in-codice">Hai un codice gara?</label><input id="in-codice" maxlength="14" placeholder="TROTTO-47" autocomplete="off" spellcheck="false"><button class="btn piccolo" id="b-codice">Riprendi</button><span class="esito" id="codice-esito" aria-live="polite"></span></div>`;
   $$('.stendardo', corpo).forEach(b => b.onclick = () => { Suoni.pop(); vaiStalla(+b.dataset.p); });
@@ -1621,7 +1625,7 @@ function vaiCastello() {
 function vaiStalla(p) {
   STATO.percorso = p; STATO.livello = 0; mostra('s-stalla');
   const P = PERCORSI[p], tot = IPPO.contaStelle(STATO.stelle[p]);
-  barra(`La Stalla · ${P.anno}ª ${P.scuola}`, `${P.grado} — ${P.titolo}`);
+  barra(`La Stalla · Grado ${p} di 8`, `${P.grado} — ${P.titolo}`);
   const fatte = IPPO.stelleDaBits(STATO.stelle[p]).filter(s => s.t).length;
   $('#stalla-corpo').innerHTML = `<div class="stalla-su"><img src="img/volto-${STATO.casata}.webp" alt=""><div class="fumetto pergamena"><h2>${esc(P.titolo)}</h2>
       <p>${esc(fatte === 10 ? STORIA[p].chiude : fatte >= 5 ? STORIA[p].meta : STORIA[p].apre)}</p><p class="su-carta" style="display:flex;align-items:center;gap:.5rem;font-weight:700">${ico('stella', 'stella si')} ${tot} stelle su 30${Registro.attivo() && STATO.chi ? ' · ' + esc(Registro.frase()) : ''}</p></div></div>
@@ -2288,7 +2292,7 @@ const Gioco = (() => {
     STATO.percorso = p; STATO.livello = l; liv = livello(p, l);
     aiuti = 0; previsione = null; variante = 0; aPassi = false;
     const P = PERCORSI[p];
-    mostra('s-gara'); barra(`Livello ${l} · ${liv.n}`, `${P.anno}ª ${P.scuola} · ${P.grado}`);
+    mostra('s-gara'); barra(`Livello ${l} · ${liv.n}`, `Grado ${p} · ${P.grado}`);
     $('#barra-stelle').innerHTML = stelline(stelleDi(p, l));
     pannelloCodice(); caricaProgramma(liv.ini || '');
     // doppio requestAnimationFrame: la schermata era nascosta, le misure del campo valgono solo dopo il primo disegno
