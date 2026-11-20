@@ -558,6 +558,13 @@ svg{display:block}
 #messaggio:has(#msg-testo:empty) .volto-a{visibility:hidden}
 #b-aiuto.chiama{animation:chiama 1.2s ease-in-out infinite;background:var(--ambra);color:#3A2400}
 @keyframes chiama{50%{transform:scale(1.14);box-shadow:0 0 0 .4rem rgba(232,151,26,.35)}}
+/* livelli «Osserva»: c'è una cosa sola da fare, premere il pulsante verde. Il pulsante pulsa e, se nessuno lo preme, spunta «PREMI QUI» */
+#b-esegui.invita{position:relative;animation:invita 1.1s ease-in-out infinite}
+@keyframes invita{50%{transform:scale(1.09);box-shadow:0 0 0 .55rem rgba(224,169,27,.55)}}
+.premi-qui{position:absolute;left:50%;bottom:calc(100% + .9rem);transform:translateX(-50%);padding:.35rem .9rem;border-radius:.7rem;background:var(--oro);color:#3A2A00;font:800 1.15rem var(--f-display);white-space:nowrap;box-shadow:0 .2rem .6rem rgba(0,0,0,.35);pointer-events:none;animation:premi-qui .8s ease-in-out infinite;z-index:5}
+.premi-qui::after{content:'';position:absolute;left:50%;top:100%;transform:translateX(-50%);border:.6rem solid transparent;border-top-color:var(--oro);border-bottom:0}
+@keyframes premi-qui{50%{transform:translateX(-50%) translateY(-.35rem)}}
+@media (prefers-reduced-motion:reduce){#b-esegui.invita,.premi-qui{animation:none}#b-esegui.invita{box-shadow:0 0 0 .45rem rgba(224,169,27,.6)}}
 .vit-maestro{display:flex;align-items:center;gap:.8rem;margin:.4rem 0 .8rem;text-align:left}
 .vit-maestro .volto-a{width:3.6rem;height:3.6rem}
 .vit-maestro p{flex:1;margin:0;padding:.55rem .9rem;border-radius:.8rem;background:rgba(255,255,255,.6);border:.12rem solid var(--carta-bordo);font-size:1.1rem;line-height:1.35}
@@ -1280,7 +1287,7 @@ const PERCORSI = [null,
   { n: 'Due passi', k: 'osserva', c: 'PREMI VIA E GUARDA', m: ['..'], ini: 'avanza(1)|avanza(1)', nov: 'passo' },
   { n: 'Manca un passo', k: 'completa', c: 'MANCA UN PASSO', m: ['...'], ini: 'avanza(1)|avanza(1)|___', sol: 'avanza(1)|avanza(1)|avanza(1)' },
   { n: 'Fino alla bandiera', k: 'crea', c: 'PORTA IL CAVALLO ALLA BANDIERA', m: ['....'], sol: 'avanza(1)|avanza(1)|avanza(1)|avanza(1)' },
-  { n: 'Il primo salto', k: 'osserva', c: 'GUARDA IL SALTO', m: ['.b.'], ini: 'avanza(1)|salta(BASSA)|avanza(1)', nov: 'salto' },
+  { n: 'Il primo salto', k: 'osserva', c: 'PREMI VIA: GUARDA IL SALTO', m: ['.b.'], ini: 'avanza(1)|salta(BASSA)|avanza(1)', nov: 'salto' },
   { n: 'Manca il salto', k: 'completa', c: 'MANCA IL SALTO', m: ['..b.'], ini: 'avanza(1)|avanza(1)|___|avanza(1)', sol: 'avanza(1)|avanza(1)|salta(BASSA)|avanza(1)' },
   { n: 'Il tronco', k: 'crea', c: 'SALTA IL TRONCO', m: ['.b..'], sol: 'avanza(1)|salta(BASSA)|avanza(1)|avanza(1)' },
   { n: 'Tessera sbagliata', k: 'correggi', c: 'TROVA LA TESSERA SBAGLIATA', m: ['..b.'], ini: 'avanza(1)|avanza(1)|avanza(1)|avanza(1)', sol: 'avanza(1)|avanza(1)|salta(BASSA)|avanza(1)' },
@@ -1289,14 +1296,14 @@ const PERCORSI = [null,
   { n: 'La prova dello Stalliere', k: 'crea', c: 'LA PROVA DELLO STALLIERE', m: ['.b.b..b.'], sol: 'avanza(1)|salta(BASSA)|avanza(1)|salta(BASSA)|avanza(1)|avanza(1)|salta(BASSA)|avanza(1)' }
 ] },
 { grado: 'Paggio', titolo: 'Passi contati', forma: 'tessere', cmd: ['avanza', 'salta'], livelli: [
-  { n: 'Un numero', k: 'osserva', c: 'UN NUMERO, TANTI PASSI', m: ['...'], cmd: ['avanza'], ini: 'avanza(3)', nov: 'numero' },
+  { n: 'Un numero', k: 'osserva', c: 'PREMI VIA: UN NUMERO, TANTI PASSI', m: ['...'], cmd: ['avanza'], ini: 'avanza(3)', nov: 'numero' },
   { n: 'Quanti passi?', k: 'completa', c: 'QUANTI PASSI SERVONO?', m: ['......'], cmd: ['avanza'], ini: 'avanza(___)', sol: 'avanza(6)' },
   { n: 'Passi e tronco', k: 'crea', c: 'PASSI, SALTO, PASSI', m: ['...b..'], pot: 'b', sol: 'avanza(3)|salta(BASSA)|avanza(2)' },
-  { n: 'Salto troppo basso', k: 'osserva', c: 'GUARDA: SALTO TROPPO BASSO', m: ['..m.'], e: 0, ini: 'avanza(2)|salta(BASSA)|avanza(1)', nov: 'altezze' },
+  { n: 'Salto troppo basso', k: 'osserva', c: 'PREMI VIA: SALTO TROPPO BASSO', m: ['..m.'], e: 0, ini: 'avanza(2)|salta(BASSA)|avanza(1)', nov: 'altezze' },
   { n: 'Il salto giusto', k: 'completa', c: 'SCEGLI IL SALTO GIUSTO', m: ['..b.m.a.'], e: 0, ini: 'avanza(2)|salta(___)|avanza(1)|salta(___)|avanza(1)|salta(___)|avanza(1)', sol: 'avanza(2)|salta(BASSA)|avanza(1)|salta(MEDIA)|avanza(1)|salta(ALTA)|avanza(1)' },
   { n: 'Tre ostacoli', k: 'crea', c: 'TRE OSTACOLI, TRE SALTI', m: ['.m.ab.'], e: 0, sol: 'avanza(1)|salta(MEDIA)|avanza(1)|salta(ALTA)|salta(BASSA)|avanza(1)' },
   { n: 'Due errori', k: 'correggi', c: 'UN NUMERO E UN SALTO SBAGLIATI', m: ['...m.b..'], e: 0, ini: 'avanza(2)|salta(BASSA)|avanza(1)|salta(BASSA)|avanza(2)', sol: 'avanza(3)|salta(MEDIA)|avanza(1)|salta(BASSA)|avanza(2)' },
-  { n: 'Ripeti', k: 'osserva', c: 'GUARDA: RIPETI TRE VOLTE', m: ['.b.b.b.'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], ini: 'for i in range(3):|>avanza(1)|>salta(BASSA)|avanza(1)', nov: 'ripeti' },
+  { n: 'Ripeti', k: 'osserva', c: 'PREMI VIA: RIPETI TRE VOLTE', m: ['.b.b.b.'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], ini: 'for i in range(3):|>avanza(1)|>salta(BASSA)|avanza(1)', nov: 'ripeti' },
   { n: 'Quante volte?', k: 'completa', c: 'QUANTE VOLTE SI RIPETE?', m: ['.m.m.m.m.'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], ini: 'for i in range(___):|>avanza(1)|>salta(MEDIA)|avanza(1)', sol: 'for i in range(4):|>avanza(1)|>salta(MEDIA)|avanza(1)' },
   { n: 'La prova del Paggio', k: 'crea', c: 'LA PROVA DEL PAGGIO', m: ['..m..m..m..'], e: 0, cmd: ['avanza', 'salta', 'ripeti'], sol: 'for i in range(3):|>avanza(2)|>salta(MEDIA)|avanza(2)' }
 ] },
@@ -2745,7 +2752,7 @@ const Gioco = (() => {
     const P = PERCORSI[p];
     mostra('s-gara'); barra(`Livello ${l} · ${liv.n}`, `Grado ${p} · ${P.grado}`);
     $('#barra-stelle').innerHTML = stelline(stelleDi(p, l));
-    pannelloCodice(); caricaProgramma(liv.ini || '');
+    pannelloCodice(); caricaProgramma(liv.ini || ''); invitaVia();
     // doppio requestAnimationFrame: la schermata era nascosta, le misure del campo valgono solo dopo il primo disegno
     // (in una scheda in secondo piano requestAnimationFrame non scatta: un timer fa da paracadute)
     const io = ++aperture; let fatto = false;
@@ -2772,9 +2779,25 @@ const Gioco = (() => {
     } else Campo.chiediCasella(k => { if (inCorsa) return; previsione = k; avviso('', 'La tua previsione', `casella ${k === 0 ? 'di partenza' : k}. Ora premi ESEGUI.`); });
   }
 
+  /* Nei livelli «Osserva» gli alunni si bloccavano: non leggevano la consegna e non capivano che bastava premere il
+     pulsante verde (Andrea, 20/11/2026). Ora il pulsante pulsa dall'apertura del livello; se dopo 5 secondi, senza
+     schede aperte davanti, nessuno l'ha premuto, spunta la freccia «PREMI QUI». Tutto sparisce alla partenza. */
+  let invito = null;
+  function basta() { clearInterval(invito); invito = null; const e = $('#b-esegui'); if (e) { e.classList.remove('invita'); $$('.premi-qui', e).forEach(x => x.remove()); } }
+  function invitaVia() {
+    basta(); if (liv.k !== 'osserva') return;
+    $('#b-esegui').classList.add('invita');
+    let liberi = 0;                                  // secondi passati senza schede (novità, aiuto) davanti al gioco
+    invito = setInterval(() => {
+      const e = $('#b-esegui'); if (!e || !e.offsetParent || !e.classList.contains('invita')) return basta();   // uscito dal livello: si smette
+      if (document.querySelector('.ov') || ++liberi < 5 || $('.premi-qui', e)) return;
+      e.append(el('span', 'premi-qui', 'PREMI QUI'));
+    }, 1000);
+  }
   // ---------- esecuzione
   function tasti(inEsecuzione) {
     const e = $('#b-esegui'), s = $('#b-stop'); if (!e) return;
+    if (inEsecuzione) basta();
     s.disabled = !inEsecuzione;
     e.disabled = inEsecuzione && !aPassi;
     ['#b-ricomincia', '#b-soluzione'].forEach(q => { const b = $(q); if (b) b.disabled = inEsecuzione; });
